@@ -1,5 +1,5 @@
-import './assets/font.css'
-import './assets/reset.css'
+import './assets/css/font.css'
+import './assets/css/reset.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
