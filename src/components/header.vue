@@ -9,13 +9,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <RouterLink class="nav-link active" aria-current="page" to="/">Home</RouterLink>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Market</a>
+            <RouterLink class="nav-link" to="/market">Market</RouterLink>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Article</a>
+            <RouterLink class="nav-link" to="/article">Article</RouterLink>
           </li>
         </ul>
       </div>
@@ -23,10 +23,8 @@
   </nav>
 </template>
 
-<script>
-export default {
-  name: 'Navbar'
-}
+<script setup>
+import { RouterLink } from 'vue-router'; // Vue Router의 RouterLink를 임포트
 </script>
 
 <style scoped>
