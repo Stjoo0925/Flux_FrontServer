@@ -21,7 +21,7 @@
             <a class="nav-link" href="#">Article</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Sale</a>
+            <a class="nav-link point-link" href="#">Sale</a>
           </li>
         </ul>
         <div class="d-flex align-items-center ms-auto position-relative">
@@ -39,7 +39,7 @@
             </ul>
           </div>
           <div v-else class="nav-item ms-3">
-            <a class="nav-link" href="#" @click="login">Login</a>
+            <a class="nav-link point-link" href="#" @click="login">Login</a>
           </div>
           <form class="d-flex ms-3 search-form" role="search">
             <input class="form-control me-2 custom-search-input" type="search" placeholder="검색어를 입력해주세요" aria-label="Search">
@@ -86,11 +86,16 @@ export default {
 }
 
 .nav-link {
-  color: #fff !important;
+  color: #fff;
   font-family: 'LINESeedKR-Bd';
   font-size: 16px;
   margin-left: 5px;
 }
+
+.point-link {
+  color: #FD8E4C !important;
+}
+
 
 .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
