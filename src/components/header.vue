@@ -9,12 +9,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <RouterLink class="nav-link active" aria-current="page" to="/">Home</RouterLink>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Market</a>
+            <RouterLink class="nav-link" to="/market">Market</RouterLink>
           </li>
           <li class="nav-item">
+
             <a class="nav-link" href="#">Ranking</a>
           </li>
           <li class="nav-item">
@@ -51,6 +52,7 @@
   </nav>
 </template>
 
+
 <script>
 export default {
   name: 'Navbar',
@@ -66,6 +68,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style scoped>
