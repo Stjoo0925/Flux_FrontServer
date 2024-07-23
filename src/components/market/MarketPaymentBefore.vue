@@ -18,7 +18,7 @@
 
     <!-- 입찰하기 버튼 -->
     <div class="button-container">
-      <button class="btn btn-bid">입찰하기</button>
+      <button class="btn btn-bid">결제하기</button>
     </div>
   </div>
 </template>
