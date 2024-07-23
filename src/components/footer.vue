@@ -2,13 +2,13 @@
     <footer class="footer bg-dark text-light">
       <div class="container-fluid px-0">
         <div class="row no-gutters">
-            <div class="col-md-2 text-center">
-          <div class="text-uppercase1">FLUX</div>
-          <div class="social-icons">
-            <a href="https://github.com/Flux2024" class="text-light me-2">
-              <img src="/src/assets/image/github.svg" alt="github" class="social-icon">
-            </a>
-          </div>
+          <div class="col-md-2 text-center">
+            <div class="text-uppercase1">FLUX</div>
+            <div class="social-icons">
+              <a href="https://github.com/Flux2024" class="text-light me-2">
+                <img src="/src/assets/image/github.svg" alt="github" class="social-icon">
+              </a>
+            </div>
           </div>
           <div class="col-md-3 text-center">
             <h5 class="text-uppercase">이용안내</h5>
@@ -53,8 +53,6 @@
   .footer {
     background-color: #000 !important;
     color: #FEBE98;
-    position: fixed;
-    bottom: 0;
     width: 100%;
     padding: 0;
     margin: 0;
@@ -104,7 +102,7 @@
     font-size: 18px;
     color: #FD8E4C;
   }
-
+  
   .text-light {
     font-family: 'LINESeedKR-Bd';
     font-size: 14px;
@@ -120,10 +118,10 @@
     font-size: 12px;
     color: #999;
   }
-
+  
   .social-icon {
-  width: 35px; /* 이미지 너비 설정 */
-  height: 35px; /* 이미지 높이 설정 */
+    width: 35px; /* 이미지 너비 설정 */
+    height: 35px; /* 이미지 높이 설정 */
   }
   </style>
   
