@@ -1,12 +1,19 @@
 <template>
-    <div class="wrapper sticky-sm-top">
+    <div class="wrapper">
       <div class="border-right sidebar-con d-flex flex-column" id="sidebar-wrapper">
-        <div class="sidebar-heading sidebar-title">Mypage</div>
+        <div class="sidebar-heading sidebar-title">DashBoard</div>
         <div class="list-group list-group-flush">
           <div class="sidebar-heading">
-            <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text">위시리스트</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text">활동내역</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text">회원탈퇴</a>
+            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">홈화면</a>
+            <hr>
+            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">회원목록</a>
+            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">회원권한설정</a>
+            <hr>
+            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">아티클목록</a>
+            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">아티클등록</a>
+            <hr>
+            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">공지목록</a>
+            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">공지등록</a>
           </div>
         </div>
       </div>
@@ -15,14 +22,15 @@
   
   <script>
   export default {
-    name: 'Sidebar',
+    name: 'ManagerSide',
   }
   </script>
   
   <style scoped>
   .wrapper {
-    height: 100%;
     background-color: #000 !important;
+    border-top-right-radius: 10px; /* 좌상단 곡률 */
+    border-bottom-right-radius: 10px; /* 좌하단 곡률 */
   }
   
   #sidebar-wrapper {
@@ -31,13 +39,10 @@
   
   .sidebar-con {
     width: 250px;
-
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    border-top-right-radius: 10px; /* 좌상단 곡률 */
-    border-bottom-right-radius: 10px; /* 좌하단 곡률 */
   }
   
   .sidebar-heading {
@@ -55,6 +60,7 @@
     font-family: "LINESeedKR-Bd";
     font-size: 28px;
     color: #1244AF;
+    margin-top: 30px;
   }
   
   .sidebar-subtitle {
@@ -68,6 +74,7 @@
   .sidebar-text {
     font-family: "LINESeedKR-Bd";
     font-size: 16px;
+    background-color: #000 !important;
     color: #FFFFFF;
     margin-top: 5px;
     margin-bottom: 5px;
