@@ -25,6 +25,11 @@ const ManagerArticleView = () => import("../components/manager/flux_manager_arti
 const ManagerUserMain = () => import("../views/manager_user.vue");
 const ManagerUserList= () => import("../components/manager/flux_manager_userlist.vue");
 const ManagerAdminList =() => import("../components/manager/flux_manager_adminlist.vue");
+const ManagerNoticeMain = () => import("../views/manager_notice.vue");
+const ManagerNoticeList = () => import("../components/manager/flux_manager_notice_list.vue");
+const ManagerNoticeModify = () => import("../components/manager/flux_manager_notice_modify.vue");
+const ManagerNoticeEdit = () => import("../components/manager/flux_manager_notice_edit.vue");
+
 
 const routes = [
   { path: "/", component: Main },
@@ -83,6 +88,17 @@ const routes = [
     ] ,
   },
 
+  {
+    path: "/manager/notice",
+    component: ManagerNoticeMain,
+    redirect: "/manager/notice/noticelist",
+    children: [
+      { path: "noticelist", component: ManagerNoticeList },
+      { path: "noticeedit", component: ManagerNoticeEdit },
+      { path: "noticemodify", component: ManagerNoticeModify },
+
+    ] ,
+  },
 ];
 
 const router = createRouter({

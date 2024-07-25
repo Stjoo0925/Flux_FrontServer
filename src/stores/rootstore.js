@@ -66,3 +66,13 @@ export const useManagerUser = defineStore("useManagerUser", {
     }
   }
 });
+export const useManagerNotice = defineStore("useManagerNotice", {
+  state: () => ({
+    root: "noticelist", 
+    }),
+  actions: {
+    setRoot(option) {
+      this.root = option;
+    }
+  }
+});
