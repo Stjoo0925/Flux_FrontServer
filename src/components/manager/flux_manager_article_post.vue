@@ -168,7 +168,7 @@ export default {
 .btn {
     margin-top: 20px;
     margin-bottom: 10px;
-    background-color: #FD8E4C;
+    background-color: #1244AF;
     border: none;
     padding: 10px 20px;
     font-size: 18px;
@@ -179,6 +179,6 @@ export default {
 }
 
 .btn:hover {
-    background-color: #e67e22;
+    background-color: #1244AF;
 }
 </style>
