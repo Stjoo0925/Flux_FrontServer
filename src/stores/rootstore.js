@@ -1,4 +1,3 @@
-// stores/rootstore.js
 import { defineStore } from "pinia";
 
 // 네비게이션 경로 설정관련 로직
@@ -33,4 +32,26 @@ export const useMypageStore = defineStore("useMypageStore", {
       this.root = option;
     },
   },
+});
+
+export const useManager = defineStore("useManager", {
+  state: () => ({
+    root: "main",
+  }),
+  actions: {
+    setRoot(option) {
+      this.root = option;
+    },
+  }
+});
+
+export const useManagerArticle = defineStore("useManagerArticle", {
+  state: () => ({
+    root: "articlelist", // 초기값 설정
+  }),
+  actions: {
+    setRoot(option) {
+      this.root = option;
+    }
+  }
 });
