@@ -130,6 +130,24 @@
         </div>
       </div>
     </div>
+    <nav aria-label="페이지 네비게이션 예시" class="d-flex justify-content-center">
+      <ul class="pagination pagination-black">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
   </div>
   <!-- 아티클 메인 컨텐츠 종료 -->
 </template>
@@ -188,6 +206,15 @@ export default {
 
 .row {
   margin: 10px 10px 10px 20px;
+}
+
+.pagination-black .page-link {
+  color: black; /* 페이지 링크 색상을 검정색으로 */
+}
+
+.pagination-black .page-link:hover {
+  background-color: #000; /* 링크 호버시 배경색을 검정색으로 */
+  color: #fff; /* 링크 호버시 글자색을 흰색으로 */
 }
 /* 아티클 박스 종료 */
 </style>
