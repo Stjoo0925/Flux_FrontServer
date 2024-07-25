@@ -58,7 +58,7 @@ const routes = [
       { path: "withdrawal", component: MypageWithdrawal },
     ],
   },
-  { path: "/login", component: Login},
+  { path:"/login", component: Login},
   { path: "/manager", component: Manager },
   {
     path: "/manager/article",
