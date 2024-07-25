@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useMarketStore, useArticleStore, useSalesStore, useMypageStore, useManager } from '@/stores/rootstore.js';
+
 
 const Main = () => import("../views/main.vue");
 const Market = () => import("../views/market.vue");
@@ -69,7 +71,6 @@ const routes = [
   {
     path: "/mypage",
     component: Mypage,
-    redirect: "/mypage/wishlist",
     children: [
       { path: "wishlist", component: MypageWishList },
       { path: "activity", component: MypageActivity },
@@ -78,11 +79,9 @@ const routes = [
   },
   { path:"/login", component: Login},
   { path: "/manager", component: Manager },
-  
   {
     path: "/manager/article",
     component: ManagerArticleMain,
-    redirect: "/manager/article/articlelist",
     children: [
       { path: "articlelist", component: ManagerArticleUserList },
       { path: "articleview", component: ManagerArticleView },
@@ -91,31 +90,49 @@ const routes = [
     ] ,
   },
   {
-
     path: "/manager/admin",
     component: ManagerUserMain,
-    redirect: "/manager/admin/userlist",
     children: [
       { path: "userlist", component: ManagerUserList },
       { path: "adminlist", component: ManagerAdminList },
     ] ,
   },
-
-
+  {
     path: "/manager/notice",
     component: ManagerNoticeSection,
-    redirect: "/manager/notice/noticelist",
     children: [
       { path: "noticelist", component: ManagerNoticeList },
       { path: "noticeedit", component: ManagerNoticeEdit },
       { path: "noticemodify", component: ManagerNoticeModify }
     ] ,
   },
-
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
+
+function resetStores() {
+  const marketStore = useMarketStore();
+  const articleStore = useArticleStore();
+  const salesStore = useSalesStore();
+  const mypageStore = useMypageStore();
+  const managerStore = useManager();
+  
+  marketStore.setRoot('main');
+  articleStore.setRoot('main');
+  salesStore.setRoot('registry');
+  mypageStore.setRoot('wishlist');
+  managerStore.setRoot('main');
+}
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login' || to.path === '/') {
+    resetStores();
+  }
+  next();
+});
+
 
 export default router;
