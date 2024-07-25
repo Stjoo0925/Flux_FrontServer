@@ -50,6 +50,7 @@
 
 <script>
 export default {
+    name: 'ManagerArticlePost',
     methods: {
         handleImageUpload(event) {
             const input = event.target;

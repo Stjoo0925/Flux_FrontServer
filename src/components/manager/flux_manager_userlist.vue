@@ -1,40 +1,42 @@
 <template>
-    <div class="managerContainer">
-        <div class="border-box">
-            <table class="table table-striped table-hover custom-table">
-                <thead>
-                    <tr>
-                        <th scope="col" @click="sortTable('code')">회원코드</th>
-                        <th scope="col" @click="sortTable('name')">회원 이름</th>
-                        <th scope="col" @click="sortTable('purchase')">구매 내역</th>
-                        <th scope="col" @click="sortTable('bid')">입찰 내역</th>
-                        <th scope="col" @click="sortTable('role')">회원 권한</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="member in sortedMembers" :key="member.code">
-                        <th scope="row">{{ member.code }}</th>
-                        <td>{{ member.name }}</td>
-                        <td>{{ member.purchase }}</td>
-                        <td>{{ member.bid }}</td>
-                        <td>{{ member.role }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example" class="pagination-container">
-                <ul class="pagination pagination-black">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
+    <div class="articlelist">
+        <div class="article_list">
+            <h3><p>아티클 관리</p></h3>
+
+            <div class="button-container">
+                <button class="btn" @click="addNewArticle">새 글</button>
+                <!-- 조회 기능 추가 -->
+                <div class="search">
+                    <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery" />
+                    <button class="btn" @click="searchArticles">조회</button>
+                </div>
+            </div>
+        </div>
+        <!-- 리스트 섹션 -->
+        <div class="list-section">
+            <div class="list-header">
+                <span class="header-item">카테고리</span>
+                <span class="header-item">작가 이름</span>
+                <span class="header-item">이미지</span>
+            </div>
+            <div class="list-items">
+                <div class="list-item" v-for="(article, index) in paginatedArticles" :key="index">
+                    <span class="item">{{ article.category }}</span>
+                    <span class="item clickable" @click="goToDetail(article.id)">{{ article.author }}</span>
+                    <img :src="article.img" alt="Article Image" class="item-img">
+                </div>
+            </div>
+            <!-- 페이지네이션 -->
+            <nav aria-label="Page navigation" class="pagination-container">
+                <ul class="pagination">
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <a class="page-link" href="#" @click.prevent="prevPage">&laquo;</a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
+                    <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page }">
+                        <a class="page-link" href="#" @click.prevent="goToPage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                        <a class="page-link" href="#" @click.prevent="nextPage">&raquo;</a>
                     </li>
                 </ul>
             </nav>
@@ -43,75 +45,196 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+
 export default {
-    name: 'ManagerTable',
+    name: 'articlelist',
     data() {
         return {
-            members: [
-                { code: 1, name: '비슈누', purchase: 3, bid: 3, role: '일반유저' },
-                { code: 2, name: '브라흐마', purchase: 5, bid: 5, role: '관리자' },
-                { code: 3, name: '시바', purchase: 1, bid: 1, role: '일반유저' },
-                { code: 4, name: '인드라', purchase: 10, bid: 10, role: '일반유저' },
+            searchQuery: '',
+            articles: [
+                { id: 1, category: '카테고리1', author: '작가1', img: 'https://via.placeholder.com/150' },
+                { id: 2, category: '카테고리2', author: '작가2', img: 'https://via.placeholder.com/150' },
+                { id: 3, category: '카테고리3', author: '작가3', img: 'https://via.placeholder.com/150' },
+                { id: 4, category: '카테고리4', author: '작가4', img: 'https://via.placeholder.com/150' },
+                { id: 5, category: '카테고리5', author: '작가5', img: 'https://via.placeholder.com/150' },
+                { id: 6, category: '카테고리6', author: '작가6', img: 'https://via.placeholder.com/150' },
+                { id: 7, category: '카테고리7', author: '작가7', img: 'https://via.placeholder.com/150' },
             ],
-            currentSort: 'code',
-            currentSortDir: 'asc'
+            currentPage: 1,
+            pageSize: 5,
         };
     },
     computed: {
-        sortedMembers() {
-            return this.members.sort((a, b) => {
-                let modifier = 1;
-                if (this.currentSortDir === 'desc') modifier = -1;
-                if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
-                if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
-                return 0;
-            });
+        totalPages() {
+            return Math.ceil(this.articles.length / this.pageSize);
+        },
+        paginatedArticles() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            const end = start + this.pageSize;
+            return this.articles.slice(start, end);
         }
     },
     methods: {
-        sortTable(column) {
-            if (this.currentSort === column) {
-                this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
-            } else {
-                this.currentSort = column;
-                this.currentSortDir = 'asc';
+        searchArticles() {
+            console.log('Searching for:', this.searchQuery);
+            // 검색 로직을 여기에 추가할 수 있습니다.
+        },
+        addNewArticle() {
+            // 새 글 추가 로직을 여기에 추가할 수 있습니다.
+            alert('새 글 추가 기능');
+        },
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
             }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+        goToPage(page) {
+            this.currentPage = page;
+        },
+        goToDetail(id) {
+            this.$router.push({ path: '/manager/article/articleview', query: { id: id } });
         }
     }
 };
 </script>
 
 <style scoped>
-.managerContainer {
-    width: 100%;
-    overflow-x: auto;
-    margin: 20px 10px; /* 위, 오른쪽, 왼쪽에 마진 추가 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #FEBE98;
 }
 
-.border-box {
-    border: 1px solid #ddd; /* 보더 박스 추가 */
-    padding: 10px;
-    margin: 20px 0; /* 상하 마진 추가 */
+.articlelist {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #FEBE98;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
-.custom-table {
-    width: 100%;
-    min-width: 600px; /* 테이블 최소 너비 설정 */
-    table-layout: auto; /* 자동 테이블 레이아웃 */
-}
-
-.pagination-container {
+.article_list {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h3 p {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
+.btn {
+    background-color: #FEBE98;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.btn:hover {
+    background-color: #FDA65D;
+}
+
+.search input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.search button {
+    margin-left: 10px;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+}
+
+.list-section {
+    margin-top: 20px;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #FDA65D;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.header-item {
+    flex: 1;
+    text-align: center;
+}
+
+.list-items {
     margin-top: 10px;
 }
 
-.pagination-black .page-link {
-    color: black; /* 페이지 링크 색상을 검정색으로 */
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
 }
 
-.pagination-black .page-link:hover {
-    background-color: black; /* 링크 호버시 배경색을 검정색으로 */
-    color: white; /* 링크 호버시 글자색을 흰색으로 */
+.item {
+    flex: 1;
+    text-align: center;
+}
+
+.item-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.pagination-container {
+    margin-top: 20px;
+}
+
+.pagination .page-link {
+    color: black;
+}
+
+.pagination .page-link:hover {
+    background-color: #FDA65D;
+    color: white;
+}
+
+.pagination .active .page-link {
+    background-color: #FDA65D;
+    border-color: #FDA65D;
+    color: white;
+}
+
+.clickable {
+    cursor: pointer;
+    color: blue;
+}
+
+.clickable:hover {
+    text-decoration: underline;
 }
 </style>

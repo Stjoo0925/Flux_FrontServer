@@ -22,6 +22,16 @@ const MypageActivity = () =>
 const MypageWithdrawal = () =>
   import("../components/mypage/flux_mypage_withdrawal.vue");
 
+const Manager = () => import("../views/manager_main.vue");
+const ManagerMain = () => import("../components/manager/flux_manager_main.vue");
+const ManagerArticleMain = () => import("../views/manager_article.vue");
+const ManagerArticleUserList = () => import("../components/manager/flux_manager_article_userlist.vue");
+const ManagerArticlePost = () => import("../components/manager/flux_manager_article_post.vue");
+const ManagerArticleModify = () => import("../components/manager/flux_manager_article_modify.vue");
+const ManagerArticleView = () => import("../components/manager/flux_manager_article_managerview.vue");
+
+
+
 const routes = [
   { path: "/", component: Main },
   {
@@ -54,6 +64,18 @@ const routes = [
       { path: "activity", component: MypageActivity },
       { path: "withdrawal", component: MypageWithdrawal },
     ],
+  },
+  { path: "/manager", component: Manager },
+  {
+    path: "/manager/article",
+    component: ManagerArticleMain,
+    redirect: "/manager/article/articlelist",
+    children: [
+      { path: "articlelist", component: ManagerArticleUserList },
+      { path: "articleview", component: ManagerArticleView },
+      { path: "articlemodify", component: ManagerArticleModify },
+      { path: "articlepost", component: ManagerArticlePost },
+    ] ,
   },
 ];
 
