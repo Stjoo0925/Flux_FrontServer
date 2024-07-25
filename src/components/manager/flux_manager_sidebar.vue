@@ -14,15 +14,23 @@
             <hr>
             <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">공지목록</a>
             <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">공지등록</a>
+            <hr>
+            <div class="list-group-item list-group-item-action pl-4 sidebar-text" @click="returnMain()">종료</div>
           </div>
         </div>
       </div>
     </div>
   </template>
   
-  <script>
-  export default {
-    name: 'ManagerSide',
+  <script setup>
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+
+  function returnMain() {
+    if (confirm("종료하고 돌아가시겠습니까?")) {
+      router.push('/');
+    }
   }
   </script>
   
