@@ -22,6 +22,10 @@ const ManagerArticleUserList = () => import("../components/manager/flux_manager_
 const ManagerArticlePost = () => import("../components/manager/flux_manager_article_post.vue");
 const ManagerArticleModify = () => import("../components/manager/flux_manager_article_modify.vue");
 const ManagerArticleView = () => import("../components/manager/flux_manager_article_managerview.vue");
+const ManagerNoticeSection = () => import("../views/manager_notice.vue")
+const ManagerNoticeList = () => import("../components/manager/flux_manager_notice_list.vue");
+const ManagerNoticeEdit = () => import("../components/manager/flux_manager_notice_edit.vue");
+const ManagerNoticeModify = () => import("../components/manager/flux_manager_notice_modify.vue");
 
 
 
@@ -69,6 +73,16 @@ const routes = [
       { path: "articleview", component: ManagerArticleView },
       { path: "articlemodify", component: ManagerArticleModify },
       { path: "articlepost", component: ManagerArticlePost },
+    ] ,
+  },
+  {
+    path: "/manager/notice",
+    component: ManagerNoticeSection,
+    redirect: "/manager/notice/noticelist",
+    children: [
+      { path: "noticelist", component: ManagerNoticeList },
+      { path: "noticeedit", component: ManagerNoticeEdit },
+      { path: "noticemodify", component: ManagerNoticeModify }
     ] ,
   },
 ];
