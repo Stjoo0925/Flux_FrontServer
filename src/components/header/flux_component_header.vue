@@ -26,6 +26,9 @@
             <router-link class="nav-link" to="/ranking">Ranking</router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link point-link" to="/sales">Sales</router-link>
+          </li>
+          <li class="nav-item">
             <router-link class="nav-link" to="/mypage">Mypage</router-link>
           </li>
           <li class="nav-item">
