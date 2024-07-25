@@ -3,25 +3,18 @@ import { createRouter, createWebHistory } from "vue-router";
 const Main = () => import("../views/main.vue");
 const Market = () => import("../views/market.vue");
 const MarketMain = () => import("../components/market/flux_market_main.vue");
-const MarketDetail = () =>
-  import("../components/market/flux_market_detail.vue");
-const MarketPaymentBefore = () =>
-  import("../components/market/flux_market_payment_before.vue");
-const MarketPaymentAfter = () =>
-  import("../components/market/flux_market_payment_after.vue");
+const MarketDetail = () => import("../components/market/flux_market_detail.vue");
+const MarketPaymentBefore = () => import("../components/market/flux_market_payment_before.vue");
+const MarketPaymentAfter = () => import("../components/market/flux_market_payment_after.vue");
 const Article = () => import("../views/article.vue");
 const ArticleMain = () => import("../components/article/flux_article_main.vue");
-const ArticleDetail = () =>
-  import("../components/article/flux_article_detaile.vue");
+const ArticleDetail = () => import("../components/article/flux_article_detaile.vue");
 const Ranking = () => import("../views/ranking.vue");
 const Mypage = () => import("../views/mypage.vue");
-const MypageWishList = () =>
-  import("../components/mypage/flux_mypage_wish.vue");
-const MypageActivity = () =>
-  import("../components/mypage/flux_mypage_activity.vue");
-const MypageWithdrawal = () =>
-  import("../components/mypage/flux_mypage_withdrawal.vue");
-
+const MypageWishList = () => import("../components/mypage/flux_mypage_wish.vue");
+const MypageActivity = () => import("../components/mypage/flux_mypage_activity.vue");
+const MypageWithdrawal = () => import("../components/mypage/flux_mypage_withdrawal.vue");
+const Login = () => import("../components/login/flux_login.vue")
 const Manager = () => import("../views/manager_main.vue");
 const ManagerMain = () => import("../components/manager/flux_manager_main.vue");
 const ManagerArticleMain = () => import("../views/manager_article.vue");
@@ -65,6 +58,7 @@ const routes = [
       { path: "withdrawal", component: MypageWithdrawal },
     ],
   },
+  { path: "/login", component: Login},
   { path: "/manager", component: Manager },
   {
     path: "/manager/article",
