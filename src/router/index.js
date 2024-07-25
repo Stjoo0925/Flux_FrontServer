@@ -10,6 +10,10 @@ const Article = () => import("../views/article.vue");
 const ArticleMain = () => import("../components/article/flux_article_main.vue");
 const ArticleDetail = () => import("../components/article/flux_article_detaile.vue");
 const Ranking = () => import("../views/ranking.vue");
+const Sales = () => import("../views/sales.vue");
+const Registry = () => import("../components/market/flux_market_registration.vue");
+const RegistryInfo = () => import("../components/market/flux_market_registration_info.vue");
+const RegistryEdit = () => import("../components/market/flux_market_registration_edit.vue");
 const Mypage = () => import("../views/mypage.vue");
 const MypageWishList = () => import("../components/mypage/flux_mypage_wish.vue");
 const MypageActivity = () => import("../components/mypage/flux_mypage_activity.vue");
@@ -26,7 +30,6 @@ const ManagerNoticeSection = () => import("../views/manager_notice.vue")
 const ManagerNoticeList = () => import("../components/manager/flux_manager_notice_list.vue");
 const ManagerNoticeEdit = () => import("../components/manager/flux_manager_notice_edit.vue");
 const ManagerNoticeModify = () => import("../components/manager/flux_manager_notice_modify.vue");
-
 
 
 const routes = [
@@ -52,6 +55,13 @@ const routes = [
     ],
   },
   { path: "/ranking", component: Ranking },
+  { path: "/sales", component: Sales,
+    children: [
+      {path: "registry" ,component: Registry},
+      {path: "registryinfo", component: RegistryInfo},
+      {path: "registryedit", component: RegistryEdit},
+    ]
+  },
   {
     path: "/mypage",
     component: Mypage,
