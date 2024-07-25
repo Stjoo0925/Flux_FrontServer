@@ -7,11 +7,7 @@
       <div class="sidebar-heading sidebar-title">Mypage</div>
       <div class="list-group list-group-flush">
         <div class="sidebar-heading">
-          <router-link
-            to="/mypage/wishlist"
-            class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text"
-            @click="setRoot('wishlist')"
-          >
+          <router-link to="/mypage/wishlist" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text" @click="setRoot('wishlist')">
             위시리스트
           </router-link>
           <router-link
