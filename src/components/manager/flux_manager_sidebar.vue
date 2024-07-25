@@ -6,8 +6,8 @@
           <div class="sidebar-heading">
             <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager">홈화면</router-link>
             <hr>
-            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">회원목록</a>
-            <a href="#" class="list-group-item list-group-item-action pl-4 sidebar-text">회원권한설정</a>
+            <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/admin/userlist">회원목록</router-link>
+            <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/admin/adminlist">회원권한설정</router-link>
             <hr>
             <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/article/articlelist">아티클목록</router-link>
             <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/article/articlepost">아티클등록</router-link>
