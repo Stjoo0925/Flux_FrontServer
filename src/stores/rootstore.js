@@ -55,3 +55,14 @@ export const useManagerArticle = defineStore("useManagerArticle", {
     }
   }
 });
+
+export const useManagerNotice = defineStore("useManagerNotice", {
+  state: () => ({
+    root: "noticelist", // 초기값 설정
+  }),
+  actions: {
+    setRoot(option) {
+      this.root = option;
+    }
+  }
+});
