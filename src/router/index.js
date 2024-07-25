@@ -10,6 +10,10 @@ const Article = () => import("../views/article.vue");
 const ArticleMain = () => import("../components/article/flux_article_main.vue");
 const ArticleDetail = () => import("../components/article/flux_article_detaile.vue");
 const Ranking = () => import("../views/ranking.vue");
+const Sales = () => import("../views/sales.vue");
+const Registry = () => import("../components/market/flux_market_registration.vue");
+const RegistryInfo = () => import("../components/market/flux_market_registration_info.vue");
+const RegistryEdit = () => import("../components/market/flux_market_registration_edit.vue");
 const Mypage = () => import("../views/mypage.vue");
 const MypageWishList = () => import("../components/mypage/flux_mypage_wish.vue");
 const MypageActivity = () => import("../components/mypage/flux_mypage_activity.vue");
@@ -22,18 +26,15 @@ const ManagerArticleUserList = () => import("../components/manager/flux_manager_
 const ManagerArticlePost = () => import("../components/manager/flux_manager_article_post.vue");
 const ManagerArticleModify = () => import("../components/manager/flux_manager_article_modify.vue");
 const ManagerArticleView = () => import("../components/manager/flux_manager_article_managerview.vue");
-<<<<<<< HEAD
 const ManagerUserMain = () => import("../views/manager_user.vue");
 const ManagerUserList= () => import("../components/manager/flux_manager_userlist.vue");
 const ManagerAdminList =() => import("../components/manager/flux_manager_adminlist.vue");
-=======
+
 const ManagerNoticeSection = () => import("../views/manager_notice.vue")
 const ManagerNoticeList = () => import("../components/manager/flux_manager_notice_list.vue");
 const ManagerNoticeEdit = () => import("../components/manager/flux_manager_notice_edit.vue");
 const ManagerNoticeModify = () => import("../components/manager/flux_manager_notice_modify.vue");
 
-
->>>>>>> 34d6fcfc2fd352897f6ab8d447f39992e19637ed
 
 const routes = [
   { path: "/", component: Main },
@@ -58,6 +59,13 @@ const routes = [
     ],
   },
   { path: "/ranking", component: Ranking },
+  { path: "/sales", component: Sales,
+    children: [
+      {path: "registry" ,component: Registry},
+      {path: "registryinfo", component: RegistryInfo},
+      {path: "registryedit", component: RegistryEdit},
+    ]
+  },
   {
     path: "/mypage",
     component: Mypage,
@@ -83,7 +91,7 @@ const routes = [
     ] ,
   },
   {
-<<<<<<< HEAD
+
     path: "/manager/admin",
     component: ManagerUserMain,
     redirect: "/manager/admin/userlist",
@@ -93,7 +101,7 @@ const routes = [
     ] ,
   },
 
-=======
+
     path: "/manager/notice",
     component: ManagerNoticeSection,
     redirect: "/manager/notice/noticelist",
@@ -103,8 +111,7 @@ const routes = [
       { path: "noticemodify", component: ManagerNoticeModify }
     ] ,
   },
->>>>>>> 34d6fcfc2fd352897f6ab8d447f39992e19637ed
-];
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
