@@ -17,7 +17,8 @@ import Section from "@/components/market/flux_market_sales_section.vue";
 
 .section-align {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   height: 100%;
 }
 </style>
