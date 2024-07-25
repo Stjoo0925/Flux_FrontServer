@@ -55,3 +55,14 @@ export const useManagerArticle = defineStore("useManagerArticle", {
     }
   }
 });
+
+export const useManagerUser = defineStore("useManagerUser", {
+  state: () => ({
+    root: "userlist", // 초기값 설정
+  }),
+  actions: {
+    setRoot(option) {
+      this.root = option;
+    }
+  }
+});

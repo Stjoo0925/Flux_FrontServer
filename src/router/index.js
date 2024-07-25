@@ -22,8 +22,9 @@ const ManagerArticleUserList = () => import("../components/manager/flux_manager_
 const ManagerArticlePost = () => import("../components/manager/flux_manager_article_post.vue");
 const ManagerArticleModify = () => import("../components/manager/flux_manager_article_modify.vue");
 const ManagerArticleView = () => import("../components/manager/flux_manager_article_managerview.vue");
-
-
+const ManagerUserMain = () => import("../views/manager_user.vue");
+const ManagerUserList= () => import("../components/manager/flux_manager_userlist.vue");
+const ManagerAdminList =() => import("../components/manager/flux_manager_adminlist.vue");
 
 const routes = [
   { path: "/", component: Main },
@@ -60,6 +61,7 @@ const routes = [
   },
   { path:"/login", component: Login},
   { path: "/manager", component: Manager },
+  
   {
     path: "/manager/article",
     component: ManagerArticleMain,
@@ -71,6 +73,16 @@ const routes = [
       { path: "articlepost", component: ManagerArticlePost },
     ] ,
   },
+  {
+    path: "/manager/admin",
+    component: ManagerUserMain,
+    redirect: "/manager/admin/userlist",
+    children: [
+      { path: "userlist", component: ManagerUserList },
+      { path: "adminlist", component: ManagerAdminList },
+    ] ,
+  },
+
 ];
 
 const router = createRouter({
