@@ -25,17 +25,6 @@
           </div>
           <a href="" class="mb-3"><img src="/src/assets/image/google.png" /></a>
           <a href="" class="mb-3"><img src="/src/assets/image/kakao.png" /></a>
-          <div class="login-button mt-3">
-              <button type="button" class="btn btn-light">
-                  <router-link to="/" class="no-underline">홈으로</router-link>
-              </button>
-              <button type="button" class="btn btn-light">
-                  <router-link to="/manager" class="no-underline">관리자페이지</router-link>
-              </button>
-          </div>
-          <div class="login-right text-center mt-5">
-            <p class="mb-0">© 2024 FLUX. All rights reserved.</p>
-          </div>
         </div>
       </div>
     </div>
@@ -83,7 +72,7 @@ export default {
   width: 100%;
   max-width: 1200px; /* 최대 너비 설정 */
   display: flex;
-  border-radius: 35px;
+  border-radius: 30px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
@@ -164,31 +153,4 @@ export default {
   -webkit-background-clip: text;
   letter-spacing: 1px;
 }
-
-.login-button{
-  display: flex;
-  flex-direction: row;
-}
-
-.login-button {
-  display: flex;
-  gap: 20px; /* 버튼들 사이의 간격 */
-}
-
-.no-underline {
-  text-decoration: none; /* 밑줄 없애기 */
-  font-family: "LINESeedKR-Bd";
-  font-size: 16px;
-  color: #000;
-}
-
-.login-right{
-  font-family: "LINESeedKR-Bd";
-  font-size: 12px;
-  background: linear-gradient(to right top, #febe98, #fd8e4c);
-  color: transparent;
-  -webkit-background-clip: text;
-  letter-spacing: 3px;
-}
-
 </style>

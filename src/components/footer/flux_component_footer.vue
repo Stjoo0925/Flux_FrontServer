@@ -6,7 +6,11 @@
           <div class="text-uppercase1">FLUX</div>
           <div class="social-icons">
             <a href="https://github.com/Flux2024" class="text-light">
-              <img src="/src/assets/image/github.svg" alt="github" class="social-icon"/>
+              <img
+                src="/src/assets/image/github.svg"
+                alt="github"
+                class="social-icon"
+              />
             </a>
           </div>
         </div>
@@ -16,18 +20,18 @@
             <li>
               <a href="#" class="text-light no-underline">아티스트센터</a>
             </li>
-            <li>
-              <a href="#" class="text-light no-underline">리셀문의</a>
-            </li>
+            <li><a href="#" class="text-light no-underline">리셀문의</a></li>
           </ul>
         </div>
         <div class="col-md-2 text-center other-content">
-          <h5 class="text-uppercase">고객지원</h5>
+          <h5 class="text-uppercase">이용안내</h5>
           <ul class="list-unstyled">
             <li><a href="#" class="text-light no-underline">공지사항</a></li>
             <li>
               <a href="#" class="text-light no-underline">자주묻는질문</a>
             </li>
+            <li><a href="#" class="text-light no-underline">뉴스룸</a></li>
+            <li><a href="#" class="text-light no-underline">마케팅문의</a></li>
           </ul>
         </div>
         <div class="col-md-2 text-left other-content">

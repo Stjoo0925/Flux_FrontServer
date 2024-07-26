@@ -67,13 +67,26 @@ export const useManagerArticle = defineStore("useManagerArticle", {
   }
 });
 
-export const useManagerNotice = defineStore("useManagerNotice", {
+
+export const useManagerUser = defineStore("useManagerUser", {
   state: () => ({
-    root: "noticelist", // 초기값 설정
+    root: "userlist", // 초기값 설정
+
   }),
   actions: {
     setRoot(option) {
       this.root = option;
     }
   }
+});
+export const useManagerNotice = defineStore("useManagerNotice", {
+  state: () => ({
+    root: "noticelist", 
+    }),
+  actions: {
+    setRoot(option) {
+      this.root = option;
+    }
+  }
+
 });

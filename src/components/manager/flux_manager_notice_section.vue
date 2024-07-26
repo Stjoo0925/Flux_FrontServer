@@ -1,13 +1,14 @@
 <script setup>
-import { useManagerArticle } from "@/stores/rootstore";
+import { useManagerNotice } from "@/stores/rootstore";
 import { computed, watch } from "vue";
 import { useRoute } from 'vue-router';
-import NoticeList from "@/components/manager/flux_manager_notice_list.vue";
-import NoticeEdit from "@/components/manager/flux_manager_notice_edit.vue";
-import NoticeModify from "@/components/manager/flux_manager_notice_modify.vue";
+import ManagerNoticeEdit from "@/components/manager/flux_manager_notice_edit.vue";
+import ManagerNoticeList from "@/components/manager/flux_manager_notice_list.vue";
+import ManagerNoticeModify from "@/components/manager/flux_manager_notice_modify.vue";
+
 
 // Pinia 스토어 사용
-const store = useManagerArticle();
+const store = useManagerNotice();
 const root = computed(() => store.root); // 상태 값 가져오기
 const setRoot = store.setRoot; // 상태 값 변경 함수
 
@@ -20,9 +21,10 @@ watch(
     if (newPath === '/manager/notice/noticelist') {
       setRoot('noticelist');
     } else if (newPath === '/manager/notice/noticeedit') {
-      setRoot('noticeedit');
+      setRoot('noticeedeit');
     } else if (newPath === '/manager/notice/noticemodify') {
       setRoot('noticemodify');
+ 
     }
   },
   { immediate: true } // 컴포넌트가 처음 로드될 때도 상태를 설정하도록 함
@@ -32,13 +34,13 @@ watch(
 <template>
   <div>
     <div v-if="root === 'noticelist'">
-      <NoticeList />
+      <ManagerNoticeList />
     </div>
     <div v-if="root === 'noticeedit'">
-      <NoticeEdit />
+      <ManagerNoticeEdit />
     </div>
     <div v-if="root === 'noticemodify'">
-      <NoticeModify />
+      <ManagerNoticeModify/>
     </div>
   </div>
 </template>
