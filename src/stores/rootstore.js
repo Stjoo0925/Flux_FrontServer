@@ -45,7 +45,7 @@ export const useMypageStore = defineStore("useMypageStore", {
   },
 });
 
-export const useManagerUser= defineStore("useManagerUser", {
+export const useManager= defineStore("useManager", {
   state: () => ({
     root: "main",
   }),
