@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useMarketStore, useArticleStore, useSalesStore, useMypageStore, useManager } from '@/stores/rootstore.js';
+import { useMarketStore, useArticleStore, useSalesStore, useMypageStore, useManagerUser, useManagerNotice } from '@/stores/rootstore.js';
 
 
 const Main = () => import("../views/main.vue");
@@ -119,12 +119,17 @@ function resetStores() {
   const salesStore = useSalesStore();
   const mypageStore = useMypageStore();
   const managerStore = useManager();
-  
+  const managerUser = useManagerUser();
+  const managerNotice = useManagerNotice();
+
+
   marketStore.setRoot('main');
   articleStore.setRoot('main');
   salesStore.setRoot('registry');
   mypageStore.setRoot('wishlist');
   managerStore.setRoot('main');
+  managerUser.setRoot('userlist');
+  managerNotice.setRoot('noticelist');
 }
 
 router.beforeEach((to, from, next) => {
