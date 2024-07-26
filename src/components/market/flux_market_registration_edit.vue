@@ -62,43 +62,51 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            artistName: '',
-            instagramId: '',
-            email: '',
-            bio: '',
-            description: '',
-            auctionTime: '',
-            images: [],
-            hours: '00',
-            minutes: '00',
-            seconds: '00',
-            ampm: 'AM'
-        };
-    },
-    methods: {
-        handleFileUpload(event) {
-            this.images = Array.from(event.target.files);
-        },
-        submitForm() {
-            const formData = {
-                artistName: this.artistName,
-                instagramId: this.instagramId,
-                email: this.email,
-                bio: this.bio,
-                description: this.description,
-                auctionTime: this.auctionTime,
-                images: this.images
-            };
-            console.log('Submitted Data:', formData);
-            // 추가적인 제출 로직 구현
-        }
-    }
-};
+<script setup>
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useMypageStore, useSalesStore } from '@/stores/rootstore.js';
+
+// 라우터 인스턴스 사용
+const router = useRouter();
+const store = useMypageStore();
+const store2 = useSalesStore();
+const root = computed(() => store.root); // 상태 값 가져오기
+const root2 = computed(() => store2.root);
+const setRoot = store.setRoot; // 상태 값 변경 함수
+const setRoot2 = store2.setRoot;
+
+const artistName = ref('');
+const instagramId = ref('');
+const email = ref('');
+const bio = ref('');
+const description = ref('');
+const auctionTime = ref('');
+const images = ref([]);
+
+function handleFileUpload(event) {
+    images.value = Array.from(event.target.files);
+}
+
+function submitForm() {
+    const formData = {
+        artistName: artistName.value,
+        instagramId: instagramId.value,
+        email: email.value,
+        bio: bio.value,
+        description: description.value,
+        auctionTime: auctionTime.value,
+        images: images.value
+    };
+    console.log('Submitted Data:', formData);
+    // 폼 제출 로직을 처리하고 성공적으로 완료되면
+    // '/mypage/activity'로 리디렉션
+    setRoot2('registry');
+    setRoot('activity');
+    router.push('/mypage/activity');
+}
 </script>
+
 
 <style scoped>
 .registration_edit {

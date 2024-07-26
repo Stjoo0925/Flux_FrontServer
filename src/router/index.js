@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useMarketStore, useArticleStore, useSalesStore, useMypageStore, useManager } from '@/stores/rootstore.js';
+
 
 const Main = () => import("../views/main.vue");
 const Market = () => import("../views/market.vue");
@@ -10,6 +12,10 @@ const Article = () => import("../views/article.vue");
 const ArticleMain = () => import("../components/article/flux_article_main.vue");
 const ArticleDetail = () => import("../components/article/flux_article_detaile.vue");
 const Ranking = () => import("../views/ranking.vue");
+const Sales = () => import("../views/sales.vue");
+const Registry = () => import("../components/market/flux_market_registration.vue");
+const RegistryInfo = () => import("../components/market/flux_market_registration_info.vue");
+const RegistryEdit = () => import("../components/market/flux_market_registration_edit.vue");
 const Mypage = () => import("../views/mypage.vue");
 const MypageWishList = () => import("../components/mypage/flux_mypage_wish.vue");
 const MypageActivity = () => import("../components/mypage/flux_mypage_activity.vue");
@@ -25,7 +31,7 @@ const ManagerArticleView = () => import("../components/manager/flux_manager_arti
 const ManagerUserMain = () => import("../views/manager_user.vue");
 const ManagerUserList= () => import("../components/manager/flux_manager_userlist.vue");
 const ManagerAdminList =() => import("../components/manager/flux_manager_adminlist.vue");
-const ManagerNoticeMain = () => import("../views/manager_notice.vue");
+const ManagerNoticeSection = () => import("../views/manager_notice.vue")
 const ManagerNoticeList = () => import("../components/manager/flux_manager_notice_list.vue");
 const ManagerNoticeModify = () => import("../components/manager/flux_manager_notice_modify.vue");
 const ManagerNoticeEdit = () => import("../components/manager/flux_manager_notice_edit.vue");
@@ -54,10 +60,16 @@ const routes = [
     ],
   },
   { path: "/ranking", component: Ranking },
+  { path: "/sales", component: Sales,
+    children: [
+      {path: "registry" ,component: Registry},
+      {path: "registryinfo", component: RegistryInfo},
+      {path: "registryedit", component: RegistryEdit},
+    ]
+  },
   {
     path: "/mypage",
     component: Mypage,
-    redirect: "/mypage/wishlist",
     children: [
       { path: "wishlist", component: MypageWishList },
       { path: "activity", component: MypageActivity },
@@ -66,11 +78,9 @@ const routes = [
   },
   { path:"/login", component: Login},
   { path: "/manager", component: Manager },
-  
   {
     path: "/manager/article",
     component: ManagerArticleMain,
-    redirect: "/manager/article/articlelist",
     children: [
       { path: "articlelist", component: ManagerArticleUserList },
       { path: "articleview", component: ManagerArticleView },
@@ -81,7 +91,6 @@ const routes = [
   {
     path: "/manager/admin",
     component: ManagerUserMain,
-    redirect: "/manager/admin/userlist",
     children: [
       { path: "userlist", component: ManagerUserList },
       { path: "adminlist", component: ManagerAdminList },
@@ -90,8 +99,7 @@ const routes = [
 
   {
     path: "/manager/notice",
-    component: ManagerNoticeMain,
-    redirect: "/manager/notice/noticelist",
+    component: ManagerNoticeSection,
     children: [
       { path: "noticelist", component: ManagerNoticeList },
       { path: "noticeedit", component: ManagerNoticeEdit },
@@ -99,11 +107,33 @@ const routes = [
 
     ] ,
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
+
+function resetStores() {
+  const marketStore = useMarketStore();
+  const articleStore = useArticleStore();
+  const salesStore = useSalesStore();
+  const mypageStore = useMypageStore();
+  const managerStore = useManager();
+  
+  marketStore.setRoot('main');
+  articleStore.setRoot('main');
+  salesStore.setRoot('registry');
+  mypageStore.setRoot('wishlist');
+  managerStore.setRoot('main');
+}
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login' || to.path === '/') {
+    resetStores();
+  }
+  next();
+});
+
 
 export default router;

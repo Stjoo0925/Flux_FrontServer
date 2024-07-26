@@ -14,15 +14,22 @@
             <hr>
             <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticelist">공지목록</router-link>
             <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticeedit">공지등록</router-link>
+
           </div>
         </div>
       </div>
     </div>
   </template>
   
-  <script>
-  export default {
-    name: 'ManagerSide',
+  <script setup>
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+
+  function returnMain() {
+    if (confirm("종료하고 돌아가시겠습니까?")) {
+      router.push('/');
+    }
   }
   </script>
   
