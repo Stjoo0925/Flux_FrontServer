@@ -1,9 +1,27 @@
 <template>
     <div class="registration_edit">
-        <h1><p>아티스트 정보를 입력해 주세요.</p></h1>
-        <h5><p>작가 등록을 하지 않으면, 작품 접수가 불가능합니다. 먼저 작가정보를 등록해주세요.</p></h5>
+        <h2><p>아티스트 정보를 입력해 주세요.</p></h2>
+        <h7><p>작가 등록을 하지 않으면, 작품 접수가 불가능합니다. 먼저 작가정보를 등록해주세요.</p></h7>
         
         <div class="regist_info">
+            <div class="input-container">
+                <label for="postTitle">제목</label>
+                <input type="text" id="postTitle" v-model="artistName" />
+            </div>
+
+            <div class="input-container">
+               <label for="category">분류</label>
+               <select id="category" v-model="selectedCategory">
+                 <option value="" disabled selected>선택하세요</option>
+                 <option value="가죽공예">가죽공예</option>
+                 <option value="목공예">목공예</option>
+                 <option value="도자기공예">도자기공예</option>
+                <option value="금속공예">금속공예</option>
+                <option value="종이공예">종이공예</option>
+                <option value="기타">기타</option>
+               </select>
+            </div>
+            
             <div class="input-container">
                 <label for="artistName">작가명</label>
                 <input type="text" id="artistName" v-model="artistName" />
@@ -123,6 +141,12 @@ function submitForm() {
 
 h1, h5 {
     text-align: center;
+    margin: 0;
+    color: #333;
+}
+
+h1 p, h5 p {
+    margin: 0;
 }
 
 .regist_info {
@@ -138,19 +162,25 @@ h1, h5 {
 .input-container label {
     margin-bottom: 5px;
     font-weight: bold;
+    color: #555;
 }
 
 .input-container input,
 .input-container textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 .input-container textarea {
     resize: vertical;
+}
+
+.input-container input[type="email"] {
+    /* Ensure email input has consistent styling */
 }
 
 .image-upload {
@@ -163,18 +193,21 @@ h1, h5 {
     align-items: center;
     justify-content: center;
     background-color: #FEBE98;
-    color: white;
+    color: #fff;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     margin-right: 10px;
     text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .image-label svg {
-    margin-right: 5px;
-    width: 32px; /* 아이콘 너비 */
-    height: 32px; /* 아이콘 높이 */
+    margin-right: 8px;
+    width: 24px; /* Adjusted for better fit */
+    height: 24px; /* Adjusted for better fit */
 }
 
 .image-upload input[type="file"] {
@@ -185,33 +218,32 @@ h1, h5 {
     display: flex;
     align-items: center;
     margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.countdown {
-    display: flex;
-    align-items: center;
-}
-
-.time-box {
-    width: 30px;
-    height: 30px;
+.countdown-box .time-box {
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f0f0f0;
     border-radius: 5px;
     margin-right: 5px;
+    font-size: 18px;
 }
 
-.colon {
+.countdown-box .colon {
     font-size: 24px;
     font-weight: bold;
+    color: #555;
 }
 
-.ampm-box {
+.countdown-box .ampm-box {
     margin-left: 10px;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 18px;
+    color: #555;
 }
 
 .submit-button-container {
@@ -223,14 +255,17 @@ h1, h5 {
 .submit-button-container button {
     padding: 10px 20px;
     background-color: #FEBE98;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .submit-button-container button:hover {
     background-color: #FFA07A;
 }
+
 </style>
