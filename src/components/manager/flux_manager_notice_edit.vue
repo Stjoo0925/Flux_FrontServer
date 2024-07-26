@@ -113,6 +113,5 @@ h1 {
 
 .buttongroup .btn + .btn {
     margin-left: 10px;
-    background-color: #1244AF;
 }
 </style>
