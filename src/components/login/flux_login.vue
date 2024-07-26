@@ -8,8 +8,7 @@
         <div
           class="col-md-6 login-form d-flex flex-column justify-content-center align-items-center"
         >
-          <div class="login-subtitle mb-3">LOGIN</div>
-          <div class="login-title mb-5">FLUX</div>
+          <div class="login-title mb-5">FLUX | LOGIN</div>
           <div class="login-text">
             FLUX는 시장의 유동성과 역동적인 본질을 담아내며 디지털 상거래의
           </div>
@@ -142,10 +141,12 @@ export default {
 
 .login-title {
   font-family: "PuradakGentleGothicR";
-  color: #febe98;
+  background: linear-gradient(to right, #febe98, #fd8e4c);
+  color: transparent;
+  -webkit-background-clip: text;
   font-size: 46px;
   margin-bottom: 30px;
-  letter-spacing: 10px;
+  letter-spacing: 3px;
 }
 
 .login-subtitle {
@@ -159,7 +160,7 @@ export default {
 .login-text {
   font-family: "LINESeedKR-Bd";
   font-size: 16px;
-  background: linear-gradient(to right top, #febe98, #fd8e4c);
+  background: linear-gradient(to right, #febe98, #fd8e4c);
   color: transparent;
   -webkit-background-clip: text;
   letter-spacing: 1px;
@@ -185,7 +186,7 @@ export default {
 .login-right{
   font-family: "LINESeedKR-Bd";
   font-size: 12px;
-  background: linear-gradient(to right top, #febe98, #fd8e4c);
+  background: linear-gradient(to right, #febe98, #fd8e4c);
   color: transparent;
   -webkit-background-clip: text;
   letter-spacing: 3px;
