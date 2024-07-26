@@ -20,8 +20,8 @@ watch(
   (newPath) => {
     if (newPath === '/manager/notice/noticelist') {
       setRoot('noticelist');
-    } else if (newPath === '/manager/notice/noticeedit') {
-      setRoot('noticeedeit');
+    } else if (newPath === '/manager/notice/noticepost') {
+      setRoot('noticepost');
     } else if (newPath === '/manager/notice/noticemodify') {
       setRoot('noticemodify');
  
@@ -36,7 +36,7 @@ watch(
     <div v-if="root === 'noticelist'">
       <ManagerNoticeList />
     </div>
-    <div v-if="root === 'noticeedit'">
+    <div v-if="root === 'noticepost'">
       <ManagerNoticeEdit />
     </div>
     <div v-if="root === 'noticemodify'">

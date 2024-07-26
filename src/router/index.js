@@ -102,7 +102,7 @@ const routes = [
     component: ManagerNoticeSection,
     children: [
       { path: "noticelist", component: ManagerNoticeList },
-      { path: "noticeedit", component: ManagerNoticeEdit },
+      { path: "noticepost", component: ManagerNoticeEdit },
       { path: "noticemodify", component: ManagerNoticeModify }
     ] ,
   },
