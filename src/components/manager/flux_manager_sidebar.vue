@@ -12,10 +12,9 @@
             <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/article/articlelist">아티클목록</router-link>
             <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/article/articlepost">아티클등록</router-link>
             <hr>
-            <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticelist"> 공지목록 </router-link>
-            <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticeedit"> 공지등록 </router-link>
-            <hr>
-            <div class="list-group-item list-group-item-action pl-4 sidebar-text" @click="returnMain()">종료</div>
+            <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticelist">공지목록</router-link>
+            <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticeedit">공지등록</router-link>
+
           </div>
         </div>
       </div>

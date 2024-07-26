@@ -3,13 +3,17 @@ import Header from "@/components/manager/flux_manager_header.vue";
 import Footer from "@/components/manager/flux_manager_footer.vue";
 import Sidebar from "@/components/manager/flux_manager_sidebar.vue";
 import Section from "@/components/manager/flux_manager_notice_section.vue";
+import NoticeEdit from "@/components/manager/flux_manager_notice_edit.vue";
 </script>
+
 <template>
   <Header />
   <div class="section-align">
     <Sidebar />
     <div class="section">
       <Section />
+      <NoticeEdit />
+
     </div>
   </div>
   <Footer />
