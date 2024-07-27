@@ -1,74 +1,107 @@
-<template>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <router-link class="navbar-brand" to="/">FLUX</router-link>
-      <div class="d-flex align-items-center ms-auto mr-20">
-        <div class="nav-item ms-3">
-          <router-link to="/login" class="nav-link point-link">Login</router-link>
-        </div>
-      </div>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mb-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link class="nav-link" to="/">Home</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/market">Market</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/article">Article</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/ranking">Ranking</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link point-link" to="/sales">Sales</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/mypage">Mypage</router-link>
-          </li>
-          <li class="nav-item">
-            <form class="d-flex ms-2 search-form" role="search">
-              <input
-                class="form-control me-2 custom-search-input"
-                type="search"
-                placeholder="검색어를 입력해주세요"
-                aria-label="Search"
-              />
-              <button
-                class="btn btn-outline-success custom-search-button"
-                type="submit"
-              >
-                Search
-              </button>
-            </form>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-</template>
+<script setup>
+import { ref, computed } from 'vue';
+import { useBannerStore } from '@/stores/bannerstore.js';
 
-<script>
-export default {
-  name: "Navbar",
-  data() {
-    return {
-      isLoggedIn: false, // 로그인 상태를 나타내는 변수
-    };
+// 공지사항 데이터를 정의합니다.
+const notifications = ref([
+  {
+    noti_id: '10',
+    user_id: '1',
+    noti_contents: '이용자 의견 수렴: 더 나은 서비스를 위해 의견을 보내주세요.',
+    noti_createat: '2024-08-03T19:50:50Z',
+    noti_updateat: '2024-08-03T19:50:50Z',
   },
-  methods: {
-    login() {
-      // 로그인 로직을 여기에 추가합니다
-      this.isLoggedIn = true;
-    },
-  },
+]);
+
+// 가장 최근 공지사항을 계산합니다.
+const latestNotification = computed(() => notifications.value[notifications.value.length - 1]);
+
+// Pinia 스토어를 사용합니다.
+const bannerStore = useBannerStore();
+
+// 배너를 닫는 함수입니다.
+const closeBanner = () => {
+  bannerStore.toggleBanner();
+};
+
+// 날짜를 포맷팅하는 함수입니다.
+const formatDate = (date) => {
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  return new Date(date).toLocaleDateString(undefined, options);
 };
 </script>
+
+<template>
+  <div>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <router-link class="navbar-brand" to="/">FLUX</router-link>
+        <div class="d-flex align-items-center ms-auto mr-20">
+          <div class="nav-item ms-3">
+            <router-link to="/login" class="nav-link point-link">Login</router-link>
+          </div>
+        </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link class="nav-link" to="/">Home</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/market">Market</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/article">Article</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/ranking">Ranking</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link point-link" to="/sales">Sales</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/mypage">Mypage</router-link>
+            </li>
+            <li class="nav-item">
+              <form class="d-flex ms-2 search-form" role="search">
+                <input
+                  class="form-control me-2 custom-search-input"
+                  type="search"
+                  placeholder="검색어를 입력해주세요"
+                  aria-label="Search"
+                />
+                <button
+                  class="btn btn-outline-success custom-search-button"
+                  type="submit"
+                >
+                  Search
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="banner" v-if="bannerStore.isBannerVisible">
+      <div class="banner-align">
+        <strong class="banner-contents">🛠️ 공지사항 :
+          {{ latestNotification.noti_contents }} - 
+          {{ formatDate(latestNotification.noti_updateat || latestNotification.noti_createat) }}
+        </strong>
+        <button @click="closeBanner" class="close-btn">X</button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .navbar {
@@ -162,6 +195,35 @@ export default {
   z-index: 1000; /* 헤더 아래에 뜨도록 z-index 설정 */
 }
 
+.banner {
+  background-color: #febe98;
+  color: #fff;
+  padding: 10px;
+  border: 1px solid #f5c6cb;
+  font-family: "LINESeedKR-Bd";
+  font-size: 14px;
+  line-height: 14px;
+  text-align: center;
+}
+.banner-align{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner-contents{
+  letter-spacing: 1px;
+  margin-right: 20px;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
+
 @media (max-width: 992px) {
   .navbar-nav .nav-item,
   .navbar-nav form {
@@ -180,5 +242,9 @@ export default {
     right: 0 !important;
     left: auto !important;
   }
+  .banner{
+    font-size: 10px;
+  }
 }
+
 </style>
