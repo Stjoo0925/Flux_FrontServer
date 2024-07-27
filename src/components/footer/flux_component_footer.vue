@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer bg-dark text-light">
+  <footer class="footer bg-dark text-light mt-auto py-3 bg-body-tertiary">
     <div class="container-fluid px-0">
       <div class="row no-gutters">
         <div class="col-md-1 text-center">
@@ -30,8 +30,6 @@
             <li>
               <a href="#" class="text-light no-underline">자주묻는질문</a>
             </li>
-            <li><a href="#" class="text-light no-underline">뉴스룸</a></li>
-            <li><a href="#" class="text-light no-underline">마케팅문의</a></li>
           </ul>
         </div>
         <div class="col-md-2 text-left other-content">
