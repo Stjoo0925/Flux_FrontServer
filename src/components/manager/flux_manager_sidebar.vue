@@ -15,22 +15,7 @@
           <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticelist">공지목록</router-link>
           <router-link class="list-group-item list-group-item-action pl-4 sidebar-text" to="/manager/notice/noticepost">공지등록</router-link>
           <hr>
-          <div class="list-group-item list-group-item-action pl-4 sidebar-text" @click="showModal">종료</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal HTML -->
-    <div class="modal fade" ref="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            종료하고 돌아가시겠습니까?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="hideModal">취소</button>
-            <button type="button" class="btn btn-primary" @click="returnMain">확인</button>
-          </div>
+          <div class="list-group-item list-group-item-action pl-4 sidebar-text" @click="showConfirmation">종료</div>
         </div>
       </div>
     </div>
@@ -39,29 +24,23 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { Modal } from 'bootstrap';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
-const confirmModal = ref(null);
-let modalInstance = null;
 
-function showModal() {
-  if (!modalInstance) {
-    modalInstance = new Modal(confirmModal.value);
-  }
-  modalInstance.show();
-}
-
-function hideModal() {
-  if (modalInstance) {
-    modalInstance.hide();
-  }
-}
-
-function returnMain() {
-  hideModal();
-  router.push('/');
+function showConfirmation() {
+  Swal.fire({
+    title: '종료 확인',
+    text: '종료하고 돌아가시겠습니까?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: '확인',
+    cancelButtonText: '취소'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.push('/');
+    }
+  });
 }
 </script>
 
@@ -134,21 +113,6 @@ function returnMain() {
 
 .list-group-item {
   border: none !important;
-}
-
-.modal-header {
-  font-family: "LINESeedKR-Bd";
-  font-size: 16px;
-  background-color: #F2F0D8;
-}
-
-.modal-footer {
-  background-color: #F2F0D8;
-}
-
-.btn {
-  font-family: "LINESeedKR-Bd";
-  font-size: 12px;
 }
 
 @media (max-width: 992px) {
