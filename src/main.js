@@ -4,7 +4,7 @@ import './assets/css/scrollbar.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'animate.css';
-
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 import { createApp } from 'vue'
 import pinia from './pinia' // Pinia 플러그인을 가져옵니다.
