@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useBannerStore } from '@/stores/bannerstore.js';
+import { addAnimation, removeAnimation } from '@/assets/js/animation.js';
 
 // 공지사항 데이터를 정의합니다.
 const notifications = ref([
@@ -41,7 +42,7 @@ const formatDate = (date) => {
   <div>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <router-link class="navbar-brand" to="/">FLUX</router-link>
+        <router-link class="navbar-brand" to="/" @mouseover="addAnimation" @mouseleave="removeAnimation">FLUX</router-link>
         <div class="d-flex align-items-center ms-auto mr-20">
           <div class="nav-item ms-3">
             <router-link to="/login" class="nav-link point-link">Login</router-link>
@@ -66,7 +67,7 @@ const formatDate = (date) => {
               <router-link class="nav-link" to="/ranking">Ranking</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link point-link" to="/sales">Sales</router-link>
+              <router-link ref="animatedItem" class="nav-link point-link" to="/sales">Sales</router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/mypage">Mypage</router-link>
