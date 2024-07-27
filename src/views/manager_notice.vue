@@ -11,7 +11,6 @@ import Section from "@/components/manager/flux_manager_notice_section.vue";
     <Sidebar />
     <div class="section">
       <Section />
-      
     </div>
   </div>
   <Footer />
