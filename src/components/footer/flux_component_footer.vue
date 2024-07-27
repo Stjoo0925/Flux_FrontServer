@@ -24,9 +24,10 @@
           </ul>
         </div>
         <div class="col-md-2 text-center other-content">
-          <h5 class="text-uppercase">이용안내</h5>
+          <h5 class="text-uppercase">고객센터</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-light no-underline">공지사항</a></li>
+            <li><a href="#" class="text-light no-underline">About FLUX</a></li>
+            <li><router-link to="/notice" class="text-light no-underline">공지사항</router-link></li>
             <li>
               <a href="#" class="text-light no-underline">자주묻는질문</a>
             </li>

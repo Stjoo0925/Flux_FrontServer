@@ -21,6 +21,7 @@ const MypageWishList = () => import("../components/mypage/flux_mypage_wish.vue")
 const MypageActivity = () => import("../components/mypage/flux_mypage_activity.vue");
 const MypageWithdrawal = () => import("../components/mypage/flux_mypage_withdrawal.vue");
 const Login = () => import("../components/login/flux_login.vue")
+const Notice = () => import("../views/noti.vue")
 const Manager = () => import("../views/manager_main.vue");
 const ManagerMain = () => import("../components/manager/flux_manager_main.vue");
 const ManagerArticleMain = () => import("../views/manager_article.vue");
@@ -78,6 +79,7 @@ const routes = [
     ],
   },
   { path:"/login", component: Login},
+  { path:"/notice", component: Notice},
   { path: "/manager", component: Manager },
   {
     path: "/manager/article",

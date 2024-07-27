@@ -1,6 +1,7 @@
 <script setup>
 import Header from "@/components/header/flux_component_header.vue";
 import Footer from "@/components/footer/flux_component_footer.vue";
+import Section from "@/components/noti/flux_noti_section.vue"
 </script>
 <template>
   <Header />
@@ -12,6 +13,9 @@ import Footer from "@/components/footer/flux_component_footer.vue";
 <style scoped>
 .section {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .section-align {
   display: flex;

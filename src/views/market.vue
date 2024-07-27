@@ -17,6 +17,7 @@ import Section from "@/components/market/flux_market_section.vue";
 <style scoped>
 .section {
   width: 100%;
+  height: 80%;
 }
 
 .section-align {
