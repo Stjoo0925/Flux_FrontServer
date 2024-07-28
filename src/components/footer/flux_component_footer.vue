@@ -1,13 +1,12 @@
 <template>
-  <footer class="footer bg-dark text-light mt-auto py-3 bg-body-tertiary">
+  <footer class="footer text-light py-3 bg-body-tertiary">
     <div class="container-fluid px-0">
       <div class="row no-gutters">
         <div class="col-md-1 text-center">
           <div class="text-uppercase1">FLUX</div>
           <div class="social-icons">
-            <a href="https://github.com/Flux2024" class="text-light">
-              <img src="/src/assets/image/github.svg" alt="github" class="social-icon" />
-            </a>
+            <a href="https://github.com/Flux2024" class="text-light"></a>
+            <img src="/src/assets/image/github.svg" alt="github" class="social-icon" />
           </div>
         </div>
         <div class="col-md-2 text-center other-content">
@@ -70,20 +69,11 @@ function aboutFlux() {
   color: #febe98;
   width: 100%;
   padding: 0;
-  margin: 0;
+  margin-top: 50px;
 }
 
-.footer .container-fluid {
-  padding: 0;
-  margin: 0;
-}
 .row {
   justify-content: space-evenly !important;
-}
-
-.footer .row.no-gutters {
-  margin: 0;
-  padding: 0;
 }
 
 .footer .col-md-2,
@@ -158,12 +148,8 @@ function aboutFlux() {
   cursor: pointer;
   border-radius: 8px; /* 모서리 둥글게 */
 }
-.swal2-container {
-  font-size: 12px !important;
-  font-family: Georgia, serif;
-}
 
-@media (max-width: 767.98px) {
+@media (max-width: 992px) {
   .footer .other-content {
     display: none;
   }

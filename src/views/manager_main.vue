@@ -22,6 +22,5 @@ import Main from "@/components/manager/flux_manager_main.vue";
 .section-align {
   display: flex;
   flex-direction: row;
-  height: 100%;
 }
 </style>

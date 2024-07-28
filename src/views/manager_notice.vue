@@ -23,6 +23,5 @@ import Section from "@/components/manager/flux_manager_notice_section.vue";
 .section-align {
   display: flex;
   flex-direction: row;
-  height: 100%;
 }
 </style>

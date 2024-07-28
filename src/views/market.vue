@@ -23,6 +23,5 @@ import Section from "@/components/market/flux_market_section.vue";
 .section-align {
   display: flex;
   flex-direction: row;
-  height: 100%;
 }
 </style>
