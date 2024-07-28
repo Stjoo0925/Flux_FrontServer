@@ -87,7 +87,6 @@ export default {
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
-    height: 100vh; /* 화면 높이 100% */
     background-color: #f8f9fa; /* 배경색 설정 (옵션) */
 }
 
