@@ -12,6 +12,7 @@ import Section from "@/components/noti/flux_noti_section.vue"
 </template>
 <style scoped>
 .section {
+  height: 70dvh;
   width: 100%;
   display: flex;
   justify-content: center;

@@ -1,79 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
 
-const notifications = ref([
-  {
-    noti_id: '1',
-    user_id: '1',
-    noti_contents: '시스템 점검 안내: 2024년 7월 30일 오전 2시부터 4시까지.',
-    noti_createat: '2024-07-25T10:15:30Z',
-    noti_updateat: '2024-07-25T10:15:30Z',
-  },
-  {
-    noti_id: '2',
-    user_id: '1',
-    noti_contents: '새로운 기능 추가: 이제 다크 모드를 사용할 수 있습니다.',
-    noti_createat: '2024-07-26T11:25:40Z',
-    noti_updateat: '2024-07-26T11:25:40Z',
-  },
-  {
-    noti_id: '3',
-    user_id: '1',
-    noti_contents: '회원 가입 이벤트: 가입하면 포인트를 드립니다.',
-    noti_createat: '2024-07-27T12:35:50Z',
-    noti_updateat: '2024-07-27T12:35:50Z',
-  },
-  {
-    noti_id: '4',
-    user_id: '1',
-    noti_contents: '서비스 이용 약관이 변경되었습니다. 변경된 약관을 확인해주세요.',
-    noti_createat: '2024-07-28T13:45:50Z',
-    noti_updateat: '2024-07-28T13:45:50Z',
-  },
-  {
-    noti_id: '5',
-    user_id: '1',
-    noti_contents: '긴급 공지: 현재 시스템 장애로 인해 일부 기능이 제한되고 있습니다.',
-    noti_createat: '2024-07-29T14:55:50Z',
-    noti_updateat: '2024-07-29T14:55:50Z',
-  },
-  {
-    noti_id: '6',
-    user_id: '1',
-    noti_contents: '정기 점검 안내: 2024년 8월 1일 오전 1시부터 3시까지.',
-    noti_createat: '2024-07-30T15:10:50Z',
-    noti_updateat: '2024-07-30T15:10:50Z',
-  },
-  {
-    noti_id: '7',
-    user_id: '1',
-    noti_contents: '신규 업데이트 알림: 프로필 커스터마이징 기능이 추가되었습니다.',
-    noti_createat: '2024-07-31T16:20:50Z',
-    noti_updateat: '2024-07-31T16:20:50Z',
-  },
-  {
-    noti_id: '8',
-    user_id: '1',
-    noti_contents: '보안 강화: 비밀번호 정책이 강화되었습니다. 변경된 규정을 확인해주세요.',
-    noti_createat: '2024-08-01T17:30:50Z',
-    noti_updateat: '2024-08-01T17:30:50Z',
-  },
-  {
-    noti_id: '9',
-    user_id: '1',
-    noti_contents: '고객센터 운영 시간 변경: 평일 오전 9시부터 오후 6시까지 운영됩니다.',
-    noti_createat: '2024-08-02T18:40:50Z',
-    noti_updateat: '2024-08-02T18:40:50Z',
-  },
-  {
-    noti_id: '10',
-    user_id: '1',
-    noti_contents: '이용자 의견 수렴: 더 나은 서비스를 위해 의견을 보내주세요.',
-    noti_createat: '2024-08-03T19:50:50Z',
-    noti_updateat: '2024-08-03T19:50:50Z',
-  },
-]);
-
+const notifications = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 8;
 
@@ -106,6 +35,17 @@ const prevPage = () => {
     currentPage.value--;
   }
 };
+
+const fetchNotifications = async () => {
+  try {
+    const response = await axios.get('http://localhost:8001/notification');
+    notifications.value = response.data;
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+  }
+};
+
+onMounted(fetchNotifications);
 </script>
 
 <template>
