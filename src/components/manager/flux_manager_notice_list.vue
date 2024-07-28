@@ -14,11 +14,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="notice in notices" :key="notice.code">
-                        <th scope="row">{{ notice.code }}</th>
-                        <td>{{ notice.title }}</td>
-                        <td>{{ notice.date }}</td>
-                        <td @click="goToModify(notice.code)" class="modify-cell">수정 이미지</td>
+                    <tr v-for="notice in notices" :key="notice.noti_id">
+                        <th scope="row">{{ notice.noti_id }}</th>
+                        <td>{{ notice.noti_title }}</td>
+                        <td>{{ formatDate(notice.noti_createat) }}</td>
+                        <td @click="goToModify(notice.noti_id)" class="modify-cell">수정 이미지</td>
                     </tr>
                 </tbody>
             </table>
@@ -44,20 +44,40 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
-            notices: [
-                { code: 1, title: 'Mark', date: 'Otto' },
-                { code: 2, title: 'Jacob', date: 'Thornton' },
-                { code: 3, title: 'Larry the Bird', date: '@twitter' }
-            ]
+            notices: []
         }
     },
     methods: {
-        goToModify(code) {
-            this.$router.push(`/manager/notice/noticemodify`);
+        fetchNotices() {
+            axios.get('http://localhost:8080/notification')
+                .then(response => {
+                    this.notices = response.data; // 응답 데이터가 배열 안에 있으므로 바로 접근
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the notifications!', error);
+                });
+        },
+        goToModify(noti_id) {
+            this.$router.push(`/manager/notice/noticemodify?id=${noti_id}`);
+        },
+        formatDate(date) {
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(date).toLocaleDateString(undefined, options);
         }
+    },
+    mounted() {
+        this.fetchNotices();
     }
 }
 </script>
