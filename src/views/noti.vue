@@ -20,6 +20,5 @@ import Section from "@/components/noti/flux_noti_section.vue"
 .section-align {
   display: flex;
   flex-direction: row;
-  height: 100%;
 }
 </style>
