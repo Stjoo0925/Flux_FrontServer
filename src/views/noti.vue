@@ -1,25 +1,19 @@
 <script setup>
+import { useNotiStore } from "@/stores/rootstore";
+import { computed } from "vue";
 import Header from "@/components/header/flux_component_header.vue";
 import Footer from "@/components/footer/flux_component_footer.vue";
-import Section from "@/components/noti/flux_noti_section.vue"
+
+// Pinia 스토어 사용
+const store = useNotiStore();
+const root = computed(() => store.root); // 상태 값 가져오기
+const setRoot = store.setRoot; // 상태 값 변경 함수
 </script>
+
 <template>
   <Header />
-    <div class="section">
-      <Section />
-    </div>
+  <router-view></router-view>
   <Footer />
 </template>
-<style scoped>
-.section {
-  height: 70dvh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.section-align {
-  display: flex;
-  flex-direction: row;
-}
-</style>
+
+<style scoped></style>
