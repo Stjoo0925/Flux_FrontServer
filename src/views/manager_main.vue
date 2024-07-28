@@ -18,6 +18,7 @@ import Main from "@/components/manager/flux_manager_main.vue";
 <style scoped>
 .section {
   width: 100%;
+  height: 90dvh;
 }
 .section-align {
   display: flex;
