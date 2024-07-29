@@ -1,91 +1,92 @@
 <template>
-    <!-- 아티클 세부 페이지 시작 -->
-    <div class="article-container">
+    <div>
+      <!-- 아티클 세부 페이지 시작 -->
+      <div class="article-container" v-if="article">
         <div class="top">
-            <div class="category">
-                <h3> Interview</h3>
-            </div>
-            <div class="subject">
-                <h1> 제목 </h1>
-            </div>
+          <div class="category">
+            <h3>{{ article.article_category }}</h3>
+          </div>
+          <div class="subject">
+            <h1>{{ article.article_title }}</h1>
+          </div>
         </div>
         <div class="card-container">
-            <div class="card">
-                <img src="https://www.learningman.co/static/2491830007c24cf2555bc0333ead8fbf/a2510/interview.jpg"
-                    class="card-img-top" alt="예시">
-                <div class="card-body">
-                    <p class="card-text">
-                        동화같은 숲 속 세상을 그리는 김지연 작가 <br>
-                        2024.06.12<br>
-                        유년시절 기억 속 자연은 신비로운 놀이터였다는 김지연 작가.<br>
-                        모두의 동심을 불러일으키는 토끼가 뛰노는 오묘한 숲 속,<br>
-                        가장 보통의 순간에서 발견할 수 있는 아름다움의 가치를 작품 속에서 찾아보세요.
-                    </p>
-                </div>
+          <div class="card">
+            <img :src="article.article_imgs" class="card-img-top" :alt="article.article_title">
+            <div class="card-body">
+              <p class="card-text" v-html="formattedContent"></p>
             </div>
+          </div>
         </div>
-    </div>
-    <!-- 아티클 세부 페이지 종료 -->
-
-    <!-- 연관 작품 시작 -->
-    <div class="related-products-container">
+      </div>
+      <!-- 아티클 세부 페이지 종료 -->
+  
+      <!-- 연관 작품 시작 -->
+      <div class="related-products-container" v-if="relatedProducts.length">
         <div class="relatedProducts">
-            <h3> 연관 상품 </h3>
+          <h3>연관 상품</h3>
         </div>
-
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col">
-                <div class="card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdeIU9TJooa6UAa5sQPlXI2ldOean8XEScPg&s"
-                        class="card-img-top" alt="예시">
-                    <div class="card-body">
-                        <h5 class="card-title">작가 이름</h5>
-                        <h6 class="card-title">작품 이름</h6>
-                        <p class="card-text">판매 상태 Y/N</p>
-                    </div>
-                </div>
+          <div class="col" v-for="(product, index) in relatedProducts" :key="index">
+            <div class="card">
+              <img :src="product.image" class="card-img-top" :alt="product.title">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.author }}</h5>
+                <h6 class="card-title">{{ product.title }}</h6>
+                <p class="card-text">{{ product.status }}</p>
+              </div>
             </div>
-            <div class="col">
-                <div class="card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdeIU9TJooa6UAa5sQPlXI2ldOean8XEScPg&s"
-                        class="card-img-top" alt="예시">
-                    <div class="card-body">
-                        <h5 class="card-title">작가 이름</h5>
-                        <h6 class="card-title">작품 이름</h6>
-                        <p class="card-text">판매 상태 Y/N</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdeIU9TJooa6UAa5sQPlXI2ldOean8XEScPg&s"
-                        class="card-img-top" alt="예시">
-                    <div class="card-body">
-                        <h5 class="card-title">작가 이름</h5>
-                        <h6 class="card-title">작품 이름</h6>
-                        <p class="card-text">판매 상태 Y/N</p>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <!-- 연관 작품 종료 -->
     </div>
-    <!-- 연관 작품 종료 -->
-</template>
+  </template>
   
   <script>
-  export default {
+  import axios from 'axios';
   
-  }
+  export default {
+    data() {
+      return {
+        article: null,
+        relatedProducts: []
+      };
+    },
+    computed: {
+      formattedContent() {
+        return this.article ? this.article.article_contents.replace(/\n/g, '<br>') : '';
+      }
+    },
+    async created() {
+      const articleId = this.$route.query.article_id;
+      console.log('article_id:', articleId); // Debugging line
+  
+      try {
+        const response = await axios.get(`http://localhost:8001/article`);
+        const articles = response.data;
+        this.article = articles.find(article => article.article_id === articleId);
+        console.log('Found article:', this.article); // Debugging line
+  
+        // Fetch related products if needed
+        const relatedResponse = await axios.get(`http://localhost:8001/related-products?article_id=${articleId}`);
+        this.relatedProducts = relatedResponse.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  };
   </script>
+  
   
   <style>
   .article-container .top {
       display: flex;
-  flex-direction: column;
-  align-items: center;
-text-align: center;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
   }
-
+  
   .article-container .top .category{
     margin-bottom: 10px;
   }
@@ -127,6 +128,5 @@ text-align: center;
     justify-content: center;
     margin-bottom: 20px;
   }
-  
-</style>
+  </style>
   
