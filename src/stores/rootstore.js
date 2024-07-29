@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 // 네비게이션 경로 설정관련 로직
 export const useMarketStore = defineStore("useMarketStore", {
