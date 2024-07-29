@@ -123,7 +123,11 @@ const routes = [
     component: ManagerArticleMain,
     children: [
       { path: "articlelist", component: ManagerArticleUserList },
-      { path: "articleview", component: ManagerArticleView },
+      { 
+        path: "articleview", 
+        component: ManagerArticleView,
+        name: 'ArticleView' // 라우트에 이름 추가
+      },
       { path: "articlemodify", component: ManagerArticleModify },
       { path: "articlepost", component: ManagerArticlePost },
     ],
