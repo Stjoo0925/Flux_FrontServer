@@ -123,7 +123,7 @@
   
   async function getNextId() {
     try {
-      const response = await axios.get('http://localhost:3000/market');
+      const response = await axios.get('http://localhost:8001/market');
       const marketItems = response.data;
       if (marketItems.length === 0) {
         return 1; // 첫 데이터의 ID는 1
@@ -135,6 +135,7 @@
       return 1; // 오류 발생 시 ID를 1로 설정
     }
   }
+ 
   async function submitForm() {
   if (!marketTitle.value || !selectedCategory.value || !userName.value || !marketContents.value ||
       !marketPrice.value || !marketMaxPrice.value || !userMail.value || !auctionStartTime.value || !auctionDuration.value || images.value.length === 0) {
@@ -152,7 +153,7 @@
   const data = {
     market_id: nextId,
     user_id: 1, // Assuming a fixed user_id for simplicity. Adjust as needed.
-    market_name: marketTitle.value,
+    market_title: marketTitle.value,
     market_category: selectedCategory.value,
     user_name: userName.value,
     market_contents: marketContents.value,
@@ -169,14 +170,14 @@
   };
 
   try {
-    const response = await axios.post('http://localhost:3000/market', data, {
+    const response = await axios.post('http://localhost:8001/market', data, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
     console.log('Response:', response.data);
     // Redirect to the detail page with the newly created market_id
-    router.push({ path: '/market/detail', query: { market_id: response.data.market_id } });
+    router.push({ path: '/market/detail', query: { market_id: id } });
   } catch (error) {
     console.error('Error submitting form:', error);
     if (error.response) {
@@ -357,4 +358,6 @@
       background-color: #FFA07A;
     }
     </style>
+    
+
     
