@@ -1,23 +1,16 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import axios from "axios";
 import { useBannerStore } from "@/stores/bannerstore.js";
 import { addAnimation, removeAnimation } from "@/assets/js/animation.js";
 
-// 공지사항 데이터를 정의합니다.
-const notifications = ref([
-  {
-    noti_id: "10",
-    user_id: "1",
-    noti_contents: "이용자 의견 수렴: 더 나은 서비스를 위해 의견을 보내주세요.",
-    noti_createat: "2024-08-03T19:50:50Z",
-    noti_updateat: "2024-08-03T19:50:50Z",
-  },
-]);
+// 공지사항 데이터를 저장할 ref를 선언합니다.
+const notifications = ref([]);
 
 // 가장 최근 공지사항을 계산합니다.
-const latestNotification = computed(
-  () => notifications.value[notifications.value.length - 1]
-);
+const latestNotification = computed(() => {
+  return notifications.value.length > 0 ? notifications.value[0] : null;
+});
 
 // Pinia 스토어를 사용합니다.
 const bannerStore = useBannerStore();
@@ -27,17 +20,29 @@ const closeBanner = () => {
   bannerStore.toggleBanner();
 };
 
-// 날짜를 포맷팅하는 함수입니다.
-const formatDate = (date) => {
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return new Date(date).toLocaleDateString(undefined, options);
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
+
+const fetchNotifications = async () => {
+  try {
+    const response = await axios.get("http://localhost:8001/notification");
+    notifications.value = response.data.reverse().map((notification) => ({
+      ...notification,
+      noti_createat: formatDate(notification.noti_createat),
+    }));
+    bannerStore.setNotifications(notifications.value); // Corrected this line
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+  }
+};
+
+// 컴포넌트가 마운트될 때 공지사항을 가져옵니다.
+onMounted(fetchNotifications);
 </script>
 
 <template>
@@ -53,9 +58,7 @@ const formatDate = (date) => {
         >
         <div class="d-flex align-items-center ms-auto mr-20">
           <div class="nav-item ms-3">
-            <router-link to="/login" class="nav-link point-link"
-              >Login</router-link
-            >
+            <router-link to="/login" class="nav-link point-link">Login</router-link>
           </div>
         </div>
         <button
@@ -114,16 +117,10 @@ const formatDate = (date) => {
         </div>
       </div>
     </nav>
-    <div class="banner" v-if="bannerStore.isBannerVisible">
+    <div class="banner" v-if="bannerStore.isBannerVisible && latestNotification">
       <div class="banner-align">
-        <strong class="banner-contents"
-          >🛠️ 공지사항 : {{ latestNotification.noti_contents }} -
-          {{
-            formatDate(
-              latestNotification.noti_updateat ||
-                latestNotification.noti_createat
-            )
-          }}
+        <strong class="banner-contents">🛠️ 공지사항 : {{ latestNotification.noti_contents }} -
+          {{ formatDate(latestNotification.noti_updateat || latestNotification.noti_createat)}}
         </strong>
         <button @click="closeBanner" class="close-btn">X</button>
       </div>
