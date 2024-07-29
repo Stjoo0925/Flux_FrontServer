@@ -10,7 +10,7 @@
                 class="form-control"
                 id="noticeTitle"
                 v-model="noticeTitle"
-                :placeholder="noticeTitle"/>
+                placeholder="공지 제목을 입력하세요" />
         </div>
         <div class="mb-3">
             <label for="noticeContent" class="form-label">공지 사항</label>
@@ -19,7 +19,7 @@
                 id="noticeContent"
                 rows="3"
                 v-model="noticeContent"
-                :placeholder="noticeContent"></textarea>
+                placeholder="공지 내용을 입력하세요"></textarea>
         </div>
         <div class="buttongroup">
             <button type="button" class="btn btn-outline-success" @click="updateNotice">
@@ -55,35 +55,47 @@ export default {
     methods: {
         fetchNotice() {
             const noti_id = this.noti_id;
-            axios.get(`http://localhost:8001/notification?noti_id=${noti_id}`)
-                .then(response => {
-                    const notice = response.data.find(n => n.noti_id === noti_id); // assuming the response is an array
-                    this.noticeTitle = notice.noti_title;
-                    this.noticeContent = notice.noti_contents;
-                })
-                .catch(error => {
-                    console.error('There was an error fetching the notification!', error);
-                });
+            if (noti_id) {
+                axios.get(`http://localhost:8001/notification?noti_id=${noti_id}`)
+                    .then(response => {
+                        const notice = response.data[0];
+                        if (notice) {
+                            this.noticeTitle = notice.noti_title;
+                            this.noticeContent = notice.noti_contents;
+                        } else {
+                            console.error('공지사항을 찾을 수 없습니다.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('공지사항을 가져오는 중 오류가 발생했습니다!', error);
+                    });
+            } else {
+                console.error('공지 ID가 없습니다.');
+            }
         },
         updateNotice() {
             const noti_id = this.noti_id;
-            const updatedNotice = {
-                noti_title: this.noticeTitle,
-                noti_contents: this.noticeContent,
-                noti_updateat: new Date().toISOString()
-            };
+            if (noti_id) {
+                const updatedNotice = {
+                    noti_title: this.noticeTitle,
+                    noti_contents: this.noticeContent,
+                    noti_updateat: new Date().toISOString()
+                };
 
-            axios.put(`http://localhost:8001/notification?noti_id=${noti_id}`, updatedNotice)
-                .then(response => {
-                    console.log('공지 수정 성공:', response.data);
-                    this.$router.push('/notification-list'); // 공지 목록 페이지로 리다이렉트
-                })
-                .catch(error => {
-                    console.error('공지 수정 실패:', error);
-                });
+                axios.put(`http://localhost:8001/notification?noti_id=${noti_id}`, updatedNotice)
+                    .then(response => {
+                        console.log('공지 수정 성공:', response.data);
+                        this.$router.push('/notification-list');
+                    })
+                    .catch(error => {
+                        console.error('공지 수정 실패:', error);
+                    });
+            } else {
+                console.error('공지 ID가 없습니다.');
+            }
         },
         cancel() {
-            this.$router.go(-1); // 이전 페이지로 이동
+            this.$router.go(-1);
         }
     }
 };
@@ -93,7 +105,7 @@ export default {
 .noticeEditContainer {
     width: 100%;
     max-width: 800px;
-    margin: 0 auto; /* 중앙 정렬 */
+    margin: 0 auto;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -124,7 +136,7 @@ h1 {
 .buttongroup {
     display: flex;
     justify-content: flex-end;
-    gap: 10px; /* 버튼 간격 추가 */
+    gap: 10px;
     margin-top: 20px;
 }
 
