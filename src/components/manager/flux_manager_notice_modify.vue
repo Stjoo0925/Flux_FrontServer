@@ -4,25 +4,89 @@
             <h1>공지 수정</h1>
         </div>
         <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">공지 제목</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="제목을 작성해 주세요.">
+            <label for="noticeTitle" class="form-label">공지 제목</label>
+            <input
+                type="text"
+                class="form-control"
+                id="noticeTitle"
+                v-model="noticeTitle"
+                :placeholder="noticeTitle"/>
         </div>
         <div class="mb-3">
-            <label for="exampleFormControlTextarea1" class="form-label">공지 사항</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                placeholder="공지사항을 작성해 주세요."></textarea>
+            <label for="noticeContent" class="form-label">공지 사항</label>
+            <textarea
+                class="form-control"
+                id="noticeContent"
+                rows="3"
+                v-model="noticeContent"
+                :placeholder="noticeContent"></textarea>
         </div>
         <div class="buttongroup">
-            <button type="button" class="btn btn-outline-success">수정</button>
-            <button type="button" class="btn btn-outline-danger">취소</button>
+            <button type="button" class="btn btn-outline-success" @click="updateNotice">
+                수정
+            </button>
+            <button type="button" class="btn btn-outline-danger" @click="cancel">
+                취소
+            </button>
         </div>
     </div>
 </template>
 
 <script>
-export default {
+import axios from 'axios';
 
-}
+export default {
+    data() {
+        return {
+            noti_id: null,
+            noticeTitle: '',
+            noticeContent: ''
+        };
+    },
+    watch: {
+        '$route.query.id': {
+            handler(newVal) {
+                this.noti_id = newVal;
+                this.fetchNotice();
+            },
+            immediate: true
+        }
+    },
+    methods: {
+        fetchNotice() {
+            const noti_id = this.noti_id;
+            axios.get(`http://localhost:8001/notification?noti_id=${noti_id}`)
+                .then(response => {
+                    const notice = response.data.find(n => n.noti_id === noti_id); // assuming the response is an array
+                    this.noticeTitle = notice.noti_title;
+                    this.noticeContent = notice.noti_contents;
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the notification!', error);
+                });
+        },
+        updateNotice() {
+            const noti_id = this.noti_id;
+            const updatedNotice = {
+                noti_title: this.noticeTitle,
+                noti_contents: this.noticeContent,
+                noti_updateat: new Date().toISOString()
+            };
+
+            axios.put(`http://localhost:8001/notification?noti_id=${noti_id}`, updatedNotice)
+                .then(response => {
+                    console.log('공지 수정 성공:', response.data);
+                    this.$router.push('/notification-list'); // 공지 목록 페이지로 리다이렉트
+                })
+                .catch(error => {
+                    console.error('공지 수정 실패:', error);
+                });
+        },
+        cancel() {
+            this.$router.go(-1); // 이전 페이지로 이동
+        }
+    }
+};
 </script>
 
 <style scoped>
