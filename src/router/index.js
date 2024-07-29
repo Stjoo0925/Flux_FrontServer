@@ -75,11 +75,12 @@ const routes = [
     redirect: "/market/main",
     children: [
       { path: "main", component: MarketMain },
-      { path: "detail", component: MarketDetail },
+      { path: "detail", component: MarketDetail , },
       { path: "paymentbefore", component: MarketPaymentBefore },
       { path: "paymentafter", component: MarketPaymentAfter },
     ],
   },
+  { path: "/market/detail/:market_id", component: MarketDetail, name: 'MarketDetail' },
   {
     path: "/article",
     component: Article,
