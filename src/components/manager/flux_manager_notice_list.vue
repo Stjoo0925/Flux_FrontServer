@@ -14,7 +14,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="notice in notices" :key="notice.noti_id">
+                    <tr v-for="notice in paginatedNotices" :key="notice.noti_id">
                         <th scope="row">{{ notice.noti_id }}</th>
                         <td>{{ notice.noti_title }}</td>
                         <td>{{ formatDate(notice.noti_createat) }}</td>
@@ -24,16 +24,21 @@
             </table>
             <nav aria-label="Page navigation example" class="pagination-container">
                 <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <a class="page-link" href="#" aria-label="Previous" @click.prevent="changePage(currentPage - 1)">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+                    <li 
+                        class="page-item" 
+                        v-for="page in totalPages" 
+                        :key="page" 
+                        :class="{ active: currentPage === page }"
+                    >
+                        <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                        <a class="page-link" href="#" aria-label="Next" @click.prevent="changePage(currentPage + 1)">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -49,12 +54,24 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            notices: []
+            notices: [],
+            currentPage: 1,
+            itemsPerPage: 10
+        }
+    },
+    computed: {
+        paginatedNotices() {
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            const end = start + this.itemsPerPage;
+            return this.notices.slice(start, end);
+        },
+        totalPages() {
+            return Math.ceil(this.notices.length / this.itemsPerPage);
         }
     },
     methods: {
         fetchNotices() {
-            axios.get('http://localhost:8080/notification')
+            axios.get('http://localhost:8001/notification')
                 .then(response => {
                     this.notices = response.data; // 응답 데이터가 배열 안에 있으므로 바로 접근
                 })
@@ -74,6 +91,11 @@ export default {
                 minute: '2-digit'
             };
             return new Date(date).toLocaleDateString(undefined, options);
+        },
+        changePage(page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+            }
         }
     },
     mounted() {
