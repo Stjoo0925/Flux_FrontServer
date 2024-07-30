@@ -1,23 +1,23 @@
 <template>
     <!-- 아티클 세부 페이지 (관리자용) 시작 -->
-    <div class="modi-container">
+    <div class="modi-container" v-if="article">
         <div class="article-container">
             <div class="top">
                 <div class="category">
-                    <h3> {{ article.category }} </h3>
+                    <h3> {{ article.articleCategory }} </h3>
                 </div>
                 <div class="subject">
-                    <h1> {{ article.title }} </h1>
+                    <h1> {{ article.articleTitle }} </h1>
                 </div>
             </div>
             <div class="card-container">
                 <div class="card">
-                    <img :src="article.imageUrl"
+                    <img :src="article.articleImgUrl"
                         class="card-img-top" alt="예시">
                     <div class="card-body">
                         <p class="card-text">
-                            {{ article.content }} <br>
-                            {{ article.date }}<br>
+                            {{ article.articleContent }} <br>
+                            {{ article.articleCreate }}<br>
                         </p>
                     </div>
                 </div>
@@ -26,8 +26,8 @@
         <!-- 수정 버튼 -->
         <div class="modibutton">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <router-link class="btn btn-primary me-md-2" to="/manager/article/articlemodify" type="button">수정</router-link>
-                <button class="btn btn-outline-danger" type="button">삭제</button>
+                <router-link class="btn btn-primary me-md-2" :to="{ path: '/manager/article/articlemodify', query: { id: article.articleId } }" type="button">수정</router-link>
+                <button @click="deleteArticle" class="btn btn-outline-danger" type="button">삭제</button>
             </div>
         </div>
     </div>
@@ -36,30 +36,45 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
     name: 'ManagerArticleView',
     setup() {
         const route = useRoute();
+        const router = useRouter();
         const articleId = ref(route.query.id);
-        const article = ref({
-            category: 'Interview',
-            title: '제목',
-            imageUrl: 'https://www.learningman.co/static/2491830007c24cf2555bc0333ead8fbf/a2510/interview.jpg',
-            content: '동화같은 숲 속 세상을 그리는 김지연 작가 유년시절 기억 속 자연은 신비로운 놀이터였다는 김지연 작가. 모두의 동심을 불러일으키는 토끼가 뛰노는 오묘한 숲 속, 가장 보통의 순간에서 발견할 수 있는 아름다움의 가치를 작품 속에서 찾아보세요.',
-            date: '2024.06.12'
-        });
+        const article = ref(null);
+
+        const fetchArticle = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8081/manager/article/article/${articleId.value}`);
+                article.value = response.data.data; // Assuming response.data contains { data: ArticleDTO }
+            } catch (error) {
+                console.error('Error fetching article:', error);
+                // Optionally, you can redirect or show an error message here
+            }
+        };
+
+        const deleteArticle = async () => {
+            try {
+                await axios.delete(`http://localhost:8081/manager/article/article/${articleId.value}`);
+                router.push('/manager/article/articlelist');
+            } catch (error) {
+                console.error('Error deleting article:', error);
+                // Optionally, you can show an error message here
+            }
+        };
 
         onMounted(() => {
-            // articleId.value를 이용해 서버나 store에서 해당 아티클의 상세 정보를 가져옵니다.
-            // 예시를 위해 하드코딩된 데이터를 사용합니다.
-            // 실제 구현에서는 API 호출 등을 통해 데이터를 가져와야 합니다.
+            fetchArticle();
         });
 
         return {
             articleId,
-            article
+            article,
+            deleteArticle
         };
     }
 };
