@@ -62,8 +62,8 @@ const ManagerAdminList = () =>
 const ManagerNoticeSection = () => import("../views/manager_notice.vue");
 const ManagerNoticeList = () =>
   import("../components/manager/flux_manager_notice_list.vue");
-const ManagerNoticeEdit = () =>
-  import("../components/manager/flux_manager_notice_edit.vue");
+const ManagerNoticePost = () =>
+  import("../components/manager/flux_manager_notice_post.vue");
 const ManagerNoticeModify = () =>
   import("../components/manager/flux_manager_notice_modify.vue");
 
@@ -146,7 +146,7 @@ const routes = [
     component: ManagerNoticeSection,
     children: [
       { path: "noticelist", component: ManagerNoticeList },
-      { path: "noticepost", component: ManagerNoticeEdit },
+      { path: "noticepost", component: ManagerNoticePost },
       { path: "noticemodify", component: ManagerNoticeModify },
     ],
   },

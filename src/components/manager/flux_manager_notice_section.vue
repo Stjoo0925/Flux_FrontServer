@@ -2,7 +2,7 @@
 import { useManagerNotice } from "@/stores/rootstore";
 import { computed, watch } from "vue";
 import { useRoute } from 'vue-router';
-import ManagerNoticeEdit from "@/components/manager/flux_manager_notice_edit.vue";
+import ManagerNoticePost from "@/components/manager/flux_manager_notice_post.vue";
 import ManagerNoticeList from "@/components/manager/flux_manager_notice_list.vue";
 import ManagerNoticeModify from "@/components/manager/flux_manager_notice_modify.vue";
 
@@ -37,7 +37,7 @@ watch(
       <ManagerNoticeList />
     </div>
     <div v-if="root === 'noticepost'">
-      <ManagerNoticeEdit />
+      <ManagerNoticePost />
     </div>
     <div v-if="root === 'noticemodify'">
       <ManagerNoticeModify/>

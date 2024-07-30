@@ -21,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(user, index) in filteredUsers" :key="user.user_id">
+          <tr v-for="(user) in filteredUsers" :key="user.user_id">
             <td>{{ user.user_id }}</td>
             <td>{{ user.user_role }}</td>
             <td>{{ user.user_name }}</td>

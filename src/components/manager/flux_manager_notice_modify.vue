@@ -38,7 +38,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            noti_id: null,
+            noticeId: null,
             noticeTitle: '',
             noticeContent: ''
         };
@@ -46,46 +46,47 @@ export default {
     watch: {
         '$route.query.id': {
             handler(newVal) {
-                this.noti_id = newVal;
+                this.noticeId = newVal;
                 this.fetchNotice();
             },
             immediate: true
         }
     },
     methods: {
-        fetchNotice() {
-            const noti_id = this.noti_id;
-            if (noti_id) {
-                axios.get(`http://localhost:8001/notification?noti_id=${noti_id}`)
-                    .then(response => {
-                        const notice = response.data[0];
-                        if (notice) {
-                            this.noticeTitle = notice.noti_title;
-                            this.noticeContent = notice.noti_contents;
-                        } else {
-                            console.error('공지사항을 찾을 수 없습니다.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('공지사항을 가져오는 중 오류가 발생했습니다!', error);
-                    });
-            } else {
-                console.error('공지 ID가 없습니다.');
-            }
-        },
-        updateNotice() {
-            const noti_id = this.noti_id;
-            if (noti_id) {
-                const updatedNotice = {
-                    noti_title: this.noticeTitle,
-                    noti_contents: this.noticeContent,
-                    noti_updateat: new Date().toISOString()
-                };
+    fetchNotice() {
+        const noticeId = this.noticeId;
+        if (noticeId) {
+            axios.get(`http://localhost:8080/notification/${noticeId}`)
+                .then(response => {
+                    const notice = response.data;
+                    if (notice) {
+                        this.noticeTitle = notice.noticeTitle;
+                        this.noticeContent = notice.noticeContent;
+                    } else {
+                        console.error('공지사항을 찾을 수 없습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('공지사항을 가져오는 중 오류가 발생했습니다!', error);
+                });
+        } else {
+            console.error('공지 ID가 없습니다.');
+        }
+    },
 
-                axios.put(`http://localhost:8001/notification?noti_id=${noti_id}`, updatedNotice)
+        updateNotice() {
+            const noticeId = this.noticeId;
+            if (noticeId) {
+                const updatedNotice = {
+                    noticeTitle: this.noticeTitle,
+                    noticeContent: this.noticeContent,
+                    noticeUpdateAt: new Date().toISOString() // 수정 날짜를 현재 시간으로 설정
+                };
+                axios.put(`http://localhost:8080/notification/${noticeId}`, updatedNotice)
                     .then(response => {
                         console.log('공지 수정 성공:', response.data);
-                        this.$router.push('/notification-list');
+                        // 수정이 성공하면 공지 목록 페이지로 이동
+                        this.$router.push('/manager/notice/noticelist');
                     })
                     .catch(error => {
                         console.error('공지 수정 실패:', error);
