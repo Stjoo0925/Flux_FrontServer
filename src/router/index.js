@@ -75,11 +75,12 @@ const routes = [
     redirect: "/market/main",
     children: [
       { path: "main", component: MarketMain },
-      { path: "detail", component: MarketDetail },
+      { path: "detail", component: MarketDetail , },
       { path: "paymentbefore", component: MarketPaymentBefore },
       { path: "paymentafter", component: MarketPaymentAfter },
     ],
   },
+  { path: "/market/detail/:market_id", component: MarketDetail, name: 'MarketDetail' },
   {
     path: "/article",
     component: Article,
@@ -123,7 +124,11 @@ const routes = [
     component: ManagerArticleMain,
     children: [
       { path: "articlelist", component: ManagerArticleUserList },
-      { path: "articleview", component: ManagerArticleView },
+      { 
+        path: "articleview", 
+        component: ManagerArticleView,
+        name: 'ArticleView' // 라우트에 이름 추가
+      },
       { path: "articlemodify", component: ManagerArticleModify },
       { path: "articlepost", component: ManagerArticlePost },
     ],
