@@ -13,6 +13,8 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "sweetalert2": "^11.12.3",

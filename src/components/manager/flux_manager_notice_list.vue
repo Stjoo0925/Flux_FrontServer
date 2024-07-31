@@ -11,14 +11,16 @@
                         <th scope="col">제목</th>
                         <th scope="col">작성 날짜</th>
                         <th scope="col">수정</th>
+                        <th scope="col">삭제</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="notice in paginatedNotices" :key="notice.noti_id">
-                        <th scope="row">{{ notice.noti_id }}</th>
-                        <td>{{ notice.noti_title }}</td>
-                        <td>{{ formatDate(notice.noti_createat) }}</td>
-                        <td @click="goToModify(notice.noti_id)" class="modify-cell">수정 이미지</td>
+                    <tr v-for="notification in paginatedNotices" :key="notification.noticeId">
+                        <th scope="row">{{ notification.noticeId }}</th>
+                        <td>{{ notification.noticeTitle }}</td>
+                        <td>{{ formatDate(notification.noticeCreateAt) }}</td>
+                        <td @click="goToModify(notification.noticeId)" class="modify-cell">수정</td>
+                        <td @click="deleteNotice(notification.noticeId)" class="delete-cell">삭제</td>
                     </tr>
                 </tbody>
             </table>
@@ -29,12 +31,7 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li 
-                        class="page-item" 
-                        v-for="page in totalPages" 
-                        :key="page" 
-                        :class="{ active: currentPage === page }"
-                    >
+                    <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page }">
                         <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
                     </li>
                     <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -54,33 +51,40 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            notices: [],
+            notification: [],
             currentPage: 1,
             itemsPerPage: 10
-        }
+        };
     },
     computed: {
         paginatedNotices() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             const end = start + this.itemsPerPage;
-            return this.notices.slice(start, end);
+            return this.notification.slice(start, end);
         },
         totalPages() {
-            return Math.ceil(this.notices.length / this.itemsPerPage);
+            return Math.ceil(this.notification.length / this.itemsPerPage);
         }
     },
     methods: {
-        fetchNotices() {
-            axios.get('http://localhost:8001/notification')
-                .then(response => {
-                    this.notices = response.data; // 응답 데이터가 배열 안에 있으므로 바로 접근
-                })
-                .catch(error => {
-                    console.error('There was an error fetching the notifications!', error);
-                });
+        async fetchNotices() {
+            try {
+                const response = await axios.get('http://localhost:8080/notification');
+                this.notification = response.data;
+            } catch (error) {
+                console.error('공지 목록을 가져오는데 실패했습니다:', error);
+            }
         },
-        goToModify(noti_id) {
-            this.$router.push(`/manager/notice/noticemodify?id=${noti_id}`);
+        goToModify(noticeId) {
+            this.$router.push(`/manager/notice/noticemodify?id=${noticeId}`);
+        },
+        async deleteNotice(noticeId) {
+            try {
+                await axios.delete(`http://localhost:8080/notification/${noticeId}`);
+                this.fetchNotices(); // 공지 목록을 다시 가져옵니다.
+            } catch (error) {
+                console.error('공지 삭제를 실패했습니다:', error);
+            }
         },
         formatDate(date) {
             const options = {
@@ -101,7 +105,7 @@ export default {
     mounted() {
         this.fetchNotices();
     }
-}
+};
 </script>
 
 <style scoped>
@@ -136,13 +140,13 @@ export default {
     margin-bottom: 20px;
 }
 
-.modify-cell {
+.modify-cell, .delete-cell {
     cursor: pointer;
     color: blue; /* 클릭 가능한 느낌을 주기 위해 색상 변경 */
     text-decoration: underline; /* 클릭 가능한 느낌을 주기 위해 밑줄 추가 */
 }
 
-.modify-cell:hover {
+.modify-cell:hover, .delete-cell:hover {
     color: darkblue; /* 호버 시 색상 변경 */
 }
 
