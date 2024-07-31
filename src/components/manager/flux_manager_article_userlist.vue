@@ -22,13 +22,13 @@
         <span class="header-item">내용</span>
       </div>
       <div class="list-items">
-        <div class="list-item" v-for="(article, index) in paginatedArticles" :key="article.article_id">
-          <img v-if="article.article_img" :src="article.article_img" class="item-img" alt="기사 이미지">
-          <span class="item">{{ article.article_category || '미분류' }}</span>
-          <span class="item clickable" @click="goToDetail(article.article_id)">{{ article.article_author }}</span>
-          <span class="item clickable" @click="goToDetail(article.article_id)">
-            {{ getShortContent(article.article_contents) }}
-            <a v-if="article.article_contents.length > 20" @click.stop="goToDetail(article.article_id)" class="more-link">더 보기</a>
+        <div class="list-item" v-for="(article, index) in paginatedArticles" :key="article.articleId">
+          <img v-if="article.articleImage" :src="article.articleImage" class="item-img" alt="기사 이미지">
+          <span class="item">{{ article.articleCategory || '미분류' }}</span>
+          <span class="item clickable" @click="goToDetail(article.articleId)">{{ article.articleAuthor }}</span>
+          <span class="item clickable" @click="goToDetail(article.articleId)">
+            {{ getShortContent(article.articleContent) }}
+            <a v-if="article.articleContent.length > 20" @click.stop="goToDetail(article.articleId)" class="more-link">더 보기</a>
           </span>
         </div>
       </div>
@@ -79,15 +79,16 @@ export default {
         return this.articles;
       }
       return this.articles.filter(article =>
-        article.article_title.includes(this.searchQuery) ||  // 제목으로 검색
-        article.article_author.includes(this.searchQuery)   // 작가 이름으로 검색
+        article.articleTitle.includes(this.searchQuery) ||  // 제목으로 검색
+        article.articleAuthor.includes(this.searchQuery)   // 작가 이름으로 검색
       );
     }
   },
   methods: {
     async fetchArticles() {
       try {
-        const response = await axios.get('http://localhost:8081/article'); // API 엔드포인트를 적절히 수정하세요
+        // 백엔드 API 엔드포인트를 수정하여 실제 API와 맞추세요
+        const response = await axios.get('http://localhost:8080/manager/article/active');
         this.articles = response.data; // 서버에서 받아온 데이터를 설정
       } catch (error) {
         console.error('Error fetching articles:', error);

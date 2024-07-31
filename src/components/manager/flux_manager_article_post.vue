@@ -1,11 +1,9 @@
 <template>
-  <!-- 아티클 등록 페이지 시작 -->
   <div class="container">
     <div class="top">
       <h3>아티클 정보를 입력해 주세요.</h3>
     </div>
 
-    <!-- 카테고리 입력창 시작 -->
     <p>분류</p>
     <select v-model="article.category" class="form-select" aria-label="Default select example">
       <option disabled value="">카테고리</option>
@@ -13,27 +11,21 @@
       <option value="큐레이션">큐레이션</option>
       <option value="이벤트">이벤트</option>
     </select>
-    <!-- 카테고리 입력창 종료 -->
 
-    <!-- 제목 입력창 시작 -->
     <div class="subject">
       <p>제목</p>
       <div class="input-group">
         <input v-model="article.title" type="text" aria-label="subject" class="form-control" placeholder="제목을 입력해주세요.">
       </div>
     </div>
-    <!-- 제목 입력창 종료 -->
 
-    <!-- 작가 이름 입력창 시작 -->
     <div class="name">
       <p>작가 이름</p>
       <div class="input-group">
         <input v-model="article.author" type="text" aria-label="name" class="form-control" placeholder="작가 이름을 입력해주세요.">
       </div>
     </div>
-    <!-- 작가 이름 입력창 종료 -->
 
-    <!-- 이미지 등록창 시작 -->
     <div class="imgInsert">
       <p>이미지 등록</p>
       <div class="form-group">
@@ -43,20 +35,14 @@
         </div>
       </div>
     </div>
-    <!-- 이미지 등록창 종료 -->
 
-    <!-- 내용 등록창 시작 -->
     <p>내용</p>
     <div class="input-group">
       <textarea v-model="article.content" class="form-control" aria-label="With textarea" placeholder="내용을 작성해 주세요."></textarea>
     </div>
-    <!-- 내용 등록창 종료 -->
 
-    <!-- 등록 버튼 시작 -->
     <button @click="submitArticle" type="button" class="btn btn-primary btn-lg">등록 버튼</button>
-    <!-- 등록 버튼 종료 -->
   </div>
-  <!-- 아티클 등록 페이지 종료 -->
 </template>
 
 <script>
@@ -90,24 +76,31 @@ export default {
       this.$refs.imageUpload.click();
     },
     async submitArticle() {
-      const formData = new FormData();
-      formData.append('articleTitle', this.article.title);
-      formData.append('articleAuthor', this.article.author);
-      formData.append('articleContent', this.article.content);
-      formData.append('articleImgFile', this.$refs.imageUpload.files[0]);
+  const formData = new FormData();
+  formData.append('article', JSON.stringify({
+    articleCategory: this.article.category,
+    articleTitle: this.article.title,
+    articleAuthor: this.article.author,
+    articleContent: this.article.content
+  }));
 
-      try {
-        const response = await axios.post('http://localhost:8081/manager/article/articlepost', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        console.log('Article submitted:', response.data);
-        this.$router.push({ name: 'ArticleListView' });
-      } catch (error) {
-        console.error('Error submitting article:', error);
+  if (this.$refs.imageUpload.files.length > 0) {
+    formData.append('files', this.$refs.imageUpload.files[0]);
+  }
+
+  try {
+    const response = await axios.post('http://localhost:8080/manager/article/articlepost', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
+    });
+    console.log('Article 등록 성공:', response.data);
+    // 성공적으로 제출된 후, 페이지를 이동
+    this.$router.push({ name: 'ArticleView' });
+  } catch (error) {
+    console.error('아티클 등록 실패:', error);
     }
+   }
   }
 };
 </script>
