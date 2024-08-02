@@ -76,7 +76,7 @@ export default {
   methods: {
     async fetchMarkets() {
       try {
-        const response = await axios.get('http://localhost:8001/market');
+        const response = await axios.get('http://localhost:8080/market');
         this.market = response.data;
       } catch (error) {
         console.error('Error fetching markets:', error);

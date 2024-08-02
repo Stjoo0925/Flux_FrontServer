@@ -13,14 +13,12 @@ const errorMessage = ref("");
 const fetchNotification = async () => {
   try {
     // 스토어에서 알림을 찾습니다.
-    const noti = store.notifications.find((n) => n.noti_id === route.params.id);
+    const noti = store.useNotiStore.find((n) => n.noticeId === route.params.id);
     if (noti) {
       notification.value = noti;
     } else {
       // 스토어에 없으면 서버에서 가져옵니다.
-      const response = await axios.get(
-        `http://localhost:8001/notification/${route.params.id}`
-      );
+      const response = await axios.get(`/api/notification/${route.params.id}`);
       notification.value = response.data;
     }
   } catch (error) {
@@ -44,15 +42,15 @@ onMounted(fetchNotification);
   <div v-if="notification" class="noti-con">
     <div class="noti-title">공지사항</div>
     <div class="noti-card">
-      <div class="noti-header">{{ notification.noti_title }}</div>
+      <div class="noti-header">{{ notification.noticeTitle }}</div>
       <hr />
-      <div class="noti-body">{{ notification.noti_contents }}</div>
+      <div class="noti-body">{{ notification.noticeContents }}</div>
       <div class="noti-footer">
         <div>
-          작성일: {{ new Date(notification.noti_createat).toLocaleString() }}
+          작성일: {{ new Date(notification.noticeCreateAt).toLocaleString() }}
         </div>
         <div>
-          수정일: {{ new Date(notification.noti_updateat).toLocaleString() }}
+          수정일: {{ new Date(notification.noticeUpdateAt).toLocaleString() }}
         </div>
       </div>
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">

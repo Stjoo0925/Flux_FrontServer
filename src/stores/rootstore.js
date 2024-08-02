@@ -98,8 +98,8 @@ export const useNotiStore = defineStore("useNotiStore", {
     setRoot(option) {
       this.root = option;
     },
-    setNotifications(notifications) {
-      this.notifications = notifications;
+    setNotification(notification) {
+      this.notification = notification;
     },
   },
 });

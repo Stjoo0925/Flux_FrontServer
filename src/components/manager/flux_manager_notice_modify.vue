@@ -53,11 +53,11 @@ export default {
         }
     },
     methods: {
-    fetchNotice() {
-        const noticeId = this.noticeId;
-        if (noticeId) {
-            axios.get(`http://localhost:8080/notification/${noticeId}`)
-                .then(response => {
+        async fetchNotice() {
+            const noticeId = this.noticeId;
+            if (noticeId) {
+                try {
+                    const response = await axios.get(`/api/notification/${noticeId}`);
                     const notice = response.data;
                     if (notice) {
                         this.noticeTitle = notice.noticeTitle;
@@ -65,36 +65,34 @@ export default {
                     } else {
                         console.error('공지사항을 찾을 수 없습니다.');
                     }
-                })
-                .catch(error => {
+                } catch (error) {
                     console.error('공지사항을 가져오는 중 오류가 발생했습니다!', error);
-                });
-        } else {
-            console.error('공지 ID가 없습니다.');
-        }
-    },
+                }
+            } else {
+                console.error('공지 ID가 없습니다.');
+            }
+        },
 
-        updateNotice() {
+        async updateNotice() {
             const noticeId = this.noticeId;
             if (noticeId) {
                 const updatedNotice = {
                     noticeTitle: this.noticeTitle,
                     noticeContent: this.noticeContent,
-                    noticeUpdateAt: new Date().toISOString() // 수정 날짜를 현재 시간으로 설정
+                    noticeUpdateAt: new Date().toISOString()
                 };
-                axios.put(`http://localhost:8080/notification/${noticeId}`, updatedNotice)
-                    .then(response => {
-                        console.log('공지 수정 성공:', response.data);
-                        // 수정이 성공하면 공지 목록 페이지로 이동
-                        this.$router.push('/manager/notice/noticelist');
-                    })
-                    .catch(error => {
-                        console.error('공지 수정 실패:', error);
-                    });
+                try {
+                    const response = await axios.put(`/api/notification/${noticeId}`, updatedNotice);
+                    console.log('공지 수정 성공:', response.data);
+                    this.$router.push('/manager/notice/noticelist');
+                } catch (error) {
+                    console.error('공지 수정 실패:', error);
+                }
             } else {
                 console.error('공지 ID가 없습니다.');
             }
         },
+
         cancel() {
             this.$router.go(-1);
         }

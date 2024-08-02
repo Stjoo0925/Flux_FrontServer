@@ -21,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(user, index) in filteredUsers" :key="user.user_id">
+          <tr v-for="(user) in filteredUsers" :key="user.user_id">
             <td>{{ user.user_id }}</td>
             <td>
               <select v-model="user.user_role" class="form-select">
@@ -65,7 +65,7 @@ export default {
       this.selectedRole = role;
     },
     fetchUsers() {
-      axios.get('http://localhost:8001/user')
+      axios.get('/user')  // 프록시 설정으로 인해 localhost:8080/user로 요청됨
         .then(response => {
           this.users = response.data;
         })
@@ -76,7 +76,7 @@ export default {
     submitChanges() {
       console.log('변경된 내용:', this.users);
       this.users.forEach(user => {
-        axios.put(`http://localhost:8001/users?user_id=${user.user_id}`, user)
+        axios.put(`/users/${user.user_id}`, user)  // 프록시 설정으로 인해 localhost:8080/users/{user_id}로 요청됨
           .then(response => {
             console.log(`사용자 ${user.user_id} 업데이트 성공:`, response.data);
           })
@@ -146,13 +146,12 @@ body {
 }
 
 .btn.active {
-    background-color: #1244AF; /* 활성화된 버튼 배경색 */
+    background-color: #0A2D77; /* 활성화된 버튼 배경색 */
 }
 
 .table-container {
     max-height: 300px; /* 테이블 높이 제한 */
     overflow-y: auto; /* 수직 스크롤 추가 */
-    position: relative; /* 헤더 고정을 위해 상대 위치 설정 */
 }
 
 .table {
@@ -205,6 +204,6 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #1244AF; /* 버튼 hover 색상 */
+    background-color: #0A2D77; /* 버튼 hover 색상 */
 }
 </style>
