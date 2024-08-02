@@ -17,13 +17,21 @@
             "FLUX"라는 이름은 지속적인 움직임과 변화를 의미하며
           </div>
           <div class="login-text mb-5">
-            경매 경험을 혁신하고 변화에 신속히 대응하는 우리의 의지를
-            반영합니다.
+            경매 경험을 혁신하고 변화에 신속히 대응하는 우리의 의지를 반영합니다.
           </div>
+<<<<<<< HEAD
           <div class="social-buttons mb-3">
             <a href="#" class="social-button"><img src="@/assets/image/google.png" alt="Google Sign-In" /></a>
             <a href="#" class="social-button"><img src="@/assets/image/kakao.png" alt="Kakao Sign-In" /></a>
           </div>
+=======
+          <a href="http://localhost:8080/oauth2/authorization/google" class="mb-3">
+            <img src="@/assets/image/google.png" alt="Google Login"/>
+          </a>
+          <a href="http://localhost:8080/oauth2/authorization/naver" class="mb-3">
+            <img src="@/assets/image/naver.png" alt="Naver Login"/>
+          </a>
+>>>>>>> 210a6e98266b121f443686210cbafaeea3e70296
           <div class="login-button mt-3">
             <button type="button" class="btn btn-light">
               <router-link to="/" class="no-underline">홈으로</router-link>
@@ -68,3 +76,104 @@ export default {
   },
 };
 </script>
+<<<<<<< HEAD
+=======
+
+<style scoped>
+.page-container {
+  height: 100vh; /* 페이지 높이를 화면의 100%로 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #d3d3d3;
+}
+
+.login-container {
+  height: 85%;
+  width: 100%;
+  max-width: 1200px; /* 최대 너비 설정 */
+  display: flex;
+  border-radius: 35px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.row.no-gutters.h-100 {
+  height: 100%;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.login-image {
+  padding: 0;
+  border-top-left-radius: 30px; /* 좌상단 곡률 */
+  border-bottom-left-radius: 30px; /* 좌하단 곡률 */
+}
+
+.login-image img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+  border-top-left-radius: 30px; /* 좌상단 곡률 */
+  border-bottom-left-radius: 30px; /* 좌하단 곡률 */
+}
+
+.login-form {
+  background-color: #ffe9dd;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-top-right-radius: 30px; /* 좌상단 곡률 */
+  border-bottom-right-radius: 30px; /* 좌하단 곡률 */
+}
+
+.btn-google img {
+  width: 150px; /* 버튼 이미지 크기 조절 */
+}
+
+.btn-naver img {
+  width: 150px; /* 버튼 이미지 크기 조절 */
+}
+
+.login-title {
+  font-family: "PuradakGentleGothicR";
+  background: linear-gradient(to right, #febe98, #fd8e4c);
+  color: transparent;
+  -webkit-background-clip: text;
+  font-size: 46px;
+  margin-bottom: 30px;
+  letter-spacing: 3px;
+}
+
+.login-text {
+  font-family: "LINESeedKR-Bd";
+  font-size: 16px;
+  background: linear-gradient(to right, #febe98, #fd8e4c);
+  color: transparent;
+  -webkit-background-clip: text;
+  letter-spacing: 1px;
+}
+
+.login-button {
+  display: flex;
+  gap: 20px; /* 버튼들 사이의 간격 */
+}
+
+.no-underline {
+  text-decoration: none; /* 밑줄 없애기 */
+  font-family: "LINESeedKR-Bd";
+  font-size: 16px;
+  color: #000;
+}
+
+.login-right {
+  font-family: "LINESeedKR-Bd";
+  font-size: 12px;
+  background: linear-gradient(to right, #febe98, #fd8e4c);
+  color: transparent;
+  -webkit-background-clip: text;
+  letter-spacing: 3px;
+}
+</style>
+>>>>>>> 210a6e98266b121f443686210cbafaeea3e70296
