@@ -39,7 +39,7 @@ const MypageActivity = () =>
 const MypageWithdrawal = () =>
   import("../components/mypage/flux_mypage_withdrawal.vue");
 const Login = () => import("../components/login/flux_login.vue");
-const Notice = () => import("../views/noti.vue");
+const UseNotiStore = () => import("../views/noti.vue");
 const NoticeMain = () => import("../components/noti/flux_noti_main.vue");
 const NoticeDetail = () => import("../components/noti/flux_noti_detail.vue");
 const Manager = () => import("../views/manager_main.vue");
@@ -59,7 +59,7 @@ const ManagerUserList = () =>
 const ManagerAdminList = () =>
   import("../components/manager/flux_manager_adminlist.vue");
 
-const ManagerNoticeSection = () => import("../views/manager_notice.vue");
+const UseManagerNotice = () => import("../views/manager_notice.vue");
 const ManagerNoticeList = () =>
   import("../components/manager/flux_manager_notice_list.vue");
 const ManagerNoticePost = () =>
@@ -112,7 +112,7 @@ const routes = [
   { path: "/login", component: Login },
   {
     path: "/notice",
-    component: Notice,
+    component: UseNotiStore,
     children: [
       { path: "", component: NoticeMain }, // 공지사항 목록 페이지
       { path: ":id", component: NoticeDetail }, // 공지사항 상세 페이지
@@ -143,7 +143,7 @@ const routes = [
   },
   {
     path: "/manager/notice",
-    component: ManagerNoticeSection,
+    component: UseManagerNotice,
     children: [
       { path: "noticelist", component: ManagerNoticeList },
       { path: "noticepost", component: ManagerNoticePost },

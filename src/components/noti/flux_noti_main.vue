@@ -18,7 +18,7 @@ const formatDate = (dateString) => {
 
 const fetchNotifications = async () => {
   try {
-    const response = await axios.get("http://localhost:8001/notification");
+    const response = await axios.get("http://localhost:8080/notification");
     notifications.value = response.data.reverse().map((notification) => ({
       ...notification,
       noti_createat: formatDate(notification.noti_createat),
@@ -29,8 +29,8 @@ const fetchNotifications = async () => {
   }
 };
 
-const goToDetail = (id) => {
-  router.push(`/notice/${id}`);
+const goToDetail = (noticeId) => {
+  router.push(`/notice/${noticeId}`);
 };
 
 onMounted(fetchNotifications);
@@ -41,14 +41,14 @@ onMounted(fetchNotifications);
     <div class="noti-title">공지사항</div>
     <ul>
       <li
-        v-for="notification in notifications"
-        :key="notification.noti_id"
-        @click="goToDetail(notification.noti_id)"
+        v-for="notification in notification"
+        :key="notification.noticeId"
+        @click="goToDetail(notification.noticeId)"
       >
         <div class="noti-content">
-          <div class="noti-id">{{ notification.noti_id }}</div>
-          <div class="noti-text">{{ notification.noti_title }}</div>
-          <div class="noti-date">{{ notification.noti_createat }}</div>
+          <div class="noti-id">{{ notification.noticeId }}</div>
+          <div class="noti-text">{{ notification.noticeTitle }}</div>
+          <div class="noti-date">{{ notification.noticeCreateAt }}</div>
         </div>
       </li>
     </ul>
