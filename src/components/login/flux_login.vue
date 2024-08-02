@@ -5,9 +5,7 @@
         <div class="col-md-6 login-image">
           <img :src="randomImage" alt="Login Image" class="img-fluid" />
         </div>
-        <div
-          class="col-md-6 login-form d-flex flex-column justify-content-center align-items-center"
-        >
+        <div class="col-md-6 login-form d-flex flex-column justify-content-center align-items-center">
           <div class="login-title mb-5">FLUX | LOGIN</div>
           <div class="login-text">
             FLUX는 시장의 유동성과 역동적인 본질을 담아내며 디지털 상거래의
@@ -19,18 +17,21 @@
             "FLUX"라는 이름은 지속적인 움직임과 변화를 의미하며
           </div>
           <div class="login-text mb-5">
-            경매 경험을 혁신하고 변화에 신속히 대응하는 우리의 의지를
-            반영합니다.
+            경매 경험을 혁신하고 변화에 신속히 대응하는 우리의 의지를 반영합니다.
           </div>
-          <a href="" class="mb-3"><img src="/src/assets/image/google.png" /></a>
-          <a href="" class="mb-3"><img src="/src/assets/image/kakao.png" /></a>
+          <a href="http://localhost:8080/oauth2/authorization/google" class="mb-3">
+            <img src="@/assets/image/google.png" alt="Google Login"/>
+          </a>
+          <a href="http://localhost:8080/oauth2/authorization/naver" class="mb-3">
+            <img src="@/assets/image/naver.png" alt="Naver Login"/>
+          </a>
           <div class="login-button mt-3">
-              <button type="button" class="btn btn-light">
-                  <router-link to="/" class="no-underline">홈으로</router-link>
-              </button>
-              <button type="button" class="btn btn-light">
-                  <router-link to="/manager" class="no-underline">관리자페이지</router-link>
-              </button>
+            <button type="button" class="btn btn-light">
+              <router-link to="/" class="no-underline">홈으로</router-link>
+            </button>
+            <button type="button" class="btn btn-light">
+              <router-link to="/manager" class="no-underline">관리자페이지</router-link>
+            </button>
           </div>
           <div class="login-right text-center mt-5">
             <p class="mb-0">© 2024 FLUX. All rights reserved.</p>
@@ -40,6 +41,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   name: "Login",
@@ -117,26 +119,12 @@ export default {
   border-bottom-right-radius: 30px; /* 좌하단 곡률 */
 }
 
-.btn-social {
-  width: 80%;
-  color: #fff;
-  font-family: "LINESeedKR-Bd";
+.btn-google img {
+  width: 150px; /* 버튼 이미지 크기 조절 */
 }
 
-.btn-facebook {
-  background-color: #3b5998;
-}
-
-.btn-google {
-  background-color: #db4437;
-}
-
-.btn-twitter {
-  background-color: #1da1f2;
-}
-
-.btn-social i {
-  margin-right: 8px;
+.btn-naver img {
+  width: 150px; /* 버튼 이미지 크기 조절 */
 }
 
 .login-title {
@@ -149,14 +137,6 @@ export default {
   letter-spacing: 3px;
 }
 
-.login-subtitle {
-  font-family: "PuradakGentleGothicR";
-  color: #fd8e4c;
-  font-size: 36px;
-  margin-bottom: 30px;
-  letter-spacing: 10px;
-}
-
 .login-text {
   font-family: "LINESeedKR-Bd";
   font-size: 16px;
@@ -164,11 +144,6 @@ export default {
   color: transparent;
   -webkit-background-clip: text;
   letter-spacing: 1px;
-}
-
-.login-button{
-  display: flex;
-  flex-direction: row;
 }
 
 .login-button {
@@ -183,7 +158,7 @@ export default {
   color: #000;
 }
 
-.login-right{
+.login-right {
   font-family: "LINESeedKR-Bd";
   font-size: 12px;
   background: linear-gradient(to right, #febe98, #fd8e4c);
@@ -191,5 +166,4 @@ export default {
   -webkit-background-clip: text;
   letter-spacing: 3px;
 }
-
 </style>
