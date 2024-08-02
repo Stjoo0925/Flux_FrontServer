@@ -53,26 +53,27 @@ export default {
         }
     },
     methods: {
-        fetchNotice() {
-            const noticeId = this.noticeId;
-            if (noticeId) {
-                axios.get(`http://localhost:8080/notification/${noticeId}`)
-                    .then(response => {
-                        const notice = response.data;
-                        if (notice) {
-                            this.noticeTitle = notice.noticeTitle;
-                            this.noticeContent = notice.noticeContent;
-                        } else {
-                            console.error('공지사항을 찾을 수 없습니다.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('공지사항을 가져오는 중 오류가 발생했습니다!', error);
-                    });
-            } else {
-                console.error('공지 ID가 없습니다.');
-            }
-        },
+    fetchNotice() {
+        const noticeId = this.noticeId;
+        if (noticeId) {
+            axios.get(`http://localhost:8080/notification/${noticeId}`)
+                .then(response => {
+                    const notice = response.data;
+                    if (notice) {
+                        this.noticeTitle = notice.noticeTitle;
+                        this.noticeContent = notice.noticeContent;
+                    } else {
+                        console.error('공지사항을 찾을 수 없습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('공지사항을 가져오는 중 오류가 발생했습니다!', error);
+                });
+        } else {
+            console.error('공지 ID가 없습니다.');
+        }
+    },
+
         updateNotice() {
             const noticeId = this.noticeId;
             if (noticeId) {

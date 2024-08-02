@@ -123,7 +123,7 @@
   
   async function getNextId() {
     try {
-      const response = await axios.get('http://localhost:8001/market');
+      const response = await axios.get('http://localhost:8080/market');
       const marketItems = response.data;
       if (marketItems.length === 0) {
         return 1; // 첫 데이터의 ID는 1
@@ -170,7 +170,7 @@
   };
 
   try {
-    const response = await axios.post('http://localhost:8001/market', data, {
+    const response = await axios.post('http://localhost:8080/market', data, {
       headers: {
         'Content-Type': 'application/json'
       }

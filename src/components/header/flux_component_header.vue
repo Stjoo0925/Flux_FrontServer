@@ -230,6 +230,7 @@ onMounted(fetchNotifications);
   line-height: 14px;
   text-align: center;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
+  z-index: 10;
 }
 .banner-align {
   display: flex;
