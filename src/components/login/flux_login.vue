@@ -19,20 +19,16 @@
           <div class="login-text mb-5">
             경매 경험을 혁신하고 변화에 신속히 대응하는 우리의 의지를 반영합니다.
           </div>
-<<<<<<< HEAD
-          <div class="social-buttons mb-3">
-            <a href="#" class="social-button"><img src="@/assets/image/google.png" alt="Google Sign-In" /></a>
-            <a href="#" class="social-button"><img src="@/assets/image/kakao.png" alt="Kakao Sign-In" /></a>
-          </div>
-=======
           <a href="http://localhost:8080/oauth2/authorization/google" class="mb-3">
             <img src="@/assets/image/google.png" alt="Google Login"/>
           </a>
-          <a href="http://localhost:8080/oauth2/authorization/naver" class="mb-3">
+            <a :href="naverLoginUrl" class="mb-3 btn-naver">
             <img src="@/assets/image/naver.png" alt="Naver Login"/>
           </a>
 >>>>>>> 210a6e98266b121f443686210cbafaeea3e70296
           <div class="login-button mt-3">
+            <div id="naver_id_login"></div>
+
             <button type="button" class="btn btn-light">
               <router-link to="/" class="no-underline">홈으로</router-link>
             </button>
@@ -55,12 +51,12 @@ export default {
   data() {
     return {
       images: [
-        require('@/assets/image/loginpage/login01.webp'),
-        require('@/assets/image/loginpage/login02.webp'),
-        require('@/assets/image/loginpage/login03.webp'),
-        require('@/assets/image/loginpage/login04.webp'),
-        require('@/assets/image/loginpage/login05.webp'),
-        require('@/assets/image/loginpage/login06.webp'),
+        "/src/assets/image/loginpage/login01.webp",
+        "/src/assets/image/loginpage/login02.webp",
+        "/src/assets/image/loginpage/login03.webp",
+        "/src/assets/image/loginpage/login04.webp",
+        "/src/assets/image/loginpage/login05.webp",
+        "/src/assets/image/loginpage/login06.webp",
       ],
       randomImage: "",
     };
@@ -76,8 +72,6 @@ export default {
   },
 };
 </script>
-<<<<<<< HEAD
-=======
 
 <style scoped>
 .page-container {
@@ -124,15 +118,11 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  border-top-right-radius: 30px; /* 좌상단 곡률 */
-  border-bottom-right-radius: 30px; /* 좌하단 곡률 */
+  border-top-right-radius: 30px; /* 우상단 곡률 */
+  border-bottom-right-radius: 30px; /* 우하단 곡률 */
 }
 
-.btn-google img {
-  width: 150px; /* 버튼 이미지 크기 조절 */
-}
-
-.btn-naver img {
+.btn-google img, .btn-naver img {
   width: 150px; /* 버튼 이미지 크기 조절 */
 }
 
