@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useBannerStore } from "@/stores/bannerstore.js";
 import { addAnimation, removeAnimation } from "@/assets/js/animation.js";
+import { useAuthStore } from "@/stores/auth"; // Auth 스토어를 가져옵니다.
 
 // 공지사항 데이터를 저장할 ref를 선언합니다.
 const notifications = ref([]);
@@ -14,6 +15,7 @@ const latestNotification = computed(() => {
 
 // Pinia 스토어를 사용합니다.
 const bannerStore = useBannerStore();
+const authStore = useAuthStore(); // Auth 스토어를 사용합니다.
 
 // 배너를 닫는 함수입니다.
 const closeBanner = () => {
@@ -58,7 +60,10 @@ onMounted(fetchNotifications);
         >
         <div class="d-flex align-items-center ms-auto mr-20">
           <div class="nav-item ms-3">
-            <router-link to="/login" class="nav-link point-link">Login</router-link>
+            <router-link to="/login" class="nav-link point-link">
+              <!-- 로그인 상태에 따라 버튼 텍스트 변경 -->
+              {{ authStore.isAuthenticated ? (authStore.user ? authStore.user.name : 'Login') : 'Login' }}
+            </router-link>
           </div>
         </div>
         <button

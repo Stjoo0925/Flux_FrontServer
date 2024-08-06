@@ -28,6 +28,9 @@
           >
             회원탈퇴
           </router-link>
+          <div class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text" @click="logout">
+            로그아웃
+          </div>
         </div>
       </div>
     </div>
@@ -35,11 +38,18 @@
 </template>
 
 <script setup>
-import { useMypageStore } from "@/stores/rootstore"; // Pinia 스토어 경로에 맞게 수정
+import { useMypageStore } from "@/stores/rootstore";
+import { useAuthStore } from "@/stores/auth";
 
 const store = useMypageStore();
+const authStore = useAuthStore();
+
 const setRoot = (option) => {
   store.setRoot(option);
+};
+
+const logout = async () => {
+  await authStore.logout();
 };
 </script>
 
@@ -59,8 +69,8 @@ const setRoot = (option) => {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  border-top-right-radius: 10px; /* 좌상단 곡률 */
-  border-bottom-right-radius: 10px; /* 좌하단 곡률 */
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .sidebar-heading {
