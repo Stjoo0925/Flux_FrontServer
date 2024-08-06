@@ -19,13 +19,10 @@
           <div class="login-text mb-5">
             경매 경험을 혁신하고 변화에 신속히 대응하는 우리의 의지를 반영합니다.
           </div>
-          <a href="http://localhost:8080/oauth2/authorization/google" class="mb-3">
+          <a :href="googleLoginUrl" class="mb-3 btn-google">
             <img src="@/assets/image/google.png" alt="Google Login"/>
           </a>
-            <a :href="naverLoginUrl" class="mb-3 btn-naver">
-            <img src="@/assets/image/naver.png" alt="Naver Login"/>
-          </a>
->>>>>>> 210a6e98266b121f443686210cbafaeea3e70296
+  
           <div class="login-button mt-3">
             <div id="naver_id_login"></div>
 
@@ -45,33 +42,39 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Login",
-  data() {
-    return {
-      images: [
-        "/src/assets/image/loginpage/login01.webp",
-        "/src/assets/image/loginpage/login02.webp",
-        "/src/assets/image/loginpage/login03.webp",
-        "/src/assets/image/loginpage/login04.webp",
-        "/src/assets/image/loginpage/login05.webp",
-        "/src/assets/image/loginpage/login06.webp",
-      ],
-      randomImage: "",
-    };
-  },
-  methods: {
-    getRandomImage() {
-      const randomIndex = Math.floor(Math.random() * this.images.length);
-      return this.images[randomIndex];
-    },
-  },
-  mounted() {
-    this.randomImage = this.getRandomImage();
-  },
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const googleLoginUrl = 'http://localhost:8080/oauth2/authorization/google';
+const naverLoginUrl = 'http://localhost:8080/oauth2/authorization/naver?redirect_uri=http://localhost:8000/oauth2/redirect';
+const images = [
+  '/src/assets/image/loginpage/login01.webp',
+  '/src/assets/image/loginpage/login02.webp',
+  '/src/assets/image/loginpage/login03.webp',
+  '/src/assets/image/loginpage/login04.webp',
+  '/src/assets/image/loginpage/login05.webp',
+  '/src/assets/image/loginpage/login06.webp',
+];
+const randomImage = ref('');
+
+const getRandomImage = () => {
+  const randomIndex = Math.floor(Math.random() * images.length);
+  return images[randomIndex];
 };
+
+onMounted(() => {
+  randomImage.value = getRandomImage();
+  const naver_id_login = new window.naver_id_login('oKCmWOZPLq_7KuifNkdG', 'http://localhost:8000/login/oauth2/code/naver');
+  const state = naver_id_login.getUniqState();
+  naver_id_login.setButton('white', 2, 40); // 버튼 설정
+  naver_id_login.setState(state);
+  // naver_id_login.setPopup(); // popup 설정을 위한 코드
+  naver_id_login.init_naver_id_login();
+});
 </script>
+
+
+
 
 <style scoped>
 .page-container {
@@ -166,4 +169,3 @@ export default {
   letter-spacing: 3px;
 }
 </style>
->>>>>>> 210a6e98266b121f443686210cbafaeea3e70296

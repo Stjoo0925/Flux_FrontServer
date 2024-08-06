@@ -5,63 +5,49 @@
 </template>
 
 <script setup>
-  import { onMounted } from 'vue';
-  onMounted(()=>{
-    const result = new window.naver_id_login("oKCmWOZPLq_7KuifNkdG","http://localhost:8000/login/oauth2/code/naver");
-    console.log(result.getAccessToken());
-  })
-</script>
-
-
-
-<!-- 
-<script>
+import { onMounted } from 'vue';
 import axios from 'axios';
-import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth'; // useAuthStore를 가져옵니다.
 
-export default {
-  name: 'OAuth2RedirectHandler',
-  setup() {
-    const authStore = useAuthStore();
-    return { authStore };
-  },
-  async mounted() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const error = urlParams.get('error');
+const authStore = useAuthStore(); // authStore를 정의합니다.
+const router = useRouter(); // router를 정의합니다.
 
-    if (code) {
-      await this.handleLoginSuccess(code);
-    } else if (error) {
-      this.handleLoginError(error);
-    }
-  },
-  methods: {
-    async handleLoginSuccess(code) {
-      try {
-        const response = await axios.get(`http://localhost:8080/login/oauth2/code/naver?code=${code}`);
-        const token = response.data.token;
-        this.authStore.setToken(token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        this.$router.push('/');
-      } catch (error) {
-        console.error('Error fetching token:', error);
-        this.$router.push('/login');
-      }
-    },
-    handleLoginError(error) {
-      console.error('Login error:', error);
-      this.$router.push('/login');
-    }
+onMounted(() => {
+  const result = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "http://localhost:8000/login/oauth2/code/naver");
+  const accessToken = result.oauthParams.access_token;
+
+  if (accessToken) {
+    axios.post('http://localhost:8080/api/oauth/naver', {}, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+      .then(response => {
+        console.log('Token sent successfully:', response.data);
+        if (response.data.status === 'success') {
+          authStore.setToken(response.data.jwtToken);
+          authStore.setUser(response.data.user); // 유저 정보 저장
+          router.push('/'); // 로그인 성공 후 홈 페이지로 이동
+        } else {
+          console.error('로그인 실패:', response.data.message);
+          router.push('/login'); // 로그인 실패 시 로그인 페이지로 이동
+        }
+      })
+      .catch(error => {
+        console.error('Error sending token:', error);
+        router.push('/login'); // 오류 발생 시 로그인 페이지로 이동
+      });
+  } else {
+    console.error('Failed to get access token');
+    router.push('/login'); // 토큰이 없을 경우 로그인 페이지로 이동
   }
-};
+});
 </script>
 
 <style scoped>
 .redirecting {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  text-align: center;
+  margin-top: 50px;
 }
-</style> -->
+</style>
