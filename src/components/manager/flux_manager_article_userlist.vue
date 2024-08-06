@@ -23,7 +23,7 @@
       </div>
       <div class="list-items">
         <div class="list-item" v-for="(article, index) in paginatedArticles" :key="article.articleId">
-          <img v-if="article.articleImage" :src="article.articleImage" class="item-img" alt="기사 이미지">
+          <img v-if="article.articleImgPath" :src="article.articleImgPath" class="item-img" alt="기사 이미지">
           <span class="item">{{ article.articleCategory || '미분류' }}</span>
           <span class="item clickable" @click="goToDetail(article.articleId)">{{ article.articleAuthor }}</span>
           <span class="item clickable" @click="goToDetail(article.articleId)">
@@ -53,7 +53,6 @@
 
 <script>
 import axios from 'axios';
-import { useRouter } from 'vue-router';
 
 export default {
   name: 'ArticleList',
@@ -88,7 +87,7 @@ export default {
     async fetchArticles() {
       try {
         // 백엔드 API 엔드포인트를 수정하여 실제 API와 맞추세요
-        const response = await axios.get('http://localhost:8080/manager/article/active');
+        const response = await axios.get('http://localhost:8080/api/v1/articles');
         this.articles = response.data; // 서버에서 받아온 데이터를 설정
       } catch (error) {
         console.error('Error fetching articles:', error);
