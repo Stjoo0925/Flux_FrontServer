@@ -32,7 +32,8 @@ const formatDate = (dateString) => {
 
 const fetchNotifications = async () => {
   try {
-    const response = await axios.get("http://localhost:8001/notification");
+    const response = await axios.get("http://localhost:8080/api/v1/notice");
+    console.log(response);
     notifications.value = response.data.reverse().map((notification) => ({
       ...notification,
       noti_createat: formatDate(notification.noti_createat),
@@ -62,7 +63,13 @@ onMounted(fetchNotifications);
           <div class="nav-item ms-3">
             <router-link to="/login" class="nav-link point-link">
               <!-- 로그인 상태에 따라 버튼 텍스트 변경 -->
-              {{ authStore.isAuthenticated ? (authStore.user ? authStore.user.name : 'Login') : 'Login' }}
+              {{
+                authStore.isAuthenticated
+                  ? authStore.user
+                    ? authStore.user.name
+                    : "Login"
+                  : "Login"
+              }}
             </router-link>
           </div>
         </div>
@@ -122,10 +129,19 @@ onMounted(fetchNotifications);
         </div>
       </div>
     </nav>
-    <div class="banner" v-if="bannerStore.isBannerVisible && latestNotification">
+    <div
+      class="banner"
+      v-if="bannerStore.isBannerVisible && latestNotification"
+    >
       <div class="banner-align">
-        <strong class="banner-contents">🛠️ 공지사항 : {{ latestNotification.noti_contents }} -
-          {{ formatDate(latestNotification.noti_updateat || latestNotification.noti_createat)}}
+        <strong class="banner-contents"
+          >🛠️ 공지사항 : {{ latestNotification.title }} |
+          {{
+            formatDate(
+              latestNotification.noticeCreateAt ||
+                latestNotification.noticeUpdateAt
+            )
+          }}
         </strong>
         <button @click="closeBanner" class="close-btn">X</button>
       </div>
