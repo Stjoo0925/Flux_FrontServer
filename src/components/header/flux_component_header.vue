@@ -3,21 +3,17 @@ import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useBannerStore } from "@/stores/bannerstore.js";
 import { addAnimation, removeAnimation } from "@/assets/js/animation.js";
-import { useAuthStore } from "@/stores/auth"; // Auth 스토어를 가져옵니다.
+import { useAuthStore } from "@/stores/auth";
 
-// 공지사항 데이터를 저장할 ref를 선언합니다.
 const notifications = ref([]);
 
-// 가장 최근 공지사항을 계산합니다.
 const latestNotification = computed(() => {
   return notifications.value.length > 0 ? notifications.value[0] : null;
 });
 
-// Pinia 스토어를 사용합니다.
 const bannerStore = useBannerStore();
-const authStore = useAuthStore(); // Auth 스토어를 사용합니다.
+const authStore = useAuthStore();
 
-// 배너를 닫는 함수입니다.
 const closeBanner = () => {
   bannerStore.toggleBanner();
 };
@@ -36,9 +32,8 @@ const fetchNotifications = async () => {
     console.log(response);
     notifications.value = response.data.reverse().map((notification) => ({
       ...notification,
-      noti_createat: formatDate(notification.noti_createat),
     }));
-    bannerStore.setNotifications(notifications.value); // Corrected this line
+    bannerStore.setNotifications(notifications.value);
   } catch (error) {
     console.error("Error fetching notifications:", error);
   }
@@ -47,6 +42,7 @@ const fetchNotifications = async () => {
 // 컴포넌트가 마운트될 때 공지사항을 가져옵니다.
 onMounted(fetchNotifications);
 </script>
+
 <template>
   <div>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -56,21 +52,20 @@ onMounted(fetchNotifications);
           to="/"
           @mouseover="addAnimation"
           @mouseleave="removeAnimation"
-        >
-          FLUX
+          >FLUX
         </router-link>
         <div class="d-flex align-items-center ms-auto mr-20">
           <div class="nav-item ms-3">
-            <router-link to="/login" class="nav-link point-link">
-              <!-- 로그인 상태에 따라 버튼 텍스트 변경 -->
-              {{
-                authStore.isAuthenticated
-                  ? authStore.user
-                    ? authStore.user.name
-                    : "Login"
-                  : "Login"
-              }}
-            </router-link>
+            <div v-if="authStore.isAuthenticated">
+              <router-link to="/mypage" class="nav-link point-link">{{
+                authStore.user ? authStore.user.name : "Profile"
+              }}</router-link>
+            </div>
+            <div v-else>
+              <router-link to="/login" class="nav-link point-link"
+                >Login</router-link
+              >
+            </div>
           </div>
         </div>
         <button
@@ -99,13 +94,9 @@ onMounted(fetchNotifications);
               <router-link class="nav-link" to="/ranking">Ranking</router-link>
             </li>
             <li class="nav-item">
-              <router-link
-                ref="animatedItem"
-                class="nav-link point-link"
-                to="/sales"
+              <router-link class="nav-link point-link" to="/sales"
+                >Sales</router-link
               >
-                Sales
-              </router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/mypage">Mypage</router-link>
@@ -149,55 +140,6 @@ onMounted(fetchNotifications);
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, computed, onMounted } from "vue";
-import axios from "axios";
-import { useBannerStore } from "@/stores/bannerstore.js";
-import { addAnimation, removeAnimation } from "@/assets/js/animation.js";
-import { useAuthStore } from "@/stores/auth"; // Auth 스토어를 가져옵니다.
-
-// 공지사항 데이터를 저장할 ref를 선언합니다.
-const notifications = ref([]);
-
-// 가장 최근 공지사항을 계산합니다.
-const latestNotification = computed(() => {
-  return notifications.value.length > 0 ? notifications.value[0] : null;
-});
-
-// Pinia 스토어를 사용합니다.
-const bannerStore = useBannerStore();
-const authStore = useAuthStore(); // Auth 스토어를 사용합니다.
-
-// 배너를 닫는 함수입니다.
-const closeBanner = () => {
-  bannerStore.toggleBanner();
-};
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-
-const fetchNotifications = async () => {
-  try {
-    const response = await axios.get("http://localhost:8001/notification");
-    notifications.value = response.data.reverse().map((notification) => ({
-      ...notification,
-      noti_createat: formatDate(notification.noti_createat),
-    }));
-    bannerStore.setNotifications(notifications.value); // Corrected this line
-  } catch (error) {
-    console.error("Error fetching notifications:", error);
-  }
-};
-
-// 컴포넌트가 마운트될 때 공지사항을 가져옵니다.
-onMounted(fetchNotifications);
-</script>
 
 <style scoped>
 .navbar {
@@ -303,7 +245,6 @@ onMounted(fetchNotifications);
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
   z-index: 10;
 }
-
 .banner-align {
   display: flex;
   justify-content: center;
@@ -314,7 +255,6 @@ onMounted(fetchNotifications);
   letter-spacing: 1px;
   margin-right: 20px;
 }
-
 .close-btn {
   background: none;
   border: none;
@@ -332,20 +272,16 @@ onMounted(fetchNotifications);
     align-items: center;
     justify-content: center;
   }
-
   .navbar-nav form {
     margin-top: 10px; /* Adjust margin as needed */
   }
-
   .mr-20 {
     margin-right: 5px;
   }
-
   .dropdown-menu {
     right: 0 !important;
     left: auto !important;
   }
-
   .banner {
     font-size: 10px;
   }

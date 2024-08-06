@@ -3,22 +3,29 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useNotiStore } from "@/stores/rootstore";
+import { useIdStore } from "@/stores/rootstore";
 
 const store = useNotiStore();
 const route = useRoute();
 const router = useRouter();
 const notification = ref(null);
 const errorMessage = ref("");
+const idStore = useIdStore();
+
+// ID를 스토어에 저장
+idStore.setId(route.params.id);
 
 const fetchNotification = async () => {
   try {
-    // 스토어에서 알림을 찾습니다.
-    const noti = store.useNotiStore.find((n) => n.noticeId === route.params.id);
+    const noti = store.notifications.find(
+      (n) => n.noticeId === parseInt(idStore.id)
+    );
     if (noti) {
       notification.value = noti;
     } else {
-      // 스토어에 없으면 서버에서 가져옵니다.
-      const response = await axios.get(`/api/notification/${route.params.id}`);
+      const response = await axios.get(
+        `http://localhost:8080//api/v1/notice/${idStore.id}`
+      );
       notification.value = response.data;
     }
   } catch (error) {
@@ -42,7 +49,7 @@ onMounted(fetchNotification);
   <div v-if="notification" class="noti-con">
     <div class="noti-title">공지사항</div>
     <div class="noti-card">
-      <div class="noti-header">{{ notification.noticeTitle }}</div>
+      <div class="noti-header">{{ notification.title }}</div>
       <hr />
       <div class="noti-body">{{ notification.noticeContents }}</div>
       <div class="noti-footer">
