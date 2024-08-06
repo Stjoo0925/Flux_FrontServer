@@ -26,14 +26,14 @@
     <div class="button-group">
       <button 
         type="button" 
-        class="btn btn-outline-success" 
+        class="btn btn-custom" 
         @click="submitNotice"
       >
         등록
       </button>
       <button 
         type="button" 
-        class="btn btn-outline-danger" 
+        class="btn btn-custom" 
         @click="cancel"
       >
         취소
@@ -47,36 +47,45 @@ import axios from 'axios';
 
 export default {
   data() {
-      return {
-          title: '',  
-          content: ''
-      };
+    return {
+      title: '',
+      content: '',
+      noticeId: null // 수정 시 사용할 공지 ID
+    };
   },
   methods: {
     async submitNotice() {
-        const currentDate = new Date().toISOString();
-        const notice = {
-            userId: 1,  // 필요한 필드
-            noticeTitle: this.title,
-            noticeContent: this.content,
-            noticeCreateAt: currentDate,
-            noticeUpdateAt: currentDate
-        };
+      const currentDate = new Date().toISOString(); // ISO 포맷으로 날짜를 생성
+      const formData = {
+        userId: 1, // 백엔드 필드와 일치하게 변경
+        noticeTitle: this.title, // 백엔드 필드와 일치하게 변경
+        noticeContent: this.content, // 백엔드 필드와 일치하게 변경
+        notice_Create_At: currentDate, // 날짜 포맷은 ISO로 유지
+        notice_Update_At: currentDate  // 날짜 포맷은 ISO로 유지
+      };
 
-        try {
-            const response = await axios.post('/api/notification/create', notice);
-            console.log('공지 등록 성공:', response.data);
-            this.title = '';
-            this.content = '';
-            this.$router.push('/manager/notice/noticelist');
-        } catch (error) {
-            console.error('공지 등록 실패:', error);
-        }
+      try {
+        console.log('전송할 데이터:', formData);
+
+        const response = await axios.post('http://localhost:8080/api/v1/notification/create', formData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log('공지 등록 성공:', response.data);
+        this.title = '';
+        this.content = '';
+        this.$router.push('/manager/notice/noticelist');
+      } catch (error) {
+        console.error('공지 등록 실패:', error.response ? error.response.data : error.message);
+      }
+    },
+    cancel() {
+      this.$router.push('/manager/notice/noticelist');
     }
   }
 };
 </script>
-
 
 <style scoped>
 .notice-edit-container {
@@ -123,7 +132,13 @@ h1 {
   font-size: 1em;
 }
 
-.button-group .btn + .btn {
+.button-group .btn-custom {
+  background-color: #1244AF;
+  color: white;
+  border: none;
+}
+
+.button-group .btn-custom + .btn-custom {
   margin-left: 10px;
 }
 </style>

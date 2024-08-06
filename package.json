@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "animate.css": "^4.1.1",
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
     "cors": "^2.8.5",
