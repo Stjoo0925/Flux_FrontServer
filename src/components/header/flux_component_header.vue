@@ -1,3 +1,52 @@
+<script setup>
+import { ref, computed, onMounted } from "vue";
+import axios from "axios";
+import { useBannerStore } from "@/stores/bannerstore.js";
+import { addAnimation, removeAnimation } from "@/assets/js/animation.js";
+import { useAuthStore } from "@/stores/auth"; // Auth 스토어를 가져옵니다.
+
+// 공지사항 데이터를 저장할 ref를 선언합니다.
+const notifications = ref([]);
+
+// 가장 최근 공지사항을 계산합니다.
+const latestNotification = computed(() => {
+  return notifications.value.length > 0 ? notifications.value[0] : null;
+});
+
+// Pinia 스토어를 사용합니다.
+const bannerStore = useBannerStore();
+const authStore = useAuthStore(); // Auth 스토어를 사용합니다.
+
+// 배너를 닫는 함수입니다.
+const closeBanner = () => {
+  bannerStore.toggleBanner();
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const fetchNotifications = async () => {
+  try {
+    const response = await axios.get("http://localhost:8080/api/v1/notice");
+    console.log(response);
+    notifications.value = response.data.reverse().map((notification) => ({
+      ...notification,
+      noti_createat: formatDate(notification.noti_createat),
+    }));
+    bannerStore.setNotifications(notifications.value); // Corrected this line
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+  }
+};
+
+// 컴포넌트가 마운트될 때 공지사항을 가져옵니다.
+onMounted(fetchNotifications);
+</script>
 <template>
   <div>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -12,12 +61,16 @@
         </router-link>
         <div class="d-flex align-items-center ms-auto mr-20">
           <div class="nav-item ms-3">
-            <div v-if="authStore.isAuthenticated">
-              <router-link to="/mypage" class="nav-link point-link">{{ authStore.user ? authStore.user.name : 'Profile' }}</router-link>
-            </div>
-            <div v-else>
-              <router-link to="/login" class="nav-link point-link">Login</router-link>
-            </div>
+            <router-link to="/login" class="nav-link point-link">
+              <!-- 로그인 상태에 따라 버튼 텍스트 변경 -->
+              {{
+                authStore.isAuthenticated
+                  ? authStore.user
+                    ? authStore.user.name
+                    : "Login"
+                  : "Login"
+              }}
+            </router-link>
           </div>
         </div>
         <button
@@ -77,10 +130,19 @@
         </div>
       </div>
     </nav>
-    <div class="banner" v-if="bannerStore.isBannerVisible && latestNotification">
+    <div
+      class="banner"
+      v-if="bannerStore.isBannerVisible && latestNotification"
+    >
       <div class="banner-align">
-        <strong class="banner-contents">🛠️ 공지사항 : {{ latestNotification.noti_contents }} -
-          {{ formatDate(latestNotification.noti_updateat || latestNotification.noti_createat) }}
+        <strong class="banner-contents"
+          >🛠️ 공지사항 : {{ latestNotification.title }} |
+          {{
+            formatDate(
+              latestNotification.noticeCreateAt ||
+                latestNotification.noticeUpdateAt
+            )
+          }}
         </strong>
         <button @click="closeBanner" class="close-btn">X</button>
       </div>
