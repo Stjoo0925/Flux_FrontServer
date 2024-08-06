@@ -4,10 +4,10 @@
   <!-- 정렬순서 시작 -->
   <div class="selectbox-container">
     <div class="selectbox">
-      <select class="form-select" aria-label="정렬 순서" v-model="sortOrder">
+      <select class="form-select" aria-label="정렬 순서" v-model="sortOrder" @change="sortArticles">
         <option value="" disabled>정렬 순서</option>
-        <option value="1">최신 등록순</option>
-        <option value="2">인기순</option>
+        <option value="latest">최신 등록순</option>
+        <option value="popular">인기순</option>
       </select>
     </div>
   </div>
@@ -34,14 +34,14 @@
             </svg>
           </div>
           <img
-            :src="article.article_imgs"
+            :src="article.image"
             class="card-img-top"
-            :alt="article.article_title"
+            :alt="article.title"
           />
           <div class="card-body">
-            <h6 class="card-category">{{ article.article_category }}</h6>
-            <h4 class="card-title">{{ article.article_title }}</h4>
-            <p class="card-text">날짜 {{ article.article_createat }}</p>
+            <h6 class="card-category">{{ article.category }}</h6>
+            <h4 class="card-title">{{ article.title }}</h4>
+            <p class="card-text">날짜 {{ article.createdAt }}</p>
           </div>
         </div>
       </div>
@@ -93,16 +93,24 @@ export default {
   methods: {
     async fetchArticles() {
       try {
-        // db.json에서 데이터 가져오기
-        const response = await axios.get('http://localhost:8001/article');
+        // 백엔드 API 엔드포인트 확인
+        const response = await axios.get('http://localhost:8001/articles');
         console.log('Response data:', response.data); // 전체 응답 데이터 로그
 
         // 응답 데이터가 배열 형태이므로 직접 할당
         this.articles = response.data;
+        this.sortArticles(); // 기본 정렬 적용
 
         console.log('Fetched articles:', this.articles); // 데이터 확인
       } catch (error) {
         console.error('Error fetching articles:', error);
+      }
+    },
+    sortArticles() {
+      if (this.sortOrder === 'latest') {
+        this.articles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } else if (this.sortOrder === 'popular') {
+        this.articles.sort((a, b) => b.popularity - a.popularity);
       }
     },
     prevPage() {
@@ -191,5 +199,4 @@ export default {
   background-color: #000; /* 활성 페이지 링크 배경색 */
   color: #fff; /* 활성 페이지 링크 글자색 */
 }
-
 </style>

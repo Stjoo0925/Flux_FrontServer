@@ -5,7 +5,7 @@
     </div>
 
     <p>분류</p>
-    <select v-model="article.category" class="form-select" aria-label="Default select example">
+    <select v-model="article.articleCategory" class="form-select" aria-label="Default select example">
       <option disabled value="">카테고리</option>
       <option value="인터뷰">인터뷰</option>
       <option value="큐레이션">큐레이션</option>
@@ -15,14 +15,14 @@
     <div class="subject">
       <p>제목</p>
       <div class="input-group">
-        <input v-model="article.title" type="text" aria-label="subject" class="form-control" placeholder="제목을 입력해주세요.">
+        <input v-model="article.articleTitle" type="text" aria-label="subject" class="form-control" placeholder="제목을 입력해주세요.">
       </div>
     </div>
 
     <div class="name">
       <p>작가 이름</p>
       <div class="input-group">
-        <input v-model="article.author" type="text" aria-label="name" class="form-control" placeholder="작가 이름을 입력해주세요.">
+        <input v-model="article.articleAuthor" type="text" aria-label="name" class="form-control" placeholder="작가 이름을 입력해주세요.">
       </div>
     </div>
 
@@ -31,14 +31,14 @@
       <div class="form-group">
         <div class="image-upload-container">
           <input type="file" id="image-upload" ref="imageUpload" class="form-control" aria-label="Upload" accept="image/*" @change="handleImageUpload">
-          <img id="upload-image-preview" :src="article.image" alt="이미지 업로드" class="upload-image" @click="triggerFileUpload">
+          <img id="upload-image-preview" :src="article.imagePreview" alt="이미지 업로드" class="upload-image" @click="triggerFileUpload">
         </div>
       </div>
     </div>
 
     <p>내용</p>
     <div class="input-group">
-      <textarea v-model="article.content" class="form-control" aria-label="With textarea" placeholder="내용을 작성해 주세요."></textarea>
+      <textarea v-model="article.articleContents" class="form-control" aria-label="With textarea" placeholder="내용을 작성해 주세요."></textarea>
     </div>
 
     <button @click="submitArticle" type="button" class="btn btn-primary btn-lg">등록 버튼</button>
@@ -53,11 +53,11 @@ export default {
   data() {
     return {
       article: {
-        category: '',
-        author: '',
-        image: null,
-        content: '',
-        title: ''
+        articleCategory: '',
+        articleAuthor: '',
+        articleContents: '',
+        articleTitle: '',
+        imagePreview: null
       }
     };
   },
@@ -67,7 +67,7 @@ export default {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.article.image = e.target.result;
+          this.article.imagePreview = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
       }
@@ -76,31 +76,28 @@ export default {
       this.$refs.imageUpload.click();
     },
     async submitArticle() {
-  const formData = new FormData();
-  formData.append('article', JSON.stringify({
-    articleCategory: this.article.category,
-    articleTitle: this.article.title,
-    articleAuthor: this.article.author,
-    articleContent: this.article.content
-  }));
+      const formData = new FormData();
+      formData.append('articleCategory', this.article.articleCategory);
+      formData.append('articleTitle', this.article.articleTitle);
+      formData.append('articleAuthor', this.article.articleAuthor);
+      formData.append('articleContents', this.article.articleContents);
 
-  if (this.$refs.imageUpload.files.length > 0) {
-    formData.append('files', this.$refs.imageUpload.files[0]);
-  }
-
-  try {
-    const response = await axios.post('http://localhost:8080/manager/article/articlepost', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+      if (this.$refs.imageUpload.files.length > 0) {
+        formData.append('files', this.$refs.imageUpload.files[0]);
       }
-    });
-    console.log('Article 등록 성공:', response.data);
-    // 성공적으로 제출된 후, 페이지를 이동
-    this.$router.push({ name: 'ArticleView' });
-  } catch (error) {
-    console.error('아티클 등록 실패:', error);
+
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/articles/articlepost', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log('Article 등록 성공:', response.data);
+        this.$router.push({ name: 'ArticleView' });
+      } catch (error) {
+        console.error('아티클 등록 실패:', error);
+      }
     }
-   }
   }
 };
 </script>
