@@ -89,17 +89,27 @@ export const useManagerNotice = defineStore("useManagerNotice", {
   },
 });
 
-export const useNotiStore = defineStore("useNotiStore", {
+export const useNotiStore = defineStore("notiStore", {
   state: () => ({
-    root: "main",
-    notifications: [], // 공지사항 목록 추가
+    notifications: [],
   }),
   actions: {
-    setRoot(option) {
-      this.root = option;
+    setNotifications(notifications) {
+      this.notifications = notifications;
     },
-    setNotification(notification) {
-      this.notification = notification;
+    addNotification(notification) {
+      this.notifications.push(notification);
+    },
+  },
+});
+
+export const useIdStore = defineStore("idStore", {
+  state: () => ({
+    id: null, // 전역적으로 관리할 id
+  }),
+  actions: {
+    setId(newId) {
+      this.id = newId;
     },
   },
 });
