@@ -8,39 +8,64 @@
 import { onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth'; // useAuthStore를 가져옵니다.
+import { useAuthStore } from '@/stores/auth';
 
-const authStore = useAuthStore(); // authStore를 정의합니다.
-const router = useRouter(); // router를 정의합니다.
+const authStore = useAuthStore();
+const router = useRouter();
 
-onMounted(() => {
-  const result = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "http://localhost:8000/login/oauth2/code/naver");
-  const accessToken = result.oauthParams.access_token;
+onMounted(async () => {
+  const currentUrl = new URL(window.location.href);
+  const googleCode = currentUrl.searchParams.get("code");
+  const state = currentUrl.searchParams.get("state");
+  let naverAccessToken;
+  if (window.naver_id_login) {
+    const naverLogin = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "http://localhost:8000/login/oauth2/code/naver");
+    naverAccessToken = naverLogin.oauthParams.access_token;
+  }
 
-  if (accessToken) {
-    axios.post('http://localhost:8080/api/oauth/naver', {}, {
+  try {
+    if (googleCode) {
+      console.log("Google login attempt with code:", googleCode);
+      const response = await axios.post('http://localhost:8080/api/oauth/google', { code: googleCode });
+      console.log("Google login response:", response.data);
+      if (response.data.jwtToken) {
+        authStore.setToken(response.data.jwtToken);
+        authStore.setUser({ email: response.data.email, name: response.data.name, provider: 'google' });
+        // 성공 후 URL에서 'code'와 'state' 제거
+        currentUrl.searchParams.delete("code");
+        currentUrl.searchParams.delete("state");
+        window.history.replaceState({}, document.title, currentUrl.toString());
+        router.push('/');
+      } else {
+        console.error('로그인 실패:', response.data.message);
+        router.push('/login');
+      }
+    } else if (naverAccessToken) {
+      console.log("Naver login attempt with token:", naverAccessToken);
+      const response = await axios.post('http://localhost:8080/api/oauth/naver', {}, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          'Authorization': `Bearer ${naverAccessToken}`
         }
-      })
-      .then(response => {
-        console.log('Token sent successfully:', response.data);
-        if (response.data.status === 'success') {
-          authStore.setToken(response.data.jwtToken);
-          authStore.setUser(response.data.user); // 유저 정보 저장
-          router.push('/'); // 로그인 성공 후 홈 페이지로 이동
-        } else {
-          console.error('로그인 실패:', response.data.message);
-          router.push('/login'); // 로그인 실패 시 로그인 페이지로 이동
-        }
-      })
-      .catch(error => {
-        console.error('Error sending token:', error);
-        router.push('/login'); // 오류 발생 시 로그인 페이지로 이동
       });
-  } else {
-    console.error('Failed to get access token');
-    router.push('/login'); // 토큰이 없을 경우 로그인 페이지로 이동
+      console.log("Naver login response:", response.data);
+      if (response.data.status === 'success') {
+        authStore.setToken(response.data.jwtToken);
+        authStore.setUser(response.data.user);
+        currentUrl.searchParams.delete("code");
+        currentUrl.searchParams.delete("state");
+        window.history.replaceState({}, document.title, currentUrl.toString());
+        router.push('/');
+      } else {
+        console.error('로그인 실패:', response.data.message);
+        router.push('/login');
+      }
+    } else {
+      console.error('Failed to get access token or code');
+      router.push('/login');
+    }
+  } catch (error) {
+    console.error('로그인 실패: An unexpected error occurred', error);
+    router.push('/login');
   }
 });
 </script>

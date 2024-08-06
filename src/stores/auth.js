@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -30,6 +31,18 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('authToken');
       localStorage.removeItem('authUser');
     },
+    async requestGoogleToken(googleCode) {
+      try {
+        const response = await axios.post('http://localhost:8080/auth/google', { code: googleCode });
+        if (response.data.idToken) {
+          this.setToken(response.data.idToken);
+          this.setUser({ email: response.data.email, provider: 'google' });
+        }
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
   },
   getters: {
     isAuthenticated: (state) => !!state.token,

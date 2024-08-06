@@ -22,10 +22,8 @@
           <a :href="googleLoginUrl" class="mb-3 btn-google">
             <img src="@/assets/image/google.png" alt="Google Login"/>
           </a>
-  
+          <div id="naver_id_login"></div>
           <div class="login-button mt-3">
-            <div id="naver_id_login"></div>
-
             <button type="button" class="btn btn-light">
               <router-link to="/" class="no-underline">홈으로</router-link>
             </button>
@@ -45,8 +43,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-const googleLoginUrl = 'http://localhost:8080/oauth2/authorization/google';
-const naverLoginUrl = 'http://localhost:8080/oauth2/authorization/naver?redirect_uri=http://localhost:8000/oauth2/redirect';
+const googleLoginUrl = 'https://accounts.google.com/o/oauth2/v2/auth?scope=email&response_type=code&client_id=1009714069325-ktbie6b6ipt0m71dkdgv21gnqsnk11l4.apps.googleusercontent.com&redirect_uri=http://localhost:8000/login/oauth2/code/google';
 const images = [
   '/src/assets/image/loginpage/login01.webp',
   '/src/assets/image/loginpage/login02.webp',
@@ -68,17 +65,13 @@ onMounted(() => {
   const state = naver_id_login.getUniqState();
   naver_id_login.setButton('white', 2, 40); // 버튼 설정
   naver_id_login.setState(state);
-  // naver_id_login.setPopup(); // popup 설정을 위한 코드
   naver_id_login.init_naver_id_login();
 });
 </script>
 
-
-
-
 <style scoped>
 .page-container {
-  height: 100vh; /* 페이지 높이를 화면의 100%로 설정 */
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -88,7 +81,7 @@ onMounted(() => {
 .login-container {
   height: 85%;
   width: 100%;
-  max-width: 1200px; /* 최대 너비 설정 */
+  max-width: 1200px;
   display: flex;
   border-radius: 35px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
@@ -102,16 +95,16 @@ onMounted(() => {
 
 .login-image {
   padding: 0;
-  border-top-left-radius: 30px; /* 좌상단 곡률 */
-  border-bottom-left-radius: 30px; /* 좌하단 곡률 */
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
 }
 
 .login-image img {
   object-fit: cover;
   height: 100%;
   width: 100%;
-  border-top-left-radius: 30px; /* 좌상단 곡률 */
-  border-bottom-left-radius: 30px; /* 좌하단 곡률 */
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
 }
 
 .login-form {
@@ -121,12 +114,12 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  border-top-right-radius: 30px; /* 우상단 곡률 */
-  border-bottom-right-radius: 30px; /* 우하단 곡률 */
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
-.btn-google img, .btn-naver img {
-  width: 150px; /* 버튼 이미지 크기 조절 */
+.btn-google img {
+  width: 150px;
 }
 
 .login-title {
@@ -150,11 +143,11 @@ onMounted(() => {
 
 .login-button {
   display: flex;
-  gap: 20px; /* 버튼들 사이의 간격 */
+  gap: 20px;
 }
 
 .no-underline {
-  text-decoration: none; /* 밑줄 없애기 */
+  text-decoration: none;
   font-family: "LINESeedKR-Bd";
   font-size: 16px;
   color: #000;

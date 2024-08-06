@@ -1,15 +1,16 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import OAuth2RedirectHandler from '../components/Oauth2RedirectHandler.vue';
-import {
-    useMarketStore,
-    useArticleStore,
-    useSalesStore,
-    useMypageStore,
-    useManager,
-    useManagerUser,
-    useManagerNotice,
-    useNotiStore
+import { 
+    useMarketStore, 
+    useArticleStore, 
+    useSalesStore, 
+    useMypageStore, 
+    useManager, 
+    useManagerUser, 
+    useManagerNotice, 
+    useNotiStore 
 } from "@/stores/rootstore.js";
+import { useAuthStore } from "@/stores/auth";
 
 const Main = () => import ("../views/main.vue");
 const Market = () => import ("../views/market.vue");
@@ -257,10 +258,18 @@ function resetStores() {
 }
 
 router.beforeEach((to, from, next) => {
-    if (to.path === "/login" || to.path === "/") {
-        resetStores();
+    const currentUrl = new URL(window.location.href);
+    const googleCode = currentUrl.searchParams.get("code");
+    const state = currentUrl.searchParams.get("state");
+
+    if ((googleCode && to.path === '/login/oauth2/code/google') || (state && to.path === '/login/oauth2/code/naver')) {
+        next(); // 로그인 시도는 OAuth2RedirectHandler.vue에서 처리됩니다.
+    } else {
+        if (to.path === "/login" || to.path === "/") {
+            resetStores();
+        }
+        next();
     }
-    next();
 });
 
 export default router;
