@@ -1,9 +1,3 @@
-<template>
-  <div class="redirecting">
-    <p>Redirecting...</p>
-  </div>
-</template>
-
 <script setup>
 import { onMounted } from 'vue';
 import axios from 'axios';
@@ -50,7 +44,7 @@ onMounted(async () => {
       console.log("Naver login response:", response.data);
       if (response.data.status === 'success') {
         authStore.setToken(response.data.jwtToken);
-        authStore.setUser(response.data.user);
+        authStore.setUser({ email: response.data.email, name: response.data.name, provider: 'naver' });
         currentUrl.searchParams.delete("code");
         currentUrl.searchParams.delete("state");
         window.history.replaceState({}, document.title, currentUrl.toString());
@@ -69,10 +63,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-.redirecting {
-  text-align: center;
-  margin-top: 50px;
-}
-</style>
