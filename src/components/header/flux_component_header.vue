@@ -1,3 +1,93 @@
+<template>
+  <div>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <router-link
+          class="navbar-brand"
+          to="/"
+          @mouseover="addAnimation"
+          @mouseleave="removeAnimation"
+        >
+          FLUX
+        </router-link>
+        <div class="d-flex align-items-center ms-auto mr-20">
+          <div class="nav-item ms-3">
+            <div v-if="authStore.isAuthenticated">
+              <router-link to="/mypage" class="nav-link point-link">{{ authStore.user ? authStore.user.name : 'Profile' }}</router-link>
+            </div>
+            <div v-else>
+              <router-link to="/login" class="nav-link point-link">Login</router-link>
+            </div>
+          </div>
+        </div>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link class="nav-link" to="/">Home</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/market">Market</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/article">Article</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/ranking">Ranking</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link
+                ref="animatedItem"
+                class="nav-link point-link"
+                to="/sales"
+              >
+                Sales
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/mypage">Mypage</router-link>
+            </li>
+            <li class="nav-item">
+              <form class="d-flex ms-2 search-form" role="search">
+                <input
+                  class="form-control me-2 custom-search-input"
+                  type="search"
+                  placeholder="검색어를 입력해주세요"
+                  aria-label="Search"
+                />
+                <button
+                  class="btn btn-outline-success custom-search-button"
+                  type="submit"
+                >
+                  Search
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="banner" v-if="bannerStore.isBannerVisible && latestNotification">
+      <div class="banner-align">
+        <strong class="banner-contents">🛠️ 공지사항 : {{ latestNotification.noti_contents }} -
+          {{ formatDate(latestNotification.noti_updateat || latestNotification.noti_createat) }}
+        </strong>
+        <button @click="closeBanner" class="close-btn">X</button>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
@@ -46,92 +136,6 @@ const fetchNotifications = async () => {
 // 컴포넌트가 마운트될 때 공지사항을 가져옵니다.
 onMounted(fetchNotifications);
 </script>
-
-<template>
-  <div>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
-        <router-link
-          class="navbar-brand"
-          to="/"
-          @mouseover="addAnimation"
-          @mouseleave="removeAnimation"
-          >FLUX</router-link
-        >
-        <div class="d-flex align-items-center ms-auto mr-20">
-          <div class="nav-item ms-3">
-            <router-link to="/login" class="nav-link point-link">
-              <!-- 로그인 상태에 따라 버튼 텍스트 변경 -->
-              {{ authStore.isAuthenticated ? (authStore.user ? authStore.user.name : 'Login') : 'Login' }}
-            </router-link>
-          </div>
-        </div>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mb-2 mb-lg-0">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/">Home</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/market">Market</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/article">Article</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/ranking">Ranking</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link
-                ref="animatedItem"
-                class="nav-link point-link"
-                to="/sales"
-                >Sales</router-link
-              >
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/mypage">Mypage</router-link>
-            </li>
-            <li class="nav-item">
-              <form class="d-flex ms-2 search-form" role="search">
-                <input
-                  class="form-control me-2 custom-search-input"
-                  type="search"
-                  placeholder="검색어를 입력해주세요"
-                  aria-label="Search"
-                />
-                <button
-                  class="btn btn-outline-success custom-search-button"
-                  type="submit"
-                >
-                  Search
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <div class="banner" v-if="bannerStore.isBannerVisible && latestNotification">
-      <div class="banner-align">
-        <strong class="banner-contents">🛠️ 공지사항 : {{ latestNotification.noti_contents }} -
-          {{ formatDate(latestNotification.noti_updateat || latestNotification.noti_createat)}}
-        </strong>
-        <button @click="closeBanner" class="close-btn">X</button>
-      </div>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .navbar {
@@ -237,6 +241,7 @@ onMounted(fetchNotifications);
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
   z-index: 10;
 }
+
 .banner-align {
   display: flex;
   justify-content: center;
@@ -247,6 +252,7 @@ onMounted(fetchNotifications);
   letter-spacing: 1px;
   margin-right: 20px;
 }
+
 .close-btn {
   background: none;
   border: none;
@@ -264,16 +270,20 @@ onMounted(fetchNotifications);
     align-items: center;
     justify-content: center;
   }
+
   .navbar-nav form {
     margin-top: 10px; /* Adjust margin as needed */
   }
+
   .mr-20 {
     margin-right: 5px;
   }
+
   .dropdown-menu {
     right: 0 !important;
     left: auto !important;
   }
+
   .banner {
     font-size: 10px;
   }

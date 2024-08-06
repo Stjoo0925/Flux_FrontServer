@@ -28,9 +28,13 @@
           >
             회원탈퇴
           </router-link>
-          <div class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text" @click="logout">
+          <button
+            class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text logout-btn"
+            @click="handleLogout"
+            :disabled="isLoggingOut"
+          >
             로그아웃
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -40,16 +44,25 @@
 <script setup>
 import { useMypageStore } from "@/stores/rootstore";
 import { useAuthStore } from "@/stores/auth";
+import { ref } from 'vue';
 
 const store = useMypageStore();
 const authStore = useAuthStore();
+const isLoggingOut = ref(false);
 
 const setRoot = (option) => {
   store.setRoot(option);
 };
 
-const logout = async () => {
-  await authStore.logout();
+const handleLogout = async () => {
+  isLoggingOut.value = true;
+  try {
+    await authStore.logout();
+  } catch (error) {
+    console.error('Logout failed:', error);
+  } finally {
+    isLoggingOut.value = false;
+  }
 };
 </script>
 
@@ -64,7 +77,6 @@ const logout = async () => {
 
 .sidebar-con {
   width: 250px;
-
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -106,11 +118,13 @@ const logout = async () => {
   margin-bottom: 5px;
   text-align: center;
 }
+
 .title-link {
   font-family: "LINESeedKR-Bd";
   font-size: 12px;
   color: #ffffff;
 }
+
 .title-link2 {
   font-family: "LINESeedKR-Bd";
   font-size: 10px;
@@ -121,12 +135,28 @@ const logout = async () => {
   border: none !important;
 }
 
-@media (max-width: 992px) {
-  #sidebar-wrapper {
-    margin-left: 0;
-  }
-  .wrapper {
-    display: none !important;
-  }
+.logout-btn {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:disabled {
+  background-color: #444 !important;
+  cursor: not-allowed;
+}
+
+.logout-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: 100%;
+
+}
+
+.logout-btn:active::after {
+  left: 100%;
 }
 </style>
