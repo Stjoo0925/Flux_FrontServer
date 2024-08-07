@@ -1,3 +1,8 @@
+<template>
+  <div>
+    로그인중 ......
+  </div>
+</template>
 <script setup>
 import { onMounted } from 'vue';
 import axios from 'axios';
