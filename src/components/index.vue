@@ -52,12 +52,12 @@
       <div class="line"></div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" v-for="(item, index) in recentItems" :key="index">
+      <div class="col" v-for="(market, index) in recentMarket" :key="index">
         <div class="card fixed-size-card">
-          <img :src="item.market_imgs" class="card-img-top fixed-size-img" :alt="`${index + 1}번`" />
+          <img :src="market.marketImgs" class="card-img-top fixed-size-img" :alt="`${index + 1}번`" />
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ item.market_name }}</h5>
-            <p class="card-text">{{ item.market_price }}원</p>
+            <h5 class="card-title">{{ market.marketTitle }}</h5>
+            <p class="card-text">{{ market.marketPrice }}원</p>
           </div>
         </div>
       </div>
@@ -99,8 +99,8 @@ const fetchMarketData = async () => {
     console.log('API 요청 시작');
     // 시장 데이터와 기사 데이터를 동시에 가져옴
     const [marketResponse, articleResponse] = await Promise.all([
-      axios.get("http://localhost:8001/market"),
-      axios.get("http://localhost:8001/article"),
+      axios.get("http://localhost:8000/market"),
+      axios.get("http://localhost:8000/article"),
     ]);
     console.log('API 응답 받음', marketResponse.data, articleResponse.data);
 

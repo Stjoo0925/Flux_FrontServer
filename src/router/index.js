@@ -10,6 +10,7 @@ import {
   useManagerNotice,
   useNotiStore,
 } from "@/stores/rootstore.js";
+
 import { useAuthStore } from "@/stores/auth";
 
 const Main = () => import("../views/main.vue");
@@ -85,8 +86,10 @@ const routes = [
       },
       {
         path: "detail",
+        name: "MarketDetail",
         component: MarketDetail,
-      },
+        props: true
+      },      
       {
         path: "paymentbefore",
         component: MarketPaymentBefore,
@@ -96,11 +99,6 @@ const routes = [
         component: MarketPaymentAfter,
       },
     ],
-  },
-  {
-    path: "/market/detail/:market_id",
-    component: MarketDetail,
-    name: "MarketDetail",
   },
   {
     path: "/article",

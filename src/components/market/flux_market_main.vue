@@ -4,12 +4,12 @@
     <div class="container">
       <div class="row">
         <!-- Adjust the number of columns to fit 3 images per row -->
-        <div class="col-12 col-sm-4 mb-4" v-for="market in paginatedMarkets" :key="market.market_id">
+        <div class="col-12 col-sm-4 mb-4" v-for="market in paginatedMarkets" :key="market.marketId">
           <div class="hover-card overflow-hidden lh-10 rounded-md position-relative">
-            <a :href="`/market/${market.market_id}`" class="text-decoration-none" @click.prevent="goToDetail(market.market_id)">
+            <a href="#" @click.prevent="goToDetail(market.marketId)">
               <img
-                :src="market.market_imgs"
-                :alt="market.market_title"
+                :src="market.marketImgs[0]" 
+                :alt="market.marketTitle"
                 class="zoom-in img-fluid"
                 style="height: 300px; object-fit: cover; width: 100%;"
               />
@@ -17,11 +17,11 @@
           </div>
           <div class="mt-3">
             <h5 class="font-weight-bold text-dark">
-              <a :href="`/market/detail/${market.market_id}`" class="text-decoration-none text-dark" @click.prevent="goToDetail(market_id)">
-                {{ market.market_title }}
+              <a href="#" @click.prevent="goToDetail(market.marketId)">
+                {{ market.marketTitle }}
               </a>
             </h5>
-            <p class="text-muted">{{ market.market_category }}</p>
+            <p class="text-muted">{{ market.marketCategory }}</p>
           </div>
         </div>
       </div>
@@ -56,6 +56,7 @@
 import axios from 'axios';
 
 export default {
+  name: 'FluxMarketMain',
   data() {
     return {
       market: [],
@@ -76,14 +77,18 @@ export default {
   methods: {
     async fetchMarkets() {
       try {
-        const response = await axios.get('http://localhost:8080/market');
+        const response = await axios.get('http://localhost:8080/api/v1/market');
         this.market = response.data;
       } catch (error) {
         console.error('Error fetching markets:', error);
       }
     },
-    goToDetail(id) {
-      this.$router.push({ path: `/market/detail`, query: { market_id: id } });
+    async goToDetail(marketId) {
+      try {
+        await this.$router.push({ name: 'MarketDetail', params: { marketId } });
+      } catch (error) {
+        console.error('Navigation error:', error);
+      }
     },
     changePage(page) {
       if (page > 0 && page <= this.totalPages) {
