@@ -67,10 +67,10 @@ export default {
       }
     };
 
-    onMounted(() => {
-      fetchArticle();
-    });
-
+  onMounted(async () => {
+  await fetchArticle();
+  console.log('Fetched Article:', article.value);
+});
     return {
       articleId,
       article,

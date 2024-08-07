@@ -28,7 +28,7 @@
           <span class="item clickable" @click="goToDetail(article.articleId)">{{ article.articleAuthor }}</span>
           <span class="item clickable" @click="goToDetail(article.articleId)">
             {{ getShortContent(article.articleContent) }}
-            <a v-if="article.articleContent.length > 20" @click.stop="goToDetail(article.articleId)" class="more-link">더 보기</a>
+            <a v-if="article.articleContent && article.articleContent.length > 20" @click.stop="goToDetail(article.articleId)" class="more-link">더 보기</a>
           </span>
         </div>
       </div>
@@ -86,11 +86,27 @@ export default {
   methods: {
     async fetchArticles() {
       try {
-        // 백엔드 API 엔드포인트를 수정하여 실제 API와 맞추세요
-        const response = await axios.get('http://localhost:8080/api/v1/articles');
+        // 백엔드 API 엔드포인트를 정확하게 설정
+        const response = await axios.get('http://localhost:8080/api/v1/articles', {
+          headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': 'Bearer ' + yourAuthToken, // 필요시 인증 토큰 추가
+          },
+        });
         this.articles = response.data; // 서버에서 받아온 데이터를 설정
       } catch (error) {
         console.error('Error fetching articles:', error);
+        if (error.response) {
+          // 서버가 응답했지만, 응답 상태 코드가 2xx가 아닌 경우
+          console.error('Response data:', error.response.data);
+          console.error('Response status:', error.response.status);
+        } else if (error.request) {
+          // 요청이 이루어졌으나 응답이 수신되지 않은 경우
+          console.error('Request data:', error.request);
+        } else {
+          // 다른 이유로 요청 설정 중에 오류가 발생한 경우
+          console.error('Error message:', error.message);
+        }
       }
     },
     searchArticles() {
@@ -116,6 +132,9 @@ export default {
       this.$router.push({ path: '/manager/article/articleview', query: { id: id } });
     },
     getShortContent(content) {
+      if (!content) {
+        return ''; // content가 undefined 또는 null일 경우 빈 문자열 반환
+      }
       return content.length > 20 ? content.substring(0, 20) + '...' : content;
     }
   },

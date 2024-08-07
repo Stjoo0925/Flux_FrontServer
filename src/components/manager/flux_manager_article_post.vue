@@ -47,6 +47,7 @@
 
 <script>
 import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
 
 export default {
   name: 'ManagerArticlePost',
@@ -57,7 +58,7 @@ export default {
         articleAuthor: '',
         articleContents: '',
         articleTitle: '',
-        imagePreview: null
+        imagePreview: ''
       }
     };
   },
@@ -76,11 +77,24 @@ export default {
       this.$refs.imageUpload.click();
     },
     async submitArticle() {
+      const authStore = useAuthStore();
+      console.log('Auth Store:', authStore.$state); // 상태 로그 출력
+
+      if (!authStore.isAuthenticated) {
+        console.error('허가되지 않은 유저');
+        this.$router.push({ name: 'LoginPage' });
+        return;
+      }
+
+      // const userId = authStore.getUserId; // userId 관련 코드 제거
+
       const formData = new FormData();
       formData.append('articleCategory', this.article.articleCategory);
       formData.append('articleTitle', this.article.articleTitle);
       formData.append('articleAuthor', this.article.articleAuthor);
       formData.append('articleContents', this.article.articleContents);
+      
+      // formData.append('userId', userId.toString()); // userId 관련 코드 제거
 
       if (this.$refs.imageUpload.files.length > 0) {
         formData.append('files', this.$refs.imageUpload.files[0]);
@@ -89,13 +103,14 @@ export default {
       try {
         const response = await axios.post('http://localhost:8080/api/v1/articles/articlepost', formData, {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${authStore.token}`
           }
         });
-        console.log('Article 등록 성공:', response.data);
-        this.$router.push({ name: 'ArticleView' });
+      console.log('Article 등록 성공:', response.data);
+      this.$router.push({ name: 'ArticleView', query: { id: response.data.article.articleId } });
       } catch (error) {
-        console.error('아티클 등록 실패:', error);
+        console.error('아티클 등록 실패:', error.response ? error.response.data : error.message);
       }
     }
   }
