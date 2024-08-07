@@ -21,13 +21,6 @@
           >
             활동내역
           </router-link>
-          <router-link
-            to="/mypage/withdrawal"
-            class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text"
-            @click="setRoot('withdrawal')"
-          >
-            회원탈퇴
-          </router-link>
           <button
             class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text logout-btn"
             @click="handleLogout"
@@ -35,6 +28,12 @@
           >
             로그아웃
           </button>
+          <router-link
+            to="/manager"
+            class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text"
+          >
+            관리자페이지
+          </router-link>
         </div>
       </div>
     </div>
