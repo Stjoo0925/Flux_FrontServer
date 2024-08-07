@@ -107,8 +107,8 @@ export default {
             'Authorization': `Bearer ${authStore.token}`
           }
         });
-        console.log('Article 등록 성공:', response.data);
-        this.$router.push({ name: 'ArticleView' });
+      console.log('Article 등록 성공:', response.data);
+      this.$router.push({ name: 'ArticleView', query: { id: response.data.article.articleId } });
       } catch (error) {
         console.error('아티클 등록 실패:', error.response ? error.response.data : error.message);
       }
