@@ -95,9 +95,6 @@ onMounted(fetchNotifications);
               >
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/mypage">Mypage</router-link>
-            </li>
-            <li class="nav-item">
               <form class="d-flex ms-2 search-form" role="search">
                 <input
                   class="form-control me-2 custom-search-input"
