@@ -164,7 +164,7 @@ async function submitForm() {
       }
     });
     alert('작품이 성공적으로 등록되었습니다.');
-    router.push('/market/detail');
+    router.push('/market/main');
   } catch (error) {
     if (error.response) {
       console.error('Response error:', error.response.data);
