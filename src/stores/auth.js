@@ -14,7 +14,8 @@ export const useAuthStore = defineStore('auth', {
     return {
       token: localStorage.getItem('authToken') || '',
       user: user,
-      username: user ? user.name : ''
+      username: user ? user.name : '',
+      userId: user ? user.userId : '' // Ensure this aligns with user object
     };
   },
   actions: {
@@ -23,14 +24,19 @@ export const useAuthStore = defineStore('auth', {
       localStorage.setItem('authToken', token);
     },
     setUser(user) {
+      if (!user.userId) {
+        console.error('User object does not contain an ID');
+      }
       this.user = user;
       this.username = user.name;
+      this.userId = user.userId; // Make sure the property name is userId
       localStorage.setItem('authUser', JSON.stringify(user));
     },
     clearAuth() {
       this.token = '';
       this.user = null;
       this.username = '';
+      this.userId = ''; // id 초기화
       localStorage.removeItem('authToken');
       localStorage.removeItem('authUser');
     },
@@ -63,7 +69,11 @@ export const useAuthStore = defineStore('auth', {
         const response = await axios.post('http://localhost:8080/auth/google', { code: googleCode });
         if (response.data.idToken) {
           this.setToken(response.data.idToken);
-          this.setUser({ email: response.data.email, provider: 'google' });
+          this.setUser({
+            email: response.data.email,
+            provider: 'google',
+            userId: response.data.id // Ensure this is set
+          });
         }
       } catch (error) {
         console.error(error);
@@ -73,6 +83,7 @@ export const useAuthStore = defineStore('auth', {
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
+    getUserId: (state) => state.userId,
   },
   persist: true,
 });

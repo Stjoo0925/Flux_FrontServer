@@ -31,7 +31,12 @@ onMounted(async () => {
       console.log("Google login response:", response.data);
       if (response.data.jwtToken) {
         authStore.setToken(response.data.jwtToken);
-        authStore.setUser({ userId: response.data.userId, email: response.data.email, name: response.data.name, provider: 'google' }); // userId 추가
+        authStore.setUser({
+          userId: response.data.userId,
+          email: response.data.email,
+          name: response.data.name,
+          provider: 'google'
+        });
         currentUrl.searchParams.delete("code");
         currentUrl.searchParams.delete("state");
         window.history.replaceState({}, document.title, currentUrl.toString());
@@ -50,7 +55,12 @@ onMounted(async () => {
       console.log("Naver login response:", response.data);
       if (response.data.status === 'success') {
         authStore.setToken(response.data.jwtToken);
-        authStore.setUser({ userId: response.data.userId, email: response.data.email, name: response.data.name, provider: 'naver' }); // userId 추가
+        authStore.setUser({
+          userId: response.data.userId,
+          email: response.data.email,
+          name: response.data.name,
+          provider: 'naver'
+        });
         currentUrl.searchParams.delete("code");
         currentUrl.searchParams.delete("state");
         window.history.replaceState({}, document.title, currentUrl.toString());
