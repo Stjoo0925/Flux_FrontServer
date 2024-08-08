@@ -3,6 +3,7 @@
     로그인중 ......
   </div>
 </template>
+
 <script setup>
 import { onMounted } from 'vue';
 import axios from 'axios';
@@ -17,6 +18,7 @@ onMounted(async () => {
   const googleCode = currentUrl.searchParams.get("code");
   const state = currentUrl.searchParams.get("state");
   let naverAccessToken;
+  
   if (window.naver_id_login) {
     const naverLogin = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "http://localhost:8000/login/oauth2/code/naver");
     naverAccessToken = naverLogin.oauthParams.access_token;
@@ -29,8 +31,7 @@ onMounted(async () => {
       console.log("Google login response:", response.data);
       if (response.data.jwtToken) {
         authStore.setToken(response.data.jwtToken);
-        authStore.setUser({ email: response.data.email, name: response.data.name, provider: 'google' });
-        // 성공 후 URL에서 'code'와 'state' 제거
+        authStore.setUser({ userId: response.data.userId, email: response.data.email, name: response.data.name, provider: 'google' }); // userId 추가
         currentUrl.searchParams.delete("code");
         currentUrl.searchParams.delete("state");
         window.history.replaceState({}, document.title, currentUrl.toString());
@@ -49,7 +50,7 @@ onMounted(async () => {
       console.log("Naver login response:", response.data);
       if (response.data.status === 'success') {
         authStore.setToken(response.data.jwtToken);
-        authStore.setUser({ email: response.data.email, name: response.data.name, provider: 'naver' });
+        authStore.setUser({ userId: response.data.userId, email: response.data.email, name: response.data.name, provider: 'naver' }); // userId 추가
         currentUrl.searchParams.delete("code");
         currentUrl.searchParams.delete("state");
         window.history.replaceState({}, document.title, currentUrl.toString());
