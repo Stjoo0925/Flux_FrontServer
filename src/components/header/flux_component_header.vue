@@ -25,19 +25,15 @@ const formatDate = (dateString) => {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
-
-const fetchNotifications = async () => {
+async function fetchNotifications() {
   try {
-    const response = await axios.get("http://localhost:8080/api/v1/notice");
-    console.log(response);
-    notifications.value = response.data.reverse().map((notification) => ({
-      ...notification,
-    }));
-    bannerStore.setNotifications(notifications.value);
+    const response = await axios.get('http://localhost:8080/api/v1/notification');
+    return response.data;
   } catch (error) {
-    console.error("Error fetching notifications:", error);
+    console.error('Error fetching notifications:', error.response ? error.response.data : error.message);
+    throw error;
   }
-};
+}
 
 // 컴포넌트가 마운트될 때 공지사항을 가져옵니다.
 onMounted(fetchNotifications);
@@ -97,9 +93,6 @@ onMounted(fetchNotifications);
               <router-link class="nav-link point-link" to="/sales"
                 >Sales</router-link
               >
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/mypage">Mypage</router-link>
             </li>
             <li class="nav-item">
               <form class="d-flex ms-2 search-form" role="search">
