@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="submitForm">
     <div class="registration_edit">
-      <h2>아티스트 정보를 입력해 주세요.</h2>
-      <p class="sub-text">작가 등록을 하지 않으면, 작품 접수가 불가능합니다. 먼저 작가정보를 등록해주세요.</p>
+      <h2>작품 정보를 입력해 주세요.</h2>
+      <p class="sub-text">작품 등록을 위해 모든 필드를 채워주세요.</p>
       <div class="regist_info">
         <div class="input-container">
           <label for="marketTitle">제목</label>
@@ -32,7 +32,7 @@
           <label for="marketPrice">최초가격</label>
           <div class="price-container">
             <input type="number" id="marketPrice" v-model.number="marketPrice" />
-            <span class="price-note">바로구매가격</span>
+            <label class="price-note">바로구매가격</label>
             <input type="number" id="marketMaxPrice" v-model.number="marketMaxPrice" class="market-maxprice" />
           </div>
         </div>
@@ -85,8 +85,10 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';  // auth store import
 
 const router = useRouter();
+const authStore = useAuthStore();  // auth store 사용
 
 const marketTitle = ref('');
 const selectedCategory = ref('');
@@ -110,69 +112,70 @@ function isFile(image) {
 function createObjectURL(file) {
   return URL.createObjectURL(file);
 }
-
-async function getNextId() {
-  try {
-    const response = await axios.get('http://localhost:8080/api/v1/market');
-    const marketItems = response.data;
-    if (marketItems.length === 0) {
-      return 1; // 첫 데이터의 ID는 1
-    }
-    const maxId = Math.max(...marketItems.map(item => item.marketId));
-    return maxId + 1;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return 1; // 오류 발생 시 ID를 1로 설정
-  }
-}
 async function submitForm() {
   if (!marketTitle.value || !selectedCategory.value || !userName.value || !marketContents.value ||
-      !marketPrice.value || !marketMaxPrice.value || !userMail.value || !auctionStartTime.value || !auctionDuration.value || marketImgs.value.length === 0) {
+      !marketPrice.value || !marketMaxPrice.value || !userMail.value || !auctionStartTime.value || !auctionDuration.value) {
     alert('모든 필드를 채워주세요.');
     return;
   }
 
-  // 경매 종료 시간 계산
   const startTime = new Date(auctionStartTime.value);
   const durationHours = parseInt(auctionDuration.value, 10);
   const endTime = new Date(startTime.getTime() + durationHours * 60 * 60 * 1000);
 
-  // FormData 객체 생성 및 데이터 추가
-  const formData = new FormData();
-  // Remove marketId from formData if the server handles ID generation
-  formData.append('userId', 1); // 적절한 userId로 변경
-  formData.append('marketTitle', marketTitle.value);
-  formData.append('marketCategory', selectedCategory.value);
-  formData.append('userName', userName.value);
-  formData.append('marketContents', marketContents.value);
-  formData.append('marketPrice', marketPrice.value);
-  formData.append('marketMaxPrice', marketMaxPrice.value);
-  formData.append('userMail', userMail.value);
-  formData.append('marketCreateAt', new Date().toISOString()); // 서버와 일치하는 포맷
-  formData.append('marketUpdateAt', new Date().toISOString()); // 서버와 일치하는 포맷
-  formData.append('marketSellDate', startTime.toISOString()); // 서버와 일치하는 포맷
-  formData.append('startDate', startTime.toISOString()); // 서버와 일치하는 포맷
-  formData.append('endDate', endTime.toISOString()); // 서버와 일치하는 포맷
-  formData.append('marketView', 0);
-  formData.append('marketOrderableStatus', 'true');
-  marketImgs.value.forEach(file => {
-    formData.append('marketImgs', file);
-  });
+  const uploadedImageUrls = await Promise.all(
+    marketImgs.value.map(async (file) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await axios.post('http://localhost:8080/api/v1/market/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${authStore.token}`
+        }
+      });
+      return response.data.url;
+    })
+  );
 
-  // Axios를 사용하여 데이터 전송
+  const marketData = {
+    marketId: null,
+    marketName: marketTitle.value,
+    marketImgs: uploadedImageUrls, // 수정: 배열로 전송
+    marketPrice: marketPrice.value,
+    marketMaxPrice: marketMaxPrice.value,
+    marketCategory: selectedCategory.value,
+    marketContents: marketContents.value,
+    marketOrderableStatus: true,
+    marketStatus: 'AVAILABLE',
+    marketCreatedAt: null,
+    marketUpdatedAt: null,
+    marketSellDate: null,
+    startDate: auctionStartTime.value,
+    endDate: endTime.toISOString(),
+    marketView: 0,
+    userId: authStore.user.userId
+  };
+
   try {
-    const response = await axios.post('http://localhost:8080/api/v1/market', formData);
-
-    
-    console.log('Response:', response.data);
-    const createdMarketId = response.data.marketId; // 서버에서 생성된 ID를 사용
-    router.push({ path: '/market/detail', query: { marketId: createdMarketId } });
+    const response = await axios.post('http://localhost:8080/api/v1/market', marketData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authStore.token}`
+      }
+    });
+    alert('작품이 성공적으로 등록되었습니다.');
+    router.push('/market/detail');
   } catch (error) {
-    console.error('Error submitting form:', error);
-    alert('오류가 발생했습니다. 다시 시도해주세요.');
+    if (error.response) {
+      console.error('Response error:', error.response.data);
+    } else if (error.request) {
+      console.error('Request error:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
+    alert('작품 등록에 실패했습니다. 다시 시도해 주세요.');
   }
 }
-
 
 </script>
 
