@@ -22,7 +22,7 @@
         <span class="header-item">내용</span>
       </div>
       <div class="list-items">
-        <div class="list-item" v-for="(article, index) in paginatedArticles" :key="article.articleId">
+        <div class="list-item" v-for="article in paginatedArticles" :key="article.articleId">
           <img v-if="article.articleImgPath" :src="article.articleImgPath" class="item-img" alt="기사 이미지">
           <span class="item">{{ article.articleCategory || '미분류' }}</span>
           <span class="item clickable" @click="goToDetail(article.articleId)">{{ article.articleAuthor }}</span>
@@ -51,97 +51,81 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 
-export default {
-  name: 'ArticleList',
-  data() {
-    return {
-      searchQuery: '',
-      articles: [],  // 데이터 배열 초기화
-      currentPage: 1,
-      pageSize: 5, // 페이지당 항목 수를 5로 설정
-    };
-  },
-  computed: {
-    totalPages() {
-      return Math.ceil(this.filteredArticles.length / this.pageSize);
-    },
-    paginatedArticles() {
-      const start = (this.currentPage - 1) * this.pageSize;
-      const end = start + this.pageSize;
-      return this.filteredArticles.slice(start, end);
-    },
-    filteredArticles() {
-      if (!this.searchQuery) {
-        return this.articles;
-      }
-      return this.articles.filter(article =>
-        article.articleTitle.includes(this.searchQuery) ||  // 제목으로 검색
-        article.articleAuthor.includes(this.searchQuery)   // 작가 이름으로 검색
-      );
-    }
-  },
-  methods: {
-    async fetchArticles() {
-      try {
-        // 백엔드 API 엔드포인트를 정확하게 설정
-        const response = await axios.get('http://localhost:8080/api/v1/articles', {
-          headers: {
-            'Content-Type': 'application/json',
-            // 'Authorization': 'Bearer ' + yourAuthToken, // 필요시 인증 토큰 추가
-          },
-        });
-        this.articles = response.data; // 서버에서 받아온 데이터를 설정
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-        if (error.response) {
-          // 서버가 응답했지만, 응답 상태 코드가 2xx가 아닌 경우
-          console.error('Response data:', error.response.data);
-          console.error('Response status:', error.response.status);
-        } else if (error.request) {
-          // 요청이 이루어졌으나 응답이 수신되지 않은 경우
-          console.error('Request data:', error.request);
-        } else {
-          // 다른 이유로 요청 설정 중에 오류가 발생한 경우
-          console.error('Error message:', error.message);
-        }
-      }
-    },
-    searchArticles() {
-      this.currentPage = 1; // 검색 시 페이지를 첫 페이지로 리셋
-    },
-    addNewArticle() {
-      this.$router.push({ path: '/manager/article/articlepost' }); // 새 글 추가 페이지로 이동
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    goToPage(page) {
-      this.currentPage = page;
-    },
-    goToDetail(id) {
-      this.$router.push({ path: '/manager/article/articleview', query: { id: id } });
-    },
-    getShortContent(content) {
-      if (!content) {
-        return ''; // content가 undefined 또는 null일 경우 빈 문자열 반환
-      }
-      return content.length > 20 ? content.substring(0, 20) + '...' : content;
-    }
-  },
-  created() {
-    this.fetchArticles(); // 컴포넌트가 생성될 때 아티클 데이터를 가져옴
+const router = useRouter();
+
+const searchQuery = ref('');
+const articles = ref([]);
+const currentPage = ref(1);
+const pageSize = 5;
+
+const fetchArticles = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/api/v1/articles');
+    articles.value = response.data;
+  } catch (error) {
+    console.error('Error fetching articles:', error);
   }
 };
+
+const searchArticles = () => {
+  currentPage.value = 1; // 검색 시 페이지를 첫 페이지로 리셋
+};
+
+const addNewArticle = () => {
+  router.push({ path: '/manager/article/articlepost' });
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+const goToDetail = (id) => {
+  router.push({ path: '/manager/article/articleview', query: { id } });
+};
+
+const getShortContent = (content) => {
+  if (!content) return '';
+  return content.length > 20 ? content.substring(0, 20) + '...' : content;
+};
+
+const filteredArticles = computed(() => {
+  if (!searchQuery.value) return articles.value;
+  return articles.value.filter(article =>
+    article.articleTitle.includes(searchQuery.value) ||
+    article.articleAuthor.includes(searchQuery.value)
+  );
+});
+
+const paginatedArticles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return filteredArticles.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredArticles.value.length / pageSize);
+});
+
+onMounted(() => {
+  fetchArticles();
+});
 </script>
 
 <style scoped>

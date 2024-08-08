@@ -51,6 +51,7 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
+// Define reactive state
 const article = ref({
   articleCategory: '',
   articleAuthor: '',
@@ -75,10 +76,12 @@ function handleImageUpload(event) {
   }
 }
 
+// Trigger file upload dialog
 function triggerFileUpload() {
   imageUpload.value.click();
 }
 
+// Submit article
 async function submitArticle() {
   console.log('Auth Store:', authStore.$state);
 
