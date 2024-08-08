@@ -1,139 +1,99 @@
 <template>
-  <!-- 아티클 메인페이지 시작 -->
-  <!-- 정렬순서 시작 -->
-  <div class="selectbox-container">
-    <div class="selectbox">
-      <select class="form-select" aria-label="정렬 순서" v-model="sortOrder" @change="sortArticles">
-        <option value="" disabled>정렬 순서</option>
-        <option value="latest">최신 등록순</option>
-        <option value="popular">인기순</option>
-      </select>
-    </div>
-  </div>
-  <!-- 정렬순서 종료 -->
-
-  <!-- 아티클 메인 컨텐츠 시작 -->
-  <div class="articleContents">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      <!-- 반복되는 카드 아이템 -->
-      <div class="col" v-for="(article, index) in paginatedArticles" :key="article.articleId" @click="goToArticleDetail(article.articleId)">
-        <div class="card">
-          <div class="icon-container">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-heart"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"
-              />
-            </svg>
-          </div>
-          <img
-            :src="article.articleImgName"
-            class="card-img-top"
-            :alt="article.articleTitle"
-          />
-          <div class="card-body">
-            <h6 class="card-category">{{ article.articleCategory }}</h6>
-            <h4 class="card-title">{{ article.articleTitle }}</h4>
-            <p class="card-text">날짜 {{ article.articleCreateAt }}</p>
+  <div class="main-container">
+    <Sidebar @category-selected="handleCategorySelected" />
+    <div class="articleContents">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col" v-for="article in paginatedArticles" :key="article.articleId" @click="() => goToArticleDetail(article.articleId)">
+          <div class="card">
+            <div class="icon-container">
+              <!-- 아이콘 내용 -->
+            </div>
+            <img :src="article.articleImgPath" class="card-img-top" :alt="article.articleTitle" />
+            <div class="card-body">
+              <h6 class="card-category">{{ article.articleCategory }}</h6>
+              <h4 class="card-title">{{ article.articleTitle }}</h4>
+              <p class="card-text">날짜 {{ article.articleCreateAt }}</p>
+            </div>
           </div>
         </div>
       </div>
+      <nav aria-label="페이지 네비게이션 예시" class="d-flex justify-content-center">
+        <!-- 페이지 네비게이션 -->
+      </nav>
     </div>
-    <nav aria-label="페이지 네비게이션 예시" class="d-flex justify-content-center">
-      <ul class="pagination pagination-black">
-        <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link" href="#" aria-label="Previous" @click.prevent="prevPage">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page }">
-          <a class="page-link" href="#" @click.prevent="goToPage(page)">{{ page }}</a>
-        </li>
-        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a class="page-link" href="#" aria-label="Next" @click.prevent="nextPage">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
   </div>
-  <!-- 아티클 메인 컨텐츠 종료 -->
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+// import Sidebar from '@/components/sidebar/flux_component_side_article.vue';
 
-export default {
-  name: "ArticleMain",
-  data() {
-    return {
-      articles: [], // 데이터 저장용 배열
-      currentPage: 1,
-      pageSize: 9,
-      sortOrder: '', // 정렬 순서
-    };
-  },
-  computed: {
-    totalPages() {
-      return Math.ceil(this.filteredArticles.length / this.pageSize);
-    },
-    paginatedArticles() {
-      const start = (this.currentPage - 1) * this.pageSize;
-      const end = start + this.pageSize;
-      return this.filteredArticles.slice(start, end);
-    },
-    filteredArticles() {
-      return Array.isArray(this.articles) ? this.articles.filter(article => article.articleStatus === true) : [];
+const articles = ref([]);
+const currentPage = ref(1);
+const pageSize = ref(9);
+const selectedCategory = ref(''); // 선택된 카테고리 상태
+const router = useRouter();
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredArticles.value.length / pageSize.value);
+});
+
+const paginatedArticles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return filteredArticles.value.slice(start, end);
+});
+
+const filteredArticles = computed(() => {
+  return articles.value.filter(article => 
+    article.articleStatus === true && 
+    (selectedCategory.value === '' || article.articleCategory === selectedCategory.value)
+  );
+});
+
+const fetchArticles = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/api/v1/articles');
+    if (Array.isArray(response.data)) {
+      articles.value = response.data;
+    } else {
+      console.error('Fetched data is not an array:', response.data);
     }
-  },
-  methods: {
-    async fetchArticles() {
-      try {
-        const response = await axios.get('http://localhost:8080/api/v1/articles');
-        if (Array.isArray(response.data)) {
-          this.articles = response.data;
-          this.sortArticles();
-        } else {
-          console.error('Fetched data is not an array:', response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-      }
-    },
-    sortArticles() {
-      if (this.sortOrder === 'latest') {
-        this.articles.sort((a, b) => new Date(b.articleCreatedAt) - new Date(a.articleCreatedAt));
-      } else if (this.sortOrder === 'popular') {
-        this.articles.sort((a, b) => b.popularity - a.popularity);
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    goToPage(page) {
-      this.currentPage = page;
-    },
-    goToArticleDetail(articleId) {
-    this.$router.push({ name: 'ArticleDetail', params: { id: articleId } });
-  }
-  },
-  async created() {
-    await this.fetchArticles();
+  } catch (error) {
+    console.error('Error fetching articles:', error);
   }
 };
+
+const handleCategorySelected = (category) => {
+  selectedCategory.value = category;
+  currentPage.value = 1; // 카테고리 변경 시 페이지를 첫 페이지로 리셋
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+const goToArticleDetail = (articleId) => {
+  router.push({ name: 'ArticleDetail', params: { id: articleId } });
+};
+
+onMounted(() => {
+  fetchArticles();
+});
 </script>
 
 <style>

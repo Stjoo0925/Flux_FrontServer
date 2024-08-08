@@ -1,91 +1,98 @@
 <template>
   <div>
-    <!-- 아티클 세부 페이지 시작 -->
-    <div class="article-container" v-if="article">
-      <div class="top">
-        <div class="category">
-          <h3>{{ article.articleCategory }}</h3>
-        </div>
-        <div class="subject">
-          <h1>{{ article.articleTitle }}</h1>
-        </div>
-      </div>
-      <div class="card-container">
-        <div class="card">
-          <img :src="article.articleImgName" class="card-img-top" :alt="article.articleTitle">
-          <div class="card-body">
-            <p class="card-text" v-html="formattedContent"></p>
-          </div>
-        </div>
+<!-- 아티클 세부 페이지 시작 -->
+<div class="article-container" v-if="article">
+  <div class="top">
+    <div class="category">
+      <h3>{{ article.articleCategory }}</h3>
+    </div>
+    <div class="subject">
+      <h1>{{ article.articleTitle }}</h1>
+    </div>
+  </div>
+  <div class="card-container">
+    <div class="card">
+      <img :src="article.articleImgPath" class="card-img-top" :alt="article.articleTitle">
+      <div class="card-body">
+        <p class="card-text" v-html="formattedContent"></p>
       </div>
     </div>
-    <!-- 아티클 세부 페이지 종료 -->
+  </div>
+</div>
+<!-- 아티클 세부 페이지 종료 -->
 
     <!-- 댓글 등록 부분 시작 -->
     <div class="input-group mb-3">
-  <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
-  <button class="btn btn-outline-secondary" type="button" id="button-addon2">댓글 등록</button>
-</div>
+      <input type="text" class="form-control" placeholder="댓글을 입력하세요" v-model="comment" />
+      <button class="btn btn-outline-secondary" type="button" @click="submitComment">댓글 등록</button>
+    </div>
     <!-- 댓글 등록 부분 종료 -->
 
-    <!-- 연관 작품 시작 -->
-    <div class="related-products-container">
-      <div class="related-products-header" v-if="relatedProducts.length">
-        <h3>연관 상품</h3>
-      </div>
-      <div class="row row-cols-1 row-cols-md-3 g-4" v-if="relatedProducts.length">
-        <div class="col" v-for="(product, index) in relatedProducts" :key="index">
-          <div class="card">
-            <img :src="product.image" class="card-img-top" :alt="product.title">
-            <div class="card-body">
-              <h5 class="card-title">{{ product.author }}</h5>
-              <h6 class="card-title">{{ product.title }}</h6>
-              <p class="card-text">{{ product.status }}</p>
-            </div>
-          </div>
+<!-- 연관 작품 시작 -->
+<div class="related-products-container">
+  <div class="related-products-header" v-if="relatedProducts.length">
+    <h3>연관 상품</h3>
+  </div>
+  <div class="row row-cols-1 row-cols-md-3 g-4" v-if="relatedProducts.length">
+    <div class="col" v-for="(product, index) in relatedProducts" :key="index">
+      <div class="card">
+        <img :src="product.image" class="card-img-top" :alt="product.title">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.author }}</h5>
+          <h6 class="card-title">{{ product.title }}</h6>
+          <p class="card-text">{{ product.status }}</p>
         </div>
       </div>
-      <!-- 연관 상품이 없는 경우 빈 공간을 유지하도록 추가적인 공간을 만들기 위한 요소 -->
-      <div class="no-related-products" v-if="!relatedProducts.length">
-        <p>연관 상품이 없습니다.</p>
-      </div>
     </div>
-    <!-- 연관 작품 종료 -->
+  </div>
+  <!-- 연관 상품이 없는 경우 빈 공간을 유지하도록 추가적인 공간을 만들기 위한 요소 -->
+  <div class="no-related-products" v-if="!relatedProducts.length">
+    <p>연관 상품이 없습니다.</p>
+  </div>
+</div>
+<!-- 연관 작품 종료 -->
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
+import { useRoute } from 'vue-router';
 
-export default {
-  name: "ArticleDetail",
-  data() {
-    return {
-      article: null,
-      relatedProducts: []
-    };
-  },
-  computed: {
-    formattedContent() {
-      return this.article ? this.article.articleContents.replace(/\n/g, '<br>') : '';
-    }
-  },
-  async created() {
-    const articleId = this.$route.query.id; // URL 파라미터에서 ID를 가져오는 코드
+const route = useRoute();
 
-    try {
-      // 아티클 데이터 가져오기
-      const response = await axios.get(`http://localhost:8080/articles/${articleId}`);
-      this.article = response.data;
-      
-      // 연관 상품 데이터 가져오기
-      const relatedResponse = await axios.get(`http://localhost:8080/related-products?articleId=${articleId}`);
-      this.relatedProducts = relatedResponse.data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+const article = ref(null);
+const relatedProducts = ref([]);
+const comment = ref('');
+
+const formattedContent = computed(() => {
+  return article.value ? article.value.articleContents.replace(/\n/g, '<br>') : '';
+});
+
+const fetchArticle = async () => {
+  const articleId = route.params.id;
+
+  console.log('Article ID:', articleId);
+
+  try {
+    const response = await axios.get(`http://localhost:8080/api/v1/articles/${articleId}`);
+    article.value = response.data;
+
+    const relatedResponse = await axios.get(`http://localhost:8080/api/v1/related-products?marketId=${marketId}`);
+    relatedProducts.value = relatedResponse.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
   }
 };
+const submitComment = () => {
+  // 댓글 등록 로직을 여기에 구현합니다.
+  console.log('댓글 등록:', comment.value);
+  // 댓글을 서버로 전송하는 로직을 추가할 수 있습니다.
+};
+
+onMounted(() => {
+  fetchArticle();
+});
 </script>
 
 <style>
