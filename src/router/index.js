@@ -56,6 +56,11 @@ const routes = [
     component: Main,
   },
   {
+    path: "/market/detail/:marketId",
+    name: 'MarketDetail',
+    component: MarketDetail
+  },
+  {
     path: "/market",
     component: Market,
     redirect: "/market/main",
@@ -63,12 +68,6 @@ const routes = [
       {
         path: "main",
         component: MarketMain,
-      },
-      {
-        path: "detail",
-        name: "MarketDetail",
-        component: MarketDetail,
-        props: true
       },
       {
         path: "paymentbefore",
@@ -148,9 +147,9 @@ const routes = [
       },
       {
         path: ":id",
-        name: "NoticeDetail", // 이름 추가
+        name: "NoticeDetail",
         component: NoticeDetail,
-        props: true, // ID를 컴포넌트로 전달
+        props: true,
       },
     ],
   },
@@ -249,7 +248,7 @@ router.beforeEach((to, from, next) => {
     (googleCode && to.path === "/login/oauth2/code/google") ||
     (state && to.path === "/login/oauth2/code/naver")
   ) {
-    next(); // 로그인 시도는 OAuth2RedirectHandler.vue에서 처리됩니다.
+    next();
   } else {
     if (to.path === "/login" || to.path === "/") {
       resetStores();
