@@ -45,76 +45,80 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
-export default {
-  name: 'ManagerArticlePost',
-  data() {
-    return {
-      article: {
-        articleCategory: '',
-        articleAuthor: '',
-        articleContents: '',
-        articleTitle: '',
-        imagePreview: ''
-      }
+const article = ref({
+  articleCategory: '',
+  articleAuthor: '',
+  articleContents: '',
+  articleTitle: '',
+  imagePreview: ''
+});
+
+const imageUpload = ref(null);
+const authStore = useAuthStore();
+const router = useRouter();
+
+// Handle image file upload
+function handleImageUpload(event) {
+  const input = event.target;
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      article.value.imagePreview = e.target.result;
     };
-  },
-  methods: {
-    handleImageUpload(event) {
-      const input = event.target;
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.article.imagePreview = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    },
-    triggerFileUpload() {
-      this.$refs.imageUpload.click();
-    },
-    async submitArticle() {
-      const authStore = useAuthStore();
-      console.log('Auth Store:', authStore.$state); // 상태 로그 출력
-
-      if (!authStore.isAuthenticated) {
-        console.error('허가되지 않은 유저');
-        this.$router.push({ name: 'LoginPage' });
-        return;
-      }
-
-      // const userId = authStore.getUserId; // userId 관련 코드 제거
-
-      const formData = new FormData();
-      formData.append('articleCategory', this.article.articleCategory);
-      formData.append('articleTitle', this.article.articleTitle);
-      formData.append('articleAuthor', this.article.articleAuthor);
-      formData.append('articleContents', this.article.articleContents);
-      
-      // formData.append('userId', userId.toString()); // userId 관련 코드 제거
-
-      if (this.$refs.imageUpload.files.length > 0) {
-        formData.append('files', this.$refs.imageUpload.files[0]);
-      }
-
-      try {
-        const response = await axios.post('http://localhost:8080/api/v1/articles/articlepost', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${authStore.token}`
-          }
-        });
-      console.log('Article 등록 성공:', response.data);
-      this.$router.push({ name: 'ArticleView', query: { id: response.data.article.articleId } });
-      } catch (error) {
-        console.error('아티클 등록 실패:', error.response ? error.response.data : error.message);
-      }
-    }
+    reader.readAsDataURL(input.files[0]);
   }
-};
+}
+
+function triggerFileUpload() {
+  imageUpload.value.click();
+}
+
+async function submitArticle() {
+  console.log('Auth Store:', authStore.$state);
+
+  if (!authStore.isAuthenticated) {
+    console.error('허가되지 않은 유저');
+    router.push({ name: 'LoginPage' });
+    return;
+  }
+
+  const userId = authStore.getUserId;
+
+  if (!userId) {
+    console.error('유저 ID가 정의되지 않았습니다.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('articleCategory', article.value.articleCategory);
+  formData.append('articleTitle', article.value.articleTitle);
+  formData.append('articleAuthor', article.value.articleAuthor);
+  formData.append('articleContents', article.value.articleContents);
+  formData.append('userId', userId);
+
+  if (imageUpload.value.files.length > 0) {
+    formData.append('files', imageUpload.value.files[0]);
+  }
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/v1/articles/articlepost', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${authStore.token}`
+      }
+    });
+    console.log('Article 등록 성공:', response.data);
+    router.push({ name: 'ArticleView', query: { id: response.data.article.articleId } });
+  } catch (error) {
+    console.error('아티클 등록 실패:', error.response ? error.response.data : error.message);
+  }
+}
 </script>
 
 <style scoped>
