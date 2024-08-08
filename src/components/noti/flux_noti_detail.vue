@@ -3,29 +3,23 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useNotiStore } from "@/stores/rootstore";
-import { useIdStore } from "@/stores/rootstore";
 
 const store = useNotiStore();
 const route = useRoute();
 const router = useRouter();
 const notification = ref(null);
 const errorMessage = ref("");
-const idStore = useIdStore();
 
-// ID를 스토어에 저장
-idStore.setId(route.params.id);
-
+// Fetch notification details
 const fetchNotification = async () => {
   try {
-    const noti = store.notifications.find(
-      (n) => n.noticeId === parseInt(idStore.id)
-    );
-    if (noti) {
-      notification.value = noti;
+    const noticeId = parseInt(route.params.id);
+    const notice = store.notifications.find(n => n.noticeId === noticeId);
+    
+    if (notice) {
+      notification.value = notice;
     } else {
-      const response = await axios.get(
-        `http://localhost:8080//api/v1/notice/${idStore.id}`
-      );
+      const response = await axios.get(`http://localhost:8080/api/v1/notification/${noticeId}`);
       notification.value = response.data;
     }
   } catch (error) {
@@ -38,7 +32,8 @@ const fetchNotification = async () => {
   }
 };
 
-const gotolist = () => {
+// Go back to the list page
+const goToList = () => {
   router.push("/notice");
 };
 
@@ -49,7 +44,7 @@ onMounted(fetchNotification);
   <div v-if="notification" class="noti-con">
     <div class="noti-title">공지사항</div>
     <div class="noti-card">
-      <div class="noti-header">{{ notification.title }}</div>
+      <div class="noti-header">{{ notification.noticeTitle }}</div>
       <hr />
       <div class="noti-body">{{ notification.noticeContents }}</div>
       <div class="noti-footer">
@@ -61,7 +56,7 @@ onMounted(fetchNotification);
         </div>
       </div>
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button class="btn btn-primary" type="button" @click="gotolist">
+        <button class="btn btn-primary" type="button" @click="goToList">
           목록으로
         </button>
       </div>
@@ -70,7 +65,7 @@ onMounted(fetchNotification);
   <div v-else class="error-message">
     {{ errorMessage }}
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <button class="btn btn-primary" type="button" @click="gotolist">
+      <button class="btn btn-primary" type="button" @click="goToList">
         목록으로
       </button>
     </div>

@@ -18,7 +18,7 @@ const formatDate = (dateString) => {
 
 const fetchNotifications = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/v1/notice");
+    const response = await axios.get("http://localhost:8080/api/v1/notification");
     notifications.value = response.data.reverse().map((notification) => ({
       ...notification,
     }));
@@ -29,8 +29,9 @@ const fetchNotifications = async () => {
 };
 
 const goToDetail = (noticeId) => {
-  router.push(`/notice/${noticeId}`);
+  router.push(`/notice/${noticeId}`); // Correct path for detail view
 };
+
 
 onMounted(fetchNotifications);
 </script>
@@ -46,7 +47,7 @@ onMounted(fetchNotifications);
       >
         <div class="noti-content">
           <div class="noti-id">{{ notification.noticeId }}</div>
-          <div class="noti-text">{{ notification.title }}</div>
+          <div class="noti-text">{{ notification.noticeTitle }}</div>
           <div class="noti-date">
             {{ formatDate(notification.noticeCreateAt) }}
           </div>
@@ -55,6 +56,7 @@ onMounted(fetchNotifications);
     </ul>
   </div>
 </template>
+
 <style scoped>
 ul {
   list-style-type: none;
