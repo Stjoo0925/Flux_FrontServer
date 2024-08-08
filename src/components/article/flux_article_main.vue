@@ -1,5 +1,4 @@
 <template>
-  <!-- 화연 담당 -->
   <!-- 아티클 메인페이지 시작 -->
   <!-- 정렬순서 시작 -->
   <div class="selectbox-container">
@@ -17,7 +16,7 @@
   <div class="articleContents">
     <div class="row row-cols-1 row-cols-md-3 g-4">
       <!-- 반복되는 카드 아이템 -->
-      <div class="col" v-for="(article, index) in paginatedArticles" :key="index">
+      <div class="col" v-for="(article, index) in paginatedArticles" :key="article.articleId" @click="goToArticleDetail(article.articleId)">
         <div class="card">
           <div class="icon-container">
             <svg
@@ -34,14 +33,14 @@
             </svg>
           </div>
           <img
-            :src="article.image"
+            :src="article.articleImgName"
             class="card-img-top"
-            :alt="article.title"
+            :alt="article.articleTitle"
           />
           <div class="card-body">
-            <h6 class="card-category">{{ article.category }}</h6>
-            <h4 class="card-title">{{ article.title }}</h4>
-            <p class="card-text">날짜 {{ article.createdAt }}</p>
+            <h6 class="card-category">{{ article.articleCategory }}</h6>
+            <h4 class="card-title">{{ article.articleTitle }}</h4>
+            <p class="card-text">날짜 {{ article.articleCreateAt }}</p>
           </div>
         </div>
       </div>
@@ -82,33 +81,34 @@ export default {
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.articles.length / this.pageSize);
+      return Math.ceil(this.filteredArticles.length / this.pageSize);
     },
     paginatedArticles() {
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
-      return this.articles.slice(start, end);
+      return this.filteredArticles.slice(start, end);
+    },
+    filteredArticles() {
+      return Array.isArray(this.articles) ? this.articles.filter(article => article.articleStatus === true) : [];
     }
   },
   methods: {
     async fetchArticles() {
       try {
-        // 백엔드 API 엔드포인트 확인
-        const response = await axios.get('http://localhost:8001/articles');
-        console.log('Response data:', response.data); // 전체 응답 데이터 로그
-
-        // 응답 데이터가 배열 형태이므로 직접 할당
-        this.articles = response.data;
-        this.sortArticles(); // 기본 정렬 적용
-
-        console.log('Fetched articles:', this.articles); // 데이터 확인
+        const response = await axios.get('http://localhost:8080/api/v1/articles');
+        if (Array.isArray(response.data)) {
+          this.articles = response.data;
+          this.sortArticles();
+        } else {
+          console.error('Fetched data is not an array:', response.data);
+        }
       } catch (error) {
         console.error('Error fetching articles:', error);
       }
     },
     sortArticles() {
       if (this.sortOrder === 'latest') {
-        this.articles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        this.articles.sort((a, b) => new Date(b.articleCreatedAt) - new Date(a.articleCreatedAt));
       } else if (this.sortOrder === 'popular') {
         this.articles.sort((a, b) => b.popularity - a.popularity);
       }
@@ -125,7 +125,10 @@ export default {
     },
     goToPage(page) {
       this.currentPage = page;
-    }
+    },
+    goToArticleDetail(articleId) {
+    this.$router.push({ name: 'ArticleDetail', params: { id: articleId } });
+  }
   },
   async created() {
     await this.fetchArticles();
