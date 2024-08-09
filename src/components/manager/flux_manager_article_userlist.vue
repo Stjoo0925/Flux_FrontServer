@@ -27,8 +27,8 @@
           <span class="item">{{ article.articleCategory || '미분류' }}</span>
           <span class="item clickable" @click="goToDetail(article.articleId)">{{ article.articleAuthor }}</span>
           <span class="item clickable" @click="goToDetail(article.articleId)">
-            {{ getShortContent(article.articleContent) }}
-            <a v-if="article.articleContent && article.articleContent.length > 20" @click.stop="goToDetail(article.articleId)" class="more-link">더 보기</a>
+            {{ getShortContent(article.articleContents) }}
+            <a v-if="article.articleContents && article.articleContents.length > 20" @click.stop="goToDetail(article.articleId)" class="more-link">더 보기</a>
           </span>
         </div>
       </div>
@@ -221,35 +221,29 @@ h3 {
   margin-top: 20px;
 }
 
-.list-header {
+.list-header, .list-item {
   display: flex;
   justify-content: space-between;
-  background-color: #1244AF;
   padding: 10px;
-  border-radius: 5px;
-  font-weight: bold;
 }
 
-.header-item {
+.header-item, .item {
   flex: 1;
   text-align: center;
+  overflow: hidden; /* 긴 텍스트가 넘치지 않도록 설정 */
+  text-overflow: ellipsis; /* 긴 텍스트를 생략 (...) 처리 */
+  white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
+}
+
+.list-header {
+  background-color: #1244AF;
+  border-radius: 5px;
+  font-weight: bold;
   color: white;
 }
 
-.list-items {
-  margin-top: 10px;
-}
-
 .list-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
   border-bottom: 1px solid #ccc;
-}
-
-.item {
-  flex: 1;
-  text-align: center;
 }
 
 .item-img {

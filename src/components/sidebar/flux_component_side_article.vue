@@ -16,10 +16,8 @@
 <script setup>
 import { defineEmits } from 'vue';
 
-// Event emitter
 const emit = defineEmits(['category-selected']);
 
-// Emit the selected category
 const emitCategory = (category) => {
   emit('category-selected', category);
 }
