@@ -15,8 +15,14 @@
           <h2>작가명: {{ market.userName }}</h2>
           <p>{{ market.marketContents }}</p>
           <div class="price-info">
+            <div class="initialPrice">
             <p>최초가격: {{ formatPrice(market.marketPrice) }} 원</p>
+            <button>입찰하기</button>
+          </div>
+          <div class="immediatePurchase">
             <p>바로구매가격: {{ formatPrice(market.marketMaxPrice) }} 원</p>
+            <button>즉시구매하기</button>
+          </div>
           </div>
           <div class="auction-info">
             <p>경매 시작 시간: {{ formatDateTime(market.startDate) }}</p>

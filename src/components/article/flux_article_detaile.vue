@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 
@@ -74,18 +74,36 @@ const fetchArticle = async () => {
   }
 };
 
+// 댓글을 세션 스토리지에 저장하는 함수
+const saveCommentsToSession = () => {
+  sessionStorage.setItem(`comments_${route.params.id}`, JSON.stringify(commentList.value));
+};
+
+// 세션 스토리지에서 댓글을 불러오는 함수
+const loadCommentsFromSession = () => {
+  const savedComments = sessionStorage.getItem(`comments_${route.params.id}`);
+  if (savedComments) {
+    commentList.value = JSON.parse(savedComments);
+  }
+};
+
 // 댓글을 등록하는 함수
 const submitComment = () => {
   if (comment.value.trim() !== '') {
     commentList.value.push(comment.value); // 댓글 목록에 새로운 댓글 추가
     comment.value = ''; // 댓글 입력 필드 초기화
+    saveCommentsToSession(); // 댓글을 세션 스토리지에 저장
   }
 };
 
-// 컴포넌트가 마운트될 때 아티클 데이터 가져오기
+// 컴포넌트가 마운트될 때 아티클 데이터와 댓글을 세션에서 불러오기
 onMounted(() => {
   fetchArticle();
+  loadCommentsFromSession();
 });
+
+// 댓글 리스트가 변경될 때마다 세션 스토리지에 저장
+watch(commentList, saveCommentsToSession, { deep: true });
 </script>
 
 <style>
