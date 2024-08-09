@@ -56,11 +56,6 @@ const routes = [
     component: Main,
   },
   {
-    path: "/market/detail/:marketId",
-    name: 'MarketDetail',
-    component: MarketDetail
-  },
-  {
     path: "/market",
     component: Market,
     redirect: "/market/main",
@@ -68,6 +63,11 @@ const routes = [
       {
         path: "main",
         component: MarketMain,
+      },
+      {
+        path: "detail/:marketId",
+        name: 'MarketDetail',
+        component: MarketDetail,
       },
       {
         path: "paymentbefore",

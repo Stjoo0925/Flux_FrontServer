@@ -1,6 +1,7 @@
 <script setup>
 import { useMarketStore } from "@/stores/rootstore";
-import { computed } from "vue";
+import { computed, watch } from "vue";
+import { useRoute } from "vue-router";
 import MarketMain from "@/components/market/flux_market_main.vue";
 import MarketDetail from "@/components/market/flux_market_detail.vue";
 import MarketPaymentBefore from "@/components/market/flux_market_payment_before.vue";
@@ -8,8 +9,24 @@ import MarketPaymentAfter from "@/components/market/flux_market_payment_after.vu
 
 // Pinia 스토어 사용
 const store = useMarketStore();
-const root = computed(() => store.root); // 상태 값 가져오기
-const setRoot = store.setRoot; // 상태 값 변경 함수
+const route = useRoute(); // vue-router에서 Route 객체 가져오기
+
+// root 상태 값 가져오기 및 설정 함수
+const root = computed(() => {
+  const marketId = route.params.marketId;
+  if (marketId) {
+    return `detail/${marketId}`;
+  } else {
+    return store.root;
+  }
+});
+
+// 라우터 경로에 따라 root 상태 설정
+watch(() => route.params.marketId, (newId) => {
+  if (!newId) {
+    store.setRoot('main');
+  }
+});
 </script>
 
 <template>
@@ -17,16 +34,17 @@ const setRoot = store.setRoot; // 상태 값 변경 함수
     <div v-if="root === 'main'">
       <MarketMain />
     </div>
-    <div v-if="root === 'detail'">
+    <div v-else-if="root.startsWith('detail')">
       <MarketDetail />
     </div>
-    <div v-if="root === 'paymentbefore'">
+    <div v-else-if="root === 'paymentbefore'">
       <MarketPaymentBefore />
     </div>
-    <div v-if="root === 'paymentafter'">
+    <div v-else-if="root === 'paymentafter'">
       <MarketPaymentAfter />
     </div>
   </div>
 </template>
 
 <style scoped></style>
+
