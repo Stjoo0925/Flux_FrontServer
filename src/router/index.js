@@ -87,10 +87,12 @@ const routes = [
       {
         path: "main",
         component: ArticleMain,
+        name: 'ArticleMain'
       },
-      {
-        path: "detail",
+     {
+        path: "detail/:id",
         component: ArticleDetail,
+        name: 'ArticleDetail'
       },
     ],
   },

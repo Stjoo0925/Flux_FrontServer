@@ -4,20 +4,27 @@
       <div class="sidebar-heading sidebar-title">Article</div>
       <div class="list-group list-group-flush">
         <div class="sidebar-heading">
-          <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text">작가인터뷰</a>
-          <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text">큐레이션</a>
-          <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text">이벤트</a>
+          <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text" @click="() => emitCategory('인터뷰')">작가인터뷰</a>
+          <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text" @click="() => emitCategory('큐레이션')">큐레이션</a>
+          <a href="#" class="list-group-item list-group-item-action bg-dark pl-4 sidebar-text" @click="() => emitCategory('이벤트')">이벤트</a>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Sidebar',
+<script setup>
+import { defineEmits } from 'vue';
+
+// Event emitter
+const emit = defineEmits(['category-selected']);
+
+// Emit the selected category
+const emitCategory = (category) => {
+  emit('category-selected', category);
 }
 </script>
+
 
 <style scoped>
 .wrapper {
@@ -30,13 +37,12 @@ export default {
 
 .sidebar-con {
   width: 250px;
-
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  border-top-right-radius: 10px; /* 좌상단 곡률 */
-  border-bottom-right-radius: 10px; /* 좌하단 곡률 */
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .sidebar-heading {
@@ -72,12 +78,14 @@ export default {
   margin-bottom: 5px;
   text-align: center;
 }
-.title-link{
+
+.title-link {
   font-family: "LINESeedKR-Bd";
   font-size: 12px;
   color: #FFFFFF;
 }
-.title-link2{
+
+.title-link2 {
   font-family: "LINESeedKR-Bd";
   font-size: 10px;
   color: #FFFFFF;
@@ -91,8 +99,8 @@ export default {
   #sidebar-wrapper {
     margin-left: 0;
   }
-  .wrapper{
-      display: none !important;
+  .wrapper {
+    display: none !important;
   }
 }
 </style>

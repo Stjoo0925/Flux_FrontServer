@@ -28,7 +28,6 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-// import Sidebar from '@/components/sidebar/flux_component_side_article.vue';
 
 const articles = ref([]);
 const currentPage = ref(1);
