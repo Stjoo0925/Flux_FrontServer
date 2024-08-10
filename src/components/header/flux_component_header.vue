@@ -25,12 +25,20 @@ const formatDate = (dateString) => {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
 async function fetchNotifications() {
   try {
-    const response = await axios.get('http://localhost:8080/api/v1/notification');
-    return response.data;
+    const response = await axios.get(
+      "http://localhost:8080/api/v1/notification"
+    );
+
+    // notifications 값을 업데이트
+    notifications.value = response.data;
   } catch (error) {
-    console.error('Error fetching notifications:', error.response ? error.response.data : error.message);
+    console.error(
+      "Error fetching notifications:",
+      error.response ? error.response.data : error.message
+    );
     throw error;
   }
 }
@@ -120,7 +128,7 @@ onMounted(fetchNotifications);
     >
       <div class="banner-align">
         <strong class="banner-contents"
-          >🛠️ 공지사항 : {{ latestNotification.title }} |
+          >🛠️ 공지사항 : {{ latestNotification.noticeTitle }} |
           {{
             formatDate(
               latestNotification.noticeCreateAt ||
