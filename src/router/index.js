@@ -16,21 +16,31 @@ import { useAuthStore } from "@/stores/auth";
 const Main = () => import("../views/main.vue");
 const Market = () => import("../views/market.vue");
 const MarketMain = () => import("../components/market/flux_market_main.vue");
-const MarketDetail = () => import("../components/market/flux_market_detail.vue");
-const MarketPaymentBefore = () => import("../components/market/flux_market_payment_before.vue");
-const MarketPaymentAfter = () => import("../components/market/flux_market_payment_after.vue");
+const MarketDetail = () =>
+  import("../components/market/flux_market_detail.vue");
+const MarketPaymentBefore = () =>
+  import("../components/market/flux_market_payment_before.vue");
+const MarketPaymentAfter = () =>
+  import("../components/market/flux_market_payment_after.vue");
 const Article = () => import("../views/article.vue");
 const ArticleMain = () => import("../components/article/flux_article_main.vue");
-const ArticleDetail = () => import("../components/article/flux_article_detaile.vue");
+const ArticleDetail = () =>
+  import("../components/article/flux_article_detaile.vue");
 const Ranking = () => import("../views/ranking.vue");
 const Sales = () => import("../views/sales.vue");
-const Registry = () => import("../components/market/flux_market_registration.vue");
-const RegistryInfo = () => import("../components/market/flux_market_registration_info.vue");
-const RegistryEdit = () => import("../components/market/flux_market_registration_edit.vue");
+const Registry = () =>
+  import("../components/market/flux_market_registration.vue");
+const RegistryInfo = () =>
+  import("../components/market/flux_market_registration_info.vue");
+const RegistryEdit = () =>
+  import("../components/market/flux_market_registration_edit.vue");
 const Mypage = () => import("../views/mypage.vue");
-const MypageWishList = () => import("../components/mypage/flux_mypage_wish.vue");
-const MypageActivity = () => import("../components/mypage/flux_mypage_activity.vue");
-const MypageWithdrawal = () => import("../components/mypage/flux_mypage_withdrawal.vue");
+const MypageWishList = () =>
+  import("../components/mypage/flux_mypage_wish.vue");
+const MypageActivity = () =>
+  import("../components/mypage/flux_mypage_activity.vue");
+const MypageWithdrawal = () =>
+  import("../components/mypage/flux_mypage_withdrawal.vue");
 const Login = () => import("../components/login/flux_login.vue");
 const UseNotiStore = () => import("../views/noti.vue");
 const NoticeMain = () => import("../components/noti/flux_noti_main.vue");
@@ -38,17 +48,27 @@ const NoticeDetail = () => import("../components/noti/flux_noti_detail.vue");
 const Manager = () => import("../views/manager_main.vue");
 const ManagerMain = () => import("../components/manager/flux_manager_main.vue");
 const ManagerArticleMain = () => import("../views/manager_article.vue");
-const ManagerArticleUserList = () => import("../components/manager/flux_manager_article_userlist.vue");
-const ManagerArticlePost = () => import("../components/manager/flux_manager_article_post.vue");
-const ManagerArticleModify = () => import("../components/manager/flux_manager_article_modify.vue");
-const ManagerArticleView = () => import("../components/manager/flux_manager_article_managerview.vue");
+const ManagerArticleUserList = () =>
+  import("../components/manager/flux_manager_article_userlist.vue");
+const ManagerArticlePost = () =>
+  import("../components/manager/flux_manager_article_post.vue");
+const ManagerArticleModify = () =>
+  import("../components/manager/flux_manager_article_modify.vue");
+const ManagerArticleView = () =>
+  import("../components/manager/flux_manager_article_managerview.vue");
 const ManagerUserMain = () => import("../views/manager_user.vue");
-const ManagerUserList = () => import("../components/manager/flux_manager_userlist.vue");
-const ManagerAdminList = () => import("../components/manager/flux_manager_adminlist.vue");
+const ManagerUserList = () =>
+  import("../components/manager/flux_manager_userlist.vue");
+const ManagerAdminList = () =>
+  import("../components/manager/flux_manager_adminlist.vue");
 const UseManagerNotice = () => import("../views/manager_notice.vue");
-const ManagerNoticeList = () => import("../components/manager/flux_manager_notice_list.vue");
-const ManagerNoticePost = () => import("../components/manager/flux_manager_notice_post.vue");
-const ManagerNoticeModify = () => import("../components/manager/flux_manager_notice_modify.vue");
+const ManagerNoticeList = () =>
+  import("../components/manager/flux_manager_notice_list.vue");
+const ManagerNoticePost = () =>
+  import("../components/manager/flux_manager_notice_post.vue");
+const ManagerNoticeModify = () =>
+  import("../components/manager/flux_manager_notice_modify.vue");
+const Comments = () => import("../components/comment/comment.vue");
 
 const routes = [
   {
@@ -66,7 +86,7 @@ const routes = [
       },
       {
         path: "detail/:marketId",
-        name: 'MarketDetail',
+        name: "MarketDetail",
         component: MarketDetail,
       },
       {
@@ -87,12 +107,12 @@ const routes = [
       {
         path: "main",
         component: ArticleMain,
-        name: 'ArticleMain'
+        name: "ArticleMain",
       },
-     {
+      {
         path: "detail/:id",
         component: ArticleDetail,
-        name: 'ArticleDetail'
+        name: "ArticleDetail",
       },
     ],
   },

@@ -12,7 +12,11 @@
       </div>
       <div class="card-container">
         <div class="card">
-          <img :src="article.articleImgPath" class="card-img-top" :alt="article.articleTitle">
+          <img
+            :src="article.articleImgPath"
+            class="card-img-top"
+            :alt="article.articleTitle"
+          />
           <div class="card-body">
             <p class="card-text" v-html="formattedContent"></p>
           </div>
@@ -21,89 +25,52 @@
     </div>
     <!-- 아티클 세부 페이지 종료 -->
 
-    <!-- 댓글 등록 부분 시작 -->
-    <div class="input-container">
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="댓글을 입력하세요" v-model="comment" />
-        <button class="btn btn-outline-secondary" type="button" @click="submitComment">댓글 등록</button>
-      </div>
-    </div>
-    <!-- 댓글 등록 부분 종료 -->
+    <Comment />
 
-    <!-- 댓글 목록 부분 시작 -->
-    <div v-if="commentList.length > 0" class="comment-list-container">
-      <ul>
-        <li v-for="(comment, index) in commentList" :key="index">
-          {{ comment }}
-        </li>
-      </ul>
-    </div>
-    <!-- 댓글 목록 부분 종료 -->
+    <!-- 댓글부분 시작 -->
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import axios from 'axios';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted, watch } from "vue";
+import axios from "axios";
+import { useRoute } from "vue-router";
+
+import Comment from "@/components/comment/comment.vue";
 
 // 라우트 객체 가져오기
 const route = useRoute();
 
 // 아티클 데이터와 관련된 상태 변수 정의
 const article = ref(null);
-const comment = ref('');
-const commentList = ref([]); // 댓글 목록을 저장할 배열
 
 // 아티클 내용을 HTML로 포맷팅하는 계산 속성
 const formattedContent = computed(() => {
-  return article.value ? article.value.articleContents.replace(/\n/g, '<br>') : '';
+  return article.value
+    ? article.value.articleContents.replace(/\n/g, "<br>")
+    : "";
 });
 
 // 아티클 데이터를 가져오는 함수
 const fetchArticle = async () => {
   const articleId = route.params.id;
 
-  console.log('Article ID:', articleId);
+  console.log("Article ID:", articleId);
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/v1/articles/${articleId}`);
+    const response = await axios.get(
+      `http://localhost:8080/api/v1/articles/${articleId}`
+    );
     article.value = response.data;
   } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
-
-// 댓글을 세션 스토리지에 저장하는 함수
-const saveCommentsToSession = () => {
-  sessionStorage.setItem(`comments_${route.params.id}`, JSON.stringify(commentList.value));
-};
-
-// 세션 스토리지에서 댓글을 불러오는 함수
-const loadCommentsFromSession = () => {
-  const savedComments = sessionStorage.getItem(`comments_${route.params.id}`);
-  if (savedComments) {
-    commentList.value = JSON.parse(savedComments);
-  }
-};
-
-// 댓글을 등록하는 함수
-const submitComment = () => {
-  if (comment.value.trim() !== '') {
-    commentList.value.push(comment.value); // 댓글 목록에 새로운 댓글 추가
-    comment.value = ''; // 댓글 입력 필드 초기화
-    saveCommentsToSession(); // 댓글을 세션 스토리지에 저장
+    console.error("Error fetching data:", error);
   }
 };
 
 // 컴포넌트가 마운트될 때 아티클 데이터와 댓글을 세션에서 불러오기
 onMounted(() => {
   fetchArticle();
-  loadCommentsFromSession();
 });
-
-// 댓글 리스트가 변경될 때마다 세션 스토리지에 저장
-watch(commentList, saveCommentsToSession, { deep: true });
 </script>
 
 <style>
@@ -142,7 +109,7 @@ watch(commentList, saveCommentsToSession, { deep: true });
 
 .card-body {
   margin-top: 10px;
-  border : 1px solid #ddd;
+  border: 1px solid #ddd;
 }
 
 /* 댓글 입력창 스타일링 */
