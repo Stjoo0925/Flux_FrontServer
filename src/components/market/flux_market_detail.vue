@@ -17,11 +17,12 @@
           <div class="price-info">
             <div class="initialPrice">
             <p>최초가격: {{ formatPrice(market.marketPrice) }} 원</p>
-            <button>입찰하기</button>
           </div>
           <div class="immediatePurchase">
             <p>바로구매가격: {{ formatPrice(market.marketMaxPrice) }} 원</p>
-            <button>즉시구매하기</button>
+          </div>
+          <div class="bid-button">
+            <Bid />
           </div>
           </div>
           <div class="auction-info">
@@ -44,6 +45,8 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+
+import Bid from "@/components/bid/bid.vue";
 
 const route = useRoute();
 const marketId = ref(route.params.marketId);
