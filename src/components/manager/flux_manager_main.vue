@@ -115,8 +115,17 @@ import Chart from 'chart.js/auto';
 const todayVisitorCount = ref(0);
 const visitorCount = ref([]);
 const selectedRange = ref('daily');
-const members = ref([]);  // members 속성을 정의합니다.
+const members = ref([]);  
 let chartInstance = null;
+
+// 방문자 추적 로직
+const trackVisitor = async () => {
+    try {
+        await axios.post('http://localhost:8080/api/v1/visitor');
+    } catch (error) {
+        console.error('Failed to track visitor:', error);
+    }
+};
 
 const fetchTodayVisitorCount = async () => {
     try {
@@ -133,11 +142,11 @@ const fetchVisitorData = async () => {
         if (selectedRange.value === 'daily') {
             response = await axios.get('http://localhost:8080/api/v1/visitor/daily-all');
             if (Array.isArray(response.data)) {
-                // response.data가 배열인 경우에만 forEach를 사용
-                visitorCount.value = Array(31).fill(0); // 31일간의 데이터를 초기화
+                visitorCount.value = Array(31).fill(0);
                 response.data.forEach(visitor => {
                     const day = new Date(visitor.visitDate).getDate();
-                    visitorCount.value[day - 1] = visitor.count;
+                    console.log("Day: ", day, "Visit Count: ", visitor.visitCount);
+                    visitorCount.value[day - 1] = visitor.visitCount;  // visitor.count에서 visitor.visitCount로 변경
                 });
             } else {
                 console.error('Expected an array but got:', typeof response.data);
@@ -145,7 +154,7 @@ const fetchVisitorData = async () => {
         } else if (selectedRange.value === 'monthly') {
             response = await axios.get('http://localhost:8080/api/v1/visitor/monthly');
             if (Array.isArray(response.data)) {
-                visitorCount.value = response.data; // 월별 데이터를 그대로 할당
+                visitorCount.value = response.data;
             } else {
                 console.error('Expected an array but got:', typeof response.data);
             }
@@ -156,7 +165,6 @@ const fetchVisitorData = async () => {
     }
 };
 
-
 const updateChart = () => {
     const ctx = document.getElementById('visitorsChart').getContext('2d');
     if (chartInstance) {
@@ -164,7 +172,7 @@ const updateChart = () => {
     }
 
     const labels = selectedRange.value === 'daily'
-        ? Array.from({ length: 31 }, (_, i) => `${i + 1}일`) // 1일부터 31일까지의 라벨 생성
+        ? Array.from({ length: 31 }, (_, i) => `${i + 1}일`)
         : ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'].slice(0, visitorCount.value.length);
 
     chartInstance = new Chart(ctx, {
@@ -198,6 +206,7 @@ const updateChart = () => {
 };
 
 onMounted(async () => {
+    await trackVisitor();  // 사이트 방문 시 방문자 카운트를 트랙킹
     await fetchTodayVisitorCount();
     await fetchVisitorData();
 });
@@ -206,6 +215,7 @@ watch(selectedRange, async () => {
     await fetchVisitorData();
 });
 </script>
+
 
 <style scoped>
 .card-icon {
