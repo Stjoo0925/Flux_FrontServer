@@ -69,6 +69,7 @@ const ManagerNoticePost = () =>
 const ManagerNoticeModify = () =>
   import("../components/manager/flux_manager_notice_modify.vue");
 const Comments = () => import("../components/comment/comment.vue");
+const Bid = () => import("../components/bid/bid.vue");
 
 const routes = [
   {
