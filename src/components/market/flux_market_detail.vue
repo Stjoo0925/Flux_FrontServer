@@ -31,13 +31,19 @@
           <p>{{ market.marketContents }}</p>
           <div class="price-info">
             <div class="initialPrice">
-              <p>최초가격: {{ formatPrice(market.marketPrice) }} 원</p>
-              <button>입찰하기</button>
-            </div>
-            <div class="immediatePurchase">
-              <p>바로구매가격: {{ formatPrice(market.marketMaxPrice) }} 원</p>
-              <button>구매하기</button>
-            </div>
+            <p>최초가격: {{ formatPrice(market.marketPrice) }} 원</p>
+          </div>
+          <div class="immediatePurchase">
+            <p>바로구매가격: {{ formatPrice(market.marketMaxPrice) }} 원</p>
+          </div>
+          <div class="bid-button">
+            <Bid />
+          </div>
+          </div>
+          <div class="auction-info">
+            <p>경매 시작 시간: {{ formatDateTime(market.startDate) }}</p>
+            <p>경매 종료 시간: {{ formatDateTime(market.endDate) }}</p>
+
           </div>
         </div>
       </div>
@@ -51,6 +57,8 @@ import { useRoute, useRouter } from 'vue-router'; // useRouter 추가
 import axios from 'axios';
 import { useWishStore } from '@/stores/wish';
 import { useAuthStore } from '@/stores/auth'; // useAuthStore 추가
+
+import Bid from "@/components/bid/bid.vue";
 
 const route = useRoute();
 const router = useRouter(); // useRouter 초기화

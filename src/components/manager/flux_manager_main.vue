@@ -14,11 +14,11 @@
                             </div>
                             <div class="text-end">
                                 <p class="card-category">방문자수</p>
-                                <h4 class="card-title">1,294</h4>
+                                <h4 class="card-title">{{ todayVisitorCount }}</h4>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
                 <div class="col-sm-6 col-md-3 mb-3">
                     <div class="card text-white bg-info">
                         <div class="card-body d-flex justify-content-between align-items-center">
@@ -67,13 +67,19 @@
             </div>
             <!-- 카드 끝 -->
 
-            <!-- 차트와 목록을 포함하는 컨테이너 -->
-            <div class="row mt-4">
+             <!-- 차트와 목록을 포함하는 컨테이너 -->
+             <div class="row mt-4">
                 <div class="col-12 col-lg-8 mb-3">
                     <!-- 차트 컨테이너 -->
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title fixed-title">방문자수 차트</h5>
+                            <div class="d-flex justify-content-end">
+                                <select v-model="selectedRange" @change="updateChart">
+                                    <option value="daily">일일</option>
+                                    <option value="monthly">월별</option>
+                                </select>
+                            </div>
                             <canvas id="visitorsChart"></canvas>
                         </div>
                     </div>
@@ -101,68 +107,115 @@
     </div>
 </template>
 
-<script>
-import { onMounted } from 'vue';
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios'; 
 import Chart from 'chart.js/auto';
 
-export default {
-    name: 'DashboardCards',
-    data() {
-        return {
-            members: [
-                    'An item', 
-                    'A second item', 
-                    'A third item', 
-                    'A fourth item', 
-                    'And a fifth one',
-                    'An item', 
-                    'A second item', 
-                    'A third item', 
-                    'A fourth item', 
-                    'And a fifth one',
-                    'An item', 
-                    'A second item', 
-                    'A third item', 
-                    'A fourth item', 
-                    'And a fifth one'
-                    ]
-        }
-    },
-    setup() {
-        onMounted(() => {
-            const ctx = document.getElementById('visitorsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                        label: '방문자수',
-                        data: [3, 9, 6, 4, 5, 6, 7, 8, 20, 7, 6, 4],
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    }
-                }
-            });
-        });
+const todayVisitorCount = ref(0);
+const visitorCount = ref([]);
+const selectedRange = ref('daily');
+const members = ref([]);  
+let chartInstance = null;
+
+// 방문자 추적 로직
+const trackVisitor = async () => {
+    try {
+        await axios.post('http://localhost:8080/api/v1/visitor');
+    } catch (error) {
+        console.error('Failed to track visitor:', error);
     }
-}
+};
+
+const fetchTodayVisitorCount = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/api/v1/visitor/daily');
+        todayVisitorCount.value = response.data;
+    } catch (error) {
+        console.error('Failed to fetch today visitor count:', error);
+    }
+};
+
+const fetchVisitorData = async () => {
+    try {
+        let response;
+        if (selectedRange.value === 'daily') {
+            response = await axios.get('http://localhost:8080/api/v1/visitor/daily-all');
+            if (Array.isArray(response.data)) {
+                visitorCount.value = Array(31).fill(0);
+                response.data.forEach(visitor => {
+                    const day = new Date(visitor.visitDate).getDate();
+                    console.log("Day: ", day, "Visit Count: ", visitor.visitCount);
+                    visitorCount.value[day - 1] = visitor.visitCount;  // visitor.count에서 visitor.visitCount로 변경
+                });
+            } else {
+                console.error('Expected an array but got:', typeof response.data);
+            }
+        } else if (selectedRange.value === 'monthly') {
+            response = await axios.get('http://localhost:8080/api/v1/visitor/monthly');
+            if (Array.isArray(response.data)) {
+                visitorCount.value = response.data;
+            } else {
+                console.error('Expected an array but got:', typeof response.data);
+            }
+        }
+        updateChart();
+    } catch (error) {
+        console.error('Failed to fetch visitor data:', error);
+    }
+};
+
+const updateChart = () => {
+    const ctx = document.getElementById('visitorsChart').getContext('2d');
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    const labels = selectedRange.value === 'daily'
+        ? Array.from({ length: 31 }, (_, i) => `${i + 1}일`)
+        : ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'].slice(0, visitorCount.value.length);
+
+    chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '방문자수',
+                data: visitorCount.value,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+};
+
+onMounted(async () => {
+    await trackVisitor();  // 사이트 방문 시 방문자 카운트를 트랙킹
+    await fetchTodayVisitorCount();
+    await fetchVisitorData();
+});
+
+watch(selectedRange, async () => {
+    await fetchVisitorData();
+});
 </script>
+
 
 <style scoped>
 .card-icon {
