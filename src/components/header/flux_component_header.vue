@@ -111,15 +111,18 @@ onMounted(fetchNotifications);
       v-if="bannerStore.isBannerVisible && latestNotification"
     >
       <div class="banner-align">
-        <strong class="banner-contents"
-          >🛠️ 공지사항 : {{ latestNotification.noticeTitle }} |
+        <router-link
+          v-if="latestNotification && latestNotification.noticeId"
+          :to="`/notice/${latestNotification.noticeId}`"
+          class="banner-contents"
+        >
+          🛠️ 공지사항 : {{ latestNotification.noticeTitle }} |
           {{
             formatDate(
-              latestNotification.noticeCreateAt ||
-                latestNotification.noticeUpdateAt
+              latestNotification.noticeCreateAt || latestNotification.noticeUpdateAt
             )
           }}
-        </strong>
+        </router-link>
         <button @click="closeBanner" class="close-btn">X</button>
       </div>
     </div>
@@ -127,6 +130,16 @@ onMounted(fetchNotifications);
 </template>
 
 <style scoped>
+router-link {
+  color: #000;
+  text-decoration: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .navbar {
   padding-top: 1em !important;
   padding-bottom: 1em !important;
