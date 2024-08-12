@@ -6,9 +6,19 @@ import { addAnimation, removeAnimation } from "@/assets/js/animation.js";
 import { useAuthStore } from "@/stores/auth";
 
 const notifications = ref([]);
+console.log(notifications);
 
 const latestNotification = computed(() => {
-  return notifications.value.length > 0 ? notifications.value[0] : null;
+  if (notifications.value.length === 0) {
+    return null;
+  }
+
+  // 최신 항목을 가져오기 위해 날짜 기준으로 정렬
+  const sortedNotifications = [...notifications.value].sort((a, b) => {
+    return new Date(b.noticeCreateAt) - new Date(a.noticeCreateAt);
+  });
+
+  return sortedNotifications[0]; // 가장 최신 항목 반환
 });
 
 const bannerStore = useBannerStore();
@@ -86,19 +96,29 @@ onMounted(fetchNotifications);
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link class="nav-link cursor-pointer2" to="/">Home</router-link>
+              <router-link class="nav-link cursor-pointer2" to="/"
+                >Home</router-link
+              >
             </li>
             <li class="nav-item">
-              <router-link class="nav-link cursor-pointer2" to="/market">Market</router-link>
+              <router-link class="nav-link cursor-pointer2" to="/market"
+                >Market</router-link
+              >
             </li>
             <li class="nav-item">
-              <router-link class="nav-link cursor-pointer2" to="/article">Article</router-link>
+              <router-link class="nav-link cursor-pointer2" to="/article"
+                >Article</router-link
+              >
             </li>
             <li class="nav-item">
-              <router-link class="nav-link cursor-pointer2" to="/ranking">Ranking</router-link>
+              <router-link class="nav-link cursor-pointer2" to="/ranking"
+                >Ranking</router-link
+              >
             </li>
             <li class="nav-item">
-              <router-link class="nav-link point-link cursor-pointer2" to="/sales"
+              <router-link
+                class="nav-link point-link cursor-pointer2"
+                to="/sales"
                 >Sales</router-link
               >
             </li>
@@ -119,7 +139,8 @@ onMounted(fetchNotifications);
           🛠️ 공지사항 : {{ latestNotification.noticeTitle }} |
           {{
             formatDate(
-              latestNotification.noticeCreateAt || latestNotification.noticeUpdateAt
+              latestNotification.noticeCreateAt ||
+                latestNotification.noticeUpdateAt
             )
           }}
         </router-link>
@@ -262,7 +283,8 @@ a {
   cursor: pointer;
 }
 
-.cursor-pointer,cursor-pointer2 {
+.cursor-pointer,
+cursor-pointer2 {
   cursor: pointer !important;
 }
 .cursor-pointer2:hover {
