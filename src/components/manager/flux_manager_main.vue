@@ -108,131 +108,33 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';  // Vue의 Composition API에서 사용하는 ref, onMounted, watch를 가져옵니다.
-import { useVisitorStore } from '@/stores/visitor';  // Pinia 스토어에서 visitorStore를 가져옵니다.
-import axios from 'axios';  // HTTP 요청을 보내기 위해 axios 라이브러리를 가져옵니다.
-import Chart from 'chart.js/auto';  // Chart.js 라이브러리를 사용하여 차트를 그리기 위해 가져옵니다.
+import { ref, onMounted, watch } from 'vue';
+import { useVisitorStore } from '@/stores/visitor';
+import { fetchTodayVisitorCount } from '@/assets/js/fetchTodayVisitorCount';
+import { fetchVisitorData } from '@/assets/js/fetchVisitorData';
+import { updateChart } from '@/assets/js/updateChart';
 
 // 리액티브 변수 선언
-const todayVisitorCount = ref(0);  // 오늘 방문자 수를 저장하기 위한 변수. 초기값은 0입니다.
-const visitorCount = ref([]);  // 방문자 수 데이터를 저장하는 배열. 일별 데이터를 저장합니다.
-const visitorCountMonth = ref([]);  // 월별 방문자 수 데이터를 저장하는 배열.
-const selectedRange = ref('daily');  // 사용자가 선택한 방문자 수 범위 ('daily' 또는 'monthly'). 기본값은 'daily'입니다.
-const members = ref([]);  // 신규 회원 목록을 저장하는 배열입니다.
-let chartInstance = null;  // Chart.js 인스턴스를 저장하기 위한 변수. 차트가 그려질 때 이 인스턴스에 저장됩니다.
+const todayVisitorCount = ref(0);
+const visitorCount = ref([]);
+const visitorCountMonth = ref([]);
+const selectedRange = ref('daily');
+const members = ref([]);
+let chartInstance = ref(null);
 
 // Pinia 스토어 사용
 const visitorStore = useVisitorStore();
 
-// 오늘 방문자 수를 가져오는 함수
-const fetchTodayVisitorCount = async () => {
-    try {
-        // 서버로부터 오늘 방문자 수를 GET 요청으로 가져옵니다.
-        const response = await axios.get('http://localhost:8080/api/v1/visitor/daily');
-        // 응답 데이터를 todayVisitorCount에 저장합니다.
-        todayVisitorCount.value = response.data;
-    } catch (error) {
-        // 요청 실패 시 콘솔에 오류를 출력합니다.
-        console.error('Failed to fetch today visitor count:', error);
-    }
-};
-
-// 방문자 데이터를 가져오는 함수 (일별 또는 월별)
-const fetchVisitorData = async () => {
-    try {
-        let response;
-        if (selectedRange.value === 'daily') {  // 사용자가 'daily' 범위를 선택한 경우
-            // 일별 방문자 데이터를 가져오는 API 요청
-            response = await axios.get('http://localhost:8080/api/v1/visitor/daily-all');
-            if (Array.isArray(response.data)) {
-                // 데이터가 배열일 경우, 31일간의 데이터를 0으로 초기화합니다.
-                visitorCount.value = Array(31).fill(0);
-                // 각 방문자 데이터에 대해 날짜와 방문자 수를 visitorCount 배열에 저장합니다.
-                response.data.forEach(visitor => {
-                    const day = new Date(visitor.visitDate).getDate();  // 방문 날짜를 가져와 일(day)만 추출합니다.
-                    visitorCount.value[day - 1] = visitor.visitCount;  // 방문자 수를 해당 날짜에 맞게 배열에 저장합니다.
-                });
-            } else {
-                // 데이터가 배열이 아닌 경우 오류를 출력합니다.
-                console.error('Expected an array but got:', typeof response.data);
-            }
-        } else if (selectedRange.value === 'monthly') {  // 사용자가 'monthly' 범위를 선택한 경우
-            // 월별 방문자 데이터를 가져오는 API 요청
-            response = await axios.get('http://localhost:8080/api/v1/visitor/monthly');
-            if (Array.isArray(response.data)) {
-                // 데이터를 visitorCountMonth에 저장합니다.
-                visitorCountMonth.value = response.data;
-            } else {
-                // 데이터가 배열이 아닌 경우 오류를 출력합니다.
-                console.error('Expected an array but got:', typeof response.data);
-            }
-        }
-        // 차트를 업데이트합니다.
-        updateChart();
-    } catch (error) {
-        // 요청 실패 시 콘솔에 오류를 출력합니다.
-        console.error('Failed to fetch visitor data:', error);
-    }
-};
-
-// 차트를 업데이트하는 함수
-const updateChart = () => {
-    // HTML에서 'visitorsChart' 아이디를 가진 캔버스를 가져옵니다.
-    const ctx = document.getElementById('visitorsChart').getContext('2d');
-    if (chartInstance) {
-        // 이전에 생성된 차트가 있을 경우, 이를 파괴(destroy)하여 메모리를 해제합니다.
-        chartInstance.destroy();
-    }
-
-    // 차트의 레이블 설정 ('daily'일 경우 1일부터 31일까지, 'monthly'일 경우 1월부터 12월까지)
-    const labels = selectedRange.value === 'daily'
-        ? Array.from({ length: 31 }, (_, i) => `${i + 1}일`)  // 일별 레이블 생성
-        : ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];  // 월별 레이블 생성
-
-    // 차트 데이터 설정
-    const data = selectedRange.value === 'daily' ? visitorCount.value : visitorCountMonth.value;
-
-    // Chart.js 인스턴스를 생성하고, 이를 chartInstance에 저장합니다.
-    chartInstance = new Chart(ctx, {
-        type: 'bar',  // 차트 유형은 막대형(bar)입니다.
-        data: {
-            labels: labels,  // 위에서 설정한 레이블을 사용합니다.
-            datasets: [{
-                label: '방문자수',  // 데이터셋의 라벨입니다.
-                data: data,  // 선택된 범위에 따라 일별 또는 월별 데이터를 사용합니다.
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',  // 막대의 배경색
-                borderColor: 'rgba(54, 162, 235, 1)',  // 막대의 테두리 색
-                borderWidth: 1  // 막대의 테두리 두께
-            }]
-        },
-        options: {
-            responsive: true,  // 반응형 차트를 설정합니다.
-            maintainAspectRatio: false,  // 차트의 종횡비를 유지하지 않습니다.
-            scales: {
-                y: {
-                    beginAtZero: true  // y축은 0부터 시작합니다.
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,  // 범례를 표시합니다.
-                    position: 'top'  // 범례 위치는 상단입니다.
-                }
-            }
-        }
-    });
-};
-
 // 컴포넌트가 마운트될 때 호출되는 함수
 onMounted(async () => {
-    await visitorStore.trackVisitor();  // 사이트 방문 시 방문자 수를 증가시킵니다.
-    await fetchTodayVisitorCount();  // 오늘 방문자 수를 가져옵니다.
-    await fetchVisitorData();  // 방문자 데이터를 가져와 차트를 업데이트합니다.
+    await visitorStore.trackVisitor();
+    await fetchTodayVisitorCount(todayVisitorCount);
+    await fetchVisitorData(selectedRange, visitorCount, visitorCountMonth, () => updateChart(selectedRange, visitorCount, visitorCountMonth, chartInstance));
 });
 
 // selectedRange가 변경될 때마다 호출되는 함수
 watch(selectedRange, async () => {
-    await fetchVisitorData();  // 방문자 데이터를 다시 가져와 차트를 업데이트합니다.
+    await fetchVisitorData(selectedRange, visitorCount, visitorCountMonth, () => updateChart(selectedRange, visitorCount, visitorCountMonth, chartInstance));
 });
 </script>
 
