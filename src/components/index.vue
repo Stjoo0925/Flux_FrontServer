@@ -91,8 +91,8 @@
             :alt="`${index + 1}번`"
           />
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ hotItem.market_name }}</h5>
-            <p class="card-text">{{ hotItem.market_price }}원</p>
+            <h5 class="card-title">{{ hotItem.marketName }}</h5>
+            <p class="card-text">{{ hotItem.marketPrice }}원</p>
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@
       <div class="line"></div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" v-for="(market, index) in recentMarket" :key="index">
+      <div class="col" v-for="(market, index) in recentItems" :key="index">
         <div class="card fixed-size-card">
           <img
             :src="market.marketImgs"
@@ -110,7 +110,7 @@
             :alt="`${index + 1}번`"
           />
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ market.marketTitle }}</h5>
+            <h5 class="card-title">{{ market.marketName }}</h5>
             <p class="card-text">{{ market.marketPrice }}원</p>
           </div>
         </div>
@@ -124,13 +124,13 @@
       <div class="col" v-for="(item, index) in recentArticles" :key="index">
         <div class="card fixed-size-card">
           <img
-            :src="item.article_imgs"
+            :src="item.articleImgPath"
             class="card-img-top fixed-size-img"
             :alt="`${index + 1}번`"
           />
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ item.article_title }}</h5>
-            <p class="card-text">{{ item.article_contents }}</p>
+            <h5 class="card-title">{{ item.articleTitle }}</h5>
+            <p class="card-text">{{ item.articleAuthor }}</p>
           </div>
         </div>
       </div>
@@ -148,17 +148,20 @@ const marketData = ref([]);
 const articleData = ref([]);
 
 const hotItems = ref([]);
+// console.log(hotItems);
 const recentItems = ref([]);
+// console.log(recentItems);
 const recentArticles = ref([]);
+// console.log(recentArticles);
 
 // API에서 데이터를 가져오는 함수
 const fetchMarketData = async () => {
   try {
-    console.log("API 요청 시작");
+    // console.log("API 요청 시작");
     // 시장 데이터와 기사 데이터를 동시에 가져옴
     const [marketResponse, articleResponse] = await Promise.all([
-      axios.get("http://localhost:8000/api/v1/market"),
-      axios.get("http://localhost:8000/api/v1/articles"),
+      axios.get("http://localhost:8080/api/v1/market"),
+      axios.get("http://localhost:8080/api/v1/articles"),
     ]);
     // console.log("API 응답 받음", marketResponse.data, articleResponse.data);
 
@@ -184,25 +187,25 @@ const fetchMarketData = async () => {
 const processMarketData = (data) => {
   hotItems.value = data
     .slice()
-    .sort((a, b) => b.market_view - a.market_view)
+    .sort((a, b) => b.marketView - a.marketView)
     .slice(0, 3);
-  console.log("인기 항목 처리 완료", JSON.stringify(hotItems.value, null, 2));
+  // console.log("인기 항목 처리 완료", JSON.stringify(hotItems.value, null, 2));
 
   recentItems.value = data
     .slice()
-    .sort((a, b) => new Date(b.market_createat) - new Date(a.market_createat))
+    .sort((a, b) => new Date(b.marketCreatedAt) - new Date(a.marketCreatedAt))
     .slice(0, 3);
-  console.log(
-    "최신 항목 처리 완료",
-    JSON.stringify(recentItems.value, null, 2)
-  );
+  // console.log(
+  //   "최신 항목 처리 완료",
+  //   JSON.stringify(recentItems.value, null, 2)
+  // );
 };
 
 // 기사 데이터를 처리하는 함수
 const processArticleData = (data) => {
   recentArticles.value = data
     .slice()
-    .sort((a, b) => new Date(b.article_createat) - new Date(a.article_createat))
+    .sort((a, b) => new Date(b.articleCreateAt) - new Date(a.articleCreateAt))
     .slice(0, 3);
   // console.log(
   //   "최신 기사 처리 완료",
