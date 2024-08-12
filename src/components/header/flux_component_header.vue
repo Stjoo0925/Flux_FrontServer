@@ -102,22 +102,6 @@ onMounted(fetchNotifications);
                 >Sales</router-link
               >
             </li>
-            <li class="nav-item">
-              <form class="d-flex ms-2 search-form" role="search">
-                <input
-                  class="form-control me-2 custom-search-input"
-                  type="search"
-                  placeholder="검색어를 입력해주세요"
-                  aria-label="Search"
-                />
-                <button
-                  class="btn btn-outline-success custom-search-button"
-                  type="submit"
-                >
-                  Search
-                </button>
-              </form>
-            </li>
           </ul>
         </div>
       </div>
