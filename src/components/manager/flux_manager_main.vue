@@ -115,7 +115,8 @@ import Chart from 'chart.js/auto';  // Chart.js 라이브러리를 사용하여 
 
 // 리액티브 변수 선언
 const todayVisitorCount = ref(0);  // 오늘 방문자 수를 저장하기 위한 변수. 초기값은 0입니다.
-const visitorCount = ref([]);  // 방문자 수 데이터를 저장하는 배열. 일별 또는 월별 데이터를 저장합니다.
+const visitorCount = ref([]);  // 방문자 수 데이터를 저장하는 배열. 일별 데이터를 저장합니다.
+const visitorCountMonth = ref([]);  // 월별 방문자 수 데이터를 저장하는 배열.
 const selectedRange = ref('daily');  // 사용자가 선택한 방문자 수 범위 ('daily' 또는 'monthly'). 기본값은 'daily'입니다.
 const members = ref([]);  // 신규 회원 목록을 저장하는 배열입니다.
 let chartInstance = null;  // Chart.js 인스턴스를 저장하기 위한 변수. 차트가 그려질 때 이 인스턴스에 저장됩니다.
@@ -149,7 +150,6 @@ const fetchVisitorData = async () => {
                 // 각 방문자 데이터에 대해 날짜와 방문자 수를 visitorCount 배열에 저장합니다.
                 response.data.forEach(visitor => {
                     const day = new Date(visitor.visitDate).getDate();  // 방문 날짜를 가져와 일(day)만 추출합니다.
-                    console.log("Day: ", day, "Visit Count: ", visitor.visitCount);  // 방문 날짜와 방문자 수를 콘솔에 출력하여 확인합니다.
                     visitorCount.value[day - 1] = visitor.visitCount;  // 방문자 수를 해당 날짜에 맞게 배열에 저장합니다.
                 });
             } else {
@@ -160,8 +160,8 @@ const fetchVisitorData = async () => {
             // 월별 방문자 데이터를 가져오는 API 요청
             response = await axios.get('http://localhost:8080/api/v1/visitor/monthly');
             if (Array.isArray(response.data)) {
-                // 데이터를 visitorCount에 저장합니다.
-                visitorCount.value = response.data;
+                // 데이터를 visitorCountMonth에 저장합니다.
+                visitorCountMonth.value = response.data;
             } else {
                 // 데이터가 배열이 아닌 경우 오류를 출력합니다.
                 console.error('Expected an array but got:', typeof response.data);
@@ -187,7 +187,10 @@ const updateChart = () => {
     // 차트의 레이블 설정 ('daily'일 경우 1일부터 31일까지, 'monthly'일 경우 1월부터 12월까지)
     const labels = selectedRange.value === 'daily'
         ? Array.from({ length: 31 }, (_, i) => `${i + 1}일`)  // 일별 레이블 생성
-        : ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'].slice(0, visitorCount.value.length);  // 월별 레이블 생성
+        : ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];  // 월별 레이블 생성
+
+    // 차트 데이터 설정
+    const data = selectedRange.value === 'daily' ? visitorCount.value : visitorCountMonth.value;
 
     // Chart.js 인스턴스를 생성하고, 이를 chartInstance에 저장합니다.
     chartInstance = new Chart(ctx, {
@@ -196,7 +199,7 @@ const updateChart = () => {
             labels: labels,  // 위에서 설정한 레이블을 사용합니다.
             datasets: [{
                 label: '방문자수',  // 데이터셋의 라벨입니다.
-                data: visitorCount.value,  // visitorCount 배열을 데이터로 사용합니다.
+                data: data,  // 선택된 범위에 따라 일별 또는 월별 데이터를 사용합니다.
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',  // 막대의 배경색
                 borderColor: 'rgba(54, 162, 235, 1)',  // 막대의 테두리 색
                 borderWidth: 1  // 막대의 테두리 두께
@@ -232,6 +235,7 @@ watch(selectedRange, async () => {
     await fetchVisitorData();  // 방문자 데이터를 다시 가져와 차트를 업데이트합니다.
 });
 </script>
+
 
 
 
