@@ -5,7 +5,7 @@
         <div class="col-12 col-sm-4 mb-4" v-for="market in paginatedMarkets" :key="market.marketId">
           <div class="hover-card overflow-hidden lh-10 rounded-md position-relative">
             <div class="position-relative">
-              <router-link :to="'/market/detail/' +market.marketId">
+              <router-link :to="'/market/detail/' + market.marketId">
                 <img
                   :src="market.marketImgs[0]"
                   :alt="market.marketTitle"
@@ -29,7 +29,7 @@
           </div>
           <div class="mt-3">
             <h5 class="font-weight-bold text-dark">
-              <router-link :to="'/market/detail/' +market.marketId">
+              <router-link :to="'/market/detail/' + market.marketId">
                 {{ market.marketName }}
               </router-link>
             </h5>

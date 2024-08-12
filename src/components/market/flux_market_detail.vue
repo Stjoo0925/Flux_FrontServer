@@ -32,42 +32,33 @@
           <div class="price-info">
             <div class="initialPrice">
               <p>최초가격: {{ formatPrice(market.marketPrice) }} 원</p>
+              <button>입찰하기</button>
             </div>
             <div class="immediatePurchase">
               <p>바로구매가격: {{ formatPrice(market.marketMaxPrice) }} 원</p>
+              <button>구매하기</button>
             </div>
-            <div class="bid-button">
-              <Bid />
-            </div>
-          </div>
-          <div class="auction-info">
-            <p>경매 시작 시간: {{ formatDateTime(market.startDate) }}</p>
-            <p>경매 종료 시간: {{ formatDateTime(market.endDate) }}</p>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else class="text-center mt-5">
-      <p>Loading...</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router'; // useRouter 추가
 import axios from 'axios';
 import { useWishStore } from '@/stores/wish';
-import { useAuthStore } from '@/stores/auth';
-
-import Bid from "@/components/bid/bid.vue";
+import { useAuthStore } from '@/stores/auth'; // useAuthStore 추가
 
 const route = useRoute();
-const router = useRouter();
+const router = useRouter(); // useRouter 초기화
 const wishStore = useWishStore();
-const authStore = useAuthStore();
+const authStore = useAuthStore(); // authStore 초기화
 const market = ref(null);
 
+// Fetch market details based on marketId from route params
 const fetchMarket = async () => {
   const marketId = route.params.marketId;
   try {
@@ -82,16 +73,18 @@ const isWished = (marketId) => {
   return wishStore.isWished(marketId);
 };
 
+// Toggle wish status and sync with server
 const toggleWish = async (marketId) => {
   const token = authStore.token;
   if (!token) {
     console.error('No JWT token found');
-    router.push('/login');
+    router.push('/login'); // 로그인이 필요하다면 로그인 페이지로 리다이렉트
     return;
   }
 
   try {
     if (isWished(marketId)) {
+      // Remove wish
       await axios.delete('http://localhost:8080/api/v1/wish', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -103,6 +96,7 @@ const toggleWish = async (marketId) => {
       });
       wishStore.removeWish(marketId);
     } else {
+      // Add wish
       await axios.post('http://localhost:8080/api/v1/wish', {
         marketId: marketId,
         userId: authStore.userId
@@ -120,21 +114,6 @@ const toggleWish = async (marketId) => {
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat().format(price);
-};
-
-// 날짜 포맷팅 함수 추가
-const formatDateTime = (dateString) => {
-  const options = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZoneName: 'short'
-  };
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ko-KR', options);
 };
 
 onMounted(() => {
