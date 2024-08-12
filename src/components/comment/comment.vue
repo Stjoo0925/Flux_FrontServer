@@ -277,7 +277,7 @@ label {
 }
 
 .text-a {
-  width: 95%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -292,7 +292,7 @@ label {
 }
 
 .comments-list {
-  width: 95%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   margin-bottom: 2px;
