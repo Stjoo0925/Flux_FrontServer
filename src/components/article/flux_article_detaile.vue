@@ -3,11 +3,11 @@
     <!-- 아티클 세부 페이지 시작 -->
     <div class="article-container" v-if="article">
       <div class="top">
-        <div class="category">
-          <h3>{{ article.articleCategory }}</h3>
-        </div>
         <div class="subject">
-          <h1>{{ article.articleTitle }}</h1>
+          <div>{{ article.articleTitle }}</div>
+        </div>
+        <div class="category">
+          <div>{{ article.articleCategory }}</div>
         </div>
       </div>
       <div class="card-container">
@@ -22,12 +22,10 @@
           </div>
         </div>
       </div>
+      <!-- 댓글부분 시작 -->
+      <Comment />
     </div>
     <!-- 아티클 세부 페이지 종료 -->
-
-    <Comment />
-
-    <!-- 댓글부분 시작 -->
   </div>
 </template>
 
@@ -75,6 +73,9 @@ onMounted(() => {
 
 <style>
 .article-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   max-width: 1200px; /* 전체 너비를 제한 */
   margin: 20px auto;
@@ -94,17 +95,20 @@ onMounted(() => {
 }
 
 .article-container .subject {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .card-container {
   display: flex;
   justify-content: center; /* 카드 중앙 정렬 */
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .card {
   width: 100%;
-  max-width: 600px; /* 카드의 최대 너비 설정 */
+  max-width: 1200px; /* 카드의 최대 너비 설정 */
+  margin-bottom: 30px;
 }
 
 .card-body {
@@ -144,5 +148,23 @@ onMounted(() => {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ddd;
+}
+
+.top {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.category {
+  font-family: "LINESeedKR-Bd";
+  font-size: 16px;
+}
+
+.subject {
+  font-family: "LINESeedKR-Bd";
+  font-size: 21px;
 }
 </style>
