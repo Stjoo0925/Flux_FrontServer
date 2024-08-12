@@ -26,9 +26,9 @@
         <div class="input-container">
           <label for="marketPrice">최초가격</label>
           <div class="price-container">
-            <input type="number" id="marketPrice" v-model.number="marketPrice" />
+            <input type="number" id="marketPrice" v-model.number="marketPrice" step="1000" min="0"/>
             <label class="price-note">바로구매가격</label>
-            <input type="number" id="marketMaxPrice" v-model.number="marketMaxPrice" class="market-maxprice" />
+            <input type="number" id="marketMaxPrice" v-model.number="marketMaxPrice" class="market-maxprice" step="1000" min="0"/>
           </div>
         </div>
         <div class="input-container">
