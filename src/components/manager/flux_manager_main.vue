@@ -29,7 +29,7 @@
                             </div>
                             <div class="text-end">
                                 <p class="card-category">회원수</p>
-                                <h4 class="card-title">1,303</h4>
+                                <h4 class="card-title">{{ userCount }}</h4> <!-- 사용자 수를 표시 -->
                             </div>
                         </div>
                     </div>
@@ -90,12 +90,13 @@
                         <div class="card-body">
                             <h5 class="card-title fixed-title">신규 회원 목록</h5>
                             <ul class="list-group list-group-flush members-list">
-                              <li v-for="(member, index) in members" :key="index" class="list-group-item d-flex align-items-center">
+                              <li v-for="(user, index) in users" :key="index" class="list-group-item d-flex align-items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person me-2" viewBox="0 0 16 16">
                                   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm4-3a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
                                   <path d="M8 9a5 5 0 0 0-4.546 2.914C3.582 12.83 4.768 14 8 14s4.418-1.17 4.546-2.086A5 5 0 0 0 8 9zM2.869 13.145C3.98 14.596 5.606 16 8 16s4.02-1.404 5.131-2.855C12.454 11.667 10.979 11 8 11c-2.979 0-4.454.667-5.131 2.145z"/>
                                 </svg>
-                                {{ member }}
+                                {{ user.username}}
+                                {{ user.email}}
                               </li>
                             </ul>
                         </div>
@@ -113,30 +114,48 @@ import { useVisitorStore } from '@/stores/visitor';
 import { fetchTodayVisitorCount } from '@/assets/js/fetchTodayVisitorCount';
 import { fetchVisitorData } from '@/assets/js/fetchVisitorData';
 import { updateChart } from '@/assets/js/updateChart';
+import { fetchUserCount } from '@/assets/js/fetchUserCount'; // 유저 수 가져오기 함수 임포트
+import axios from 'axios';
+
 
 // 리액티브 변수 선언
 const todayVisitorCount = ref(0);
 const visitorCount = ref([]);
 const visitorCountMonth = ref([]);
 const selectedRange = ref('daily');
-const members = ref([]);
+const users = ref([]);
 let chartInstance = ref(null);
+const userCount = ref(0);
 
 // Pinia 스토어 사용
 const visitorStore = useVisitorStore();
+
+const fetchUsers = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/api/v1/user');
+    users.value = response.data;
+  } catch (error) {
+    console.error('회원 목록을 가져오는 중 오류가 발생했습니다!', error);
+  }
+};
 
 // 컴포넌트가 마운트될 때 호출되는 함수
 onMounted(async () => {
     await visitorStore.trackVisitor();
     await fetchTodayVisitorCount(todayVisitorCount);
     await fetchVisitorData(selectedRange, visitorCount, visitorCountMonth, () => updateChart(selectedRange, visitorCount, visitorCountMonth, chartInstance));
+
+    await fetchUserCount(userCount); // 유저 수 가져오기 함수 호출
+    await fetchUsers();
 });
+
 
 // selectedRange가 변경될 때마다 호출되는 함수
 watch(selectedRange, async () => {
     await fetchVisitorData(selectedRange, visitorCount, visitorCountMonth, () => updateChart(selectedRange, visitorCount, visitorCountMonth, chartInstance));
 });
 </script>
+
 
 
 
@@ -172,3 +191,4 @@ watch(selectedRange, async () => {
     }
 }
 </style>
+
