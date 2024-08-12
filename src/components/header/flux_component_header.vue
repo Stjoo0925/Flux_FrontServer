@@ -52,7 +52,7 @@ onMounted(fetchNotifications);
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
         <router-link
-          class="navbar-brand"
+          class="navbar-brand cursor-pointer"
           to="/"
           @mouseover="addAnimation"
           @mouseleave="removeAnimation"
@@ -86,19 +86,19 @@ onMounted(fetchNotifications);
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link class="nav-link" to="/">Home</router-link>
+              <router-link class="nav-link cursor-pointer" to="/">Home</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/market">Market</router-link>
+              <router-link class="nav-link cursor-pointer" to="/market">Market</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/article">Article</router-link>
+              <router-link class="nav-link cursor-pointer" to="/article">Article</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/ranking">Ranking</router-link>
+              <router-link class="nav-link cursor-pointer" to="/ranking">Ranking</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link point-link" to="/sales"
+              <router-link class="nav-link point-link cursor-pointer" to="/sales"
                 >Sales</router-link
               >
             </li>
@@ -247,6 +247,10 @@ onMounted(fetchNotifications);
   font-weight: bold;
   color: #fff;
   cursor: pointer;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
 }
 
 @media (max-width: 992px) {
