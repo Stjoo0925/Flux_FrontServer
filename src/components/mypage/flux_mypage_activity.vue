@@ -1,72 +1,109 @@
 <template>
     <div class="flux_mypage_activity">
         <h2>활동내역</h2>
+<!--         
         <div class="activity-section">
             <h3>입찰내역</h3>
             <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center" v-for="item in bidItems" :key="item.id">
+                <li v-for="market in bidItems" :key="market.marketId" class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="item-info d-flex align-items-center">
-                        <img :src="item.imgSrc" alt="상품 이미지" class="product-image">
+                        <img v-if="market.marketImgs && market.marketImgs.length > 0" :src="market.marketImgs[0]" alt="상품 이미지" class="product-image">
                         <div class="item-details">
-                            <h4>{{ item.title }}</h4>
-                            <p>출시년도: {{ item.year }}</p>
-                            <p>작품크기: {{ item.size }}</p>
-                            <p>작품재료: {{ item.material }}</p>
+                            <h4>{{ market.marketName }}</h4>
                         </div>
                     </div>
                 </li>
             </ul>
-        </div>
+        </div>  -->
+        
+        
         <div class="activity-section">
-            <h3>판매내역</h3>
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center" v-for="item in saleItems" :key="item.id">
-                    <div class="item-info d-flex align-items-center">
-                        <img :src="item.imgSrc" alt="상품 이미지" class="product-image">
-                        <div class="item-details">
-                            <h4>{{ item.title }}</h4>
-                            <p>출시년도: {{ item.year }}</p>
-                            <p>작품크기: {{ item.size }}</p>
-                            <p>작품재료: {{ item.material }}</p>
-                        </div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="edit-button">수정</button>
-                        <button class="delete-button">삭제</button>
-                    </div>
-                </li>
-            </ul>
-        </div>
+    <h3>판매내역</h3>
+    <ul class="list-group">
+        <li v-for="sale in saleItems" :key="sale.saleId" class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="item-info d-flex align-items-center">
+                <!-- 이미지 URL이 정의되어 있는지 확인 -->
+                <img v-if="sale.market.marketImgs && sale.market.marketImgs.length > 0" :src="sale.market.marketImgs[0]" alt="상품 이미지" class="product-image">
+                <div class="item-details">
+                    <h4>{{ sale.market.marketName }}</h4>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="edit-button">수정</button>
+                <button class="delete-button">삭제</button>
+            </div>
+        </li>
+    </ul>
+</div>
+
     </div>
 </template>
 
-<script>
-export default {
-    name: 'flux_mypage_activity',
-    data() {
-        return {
-            bidItems: [
-                // 예시 데이터
-                { id: 1, imgSrc: '/src/assets/image/img1.png', title: 'Fruit Shop 1', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 2, imgSrc: '/src/assets/image/img1.png', title: 'Fruit Shop 2', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 3, imgSrc: '/src/assets/image/img1.png', title: 'Fruit Shop 3', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 4, imgSrc: '/src/assets/image/img1.png', title: 'Fruit Shop 4', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 5, imgSrc: '/src/assets/image/img1.png', title: 'Fruit Shop 5', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 6, imgSrc: '/src/assets/image/img1.png', title: 'Fruit Shop 6', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' }
-            ],
-            saleItems: [
-                // 예시 데이터
-                { id: 1, imgSrc: '/src/assets/image/img2.png', title: 'Fruit Shop 1', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 2, imgSrc: '/src/assets/image/img2.png', title: 'Fruit Shop 2', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 3, imgSrc: '/src/assets/image/img2.png', title: 'Fruit Shop 3', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 4, imgSrc: '/src/assets/image/img2.png', title: 'Fruit Shop 4', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 5, imgSrc: '/src/assets/image/img2.png', title: 'Fruit Shop 5', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' },
-                { id: 6, imgSrc: '/src/assets/image/img2.png', title: 'Fruit Shop 6', year: '2022', size: '25 x 25 cm', material: '과일과 단색의 수채, 백화점' }
-            ]
-        }
+<script setup>
+import axios from 'axios';
+import { ref, computed, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+const userId = computed(() => authStore.userId);
+const saleItems = ref([]);
+
+const isValidUserId = (id) => {
+    return id && id.trim() !== '';
+};
+
+const fetchSale = async (userId) => {
+    if (!isValidUserId(userId)) {
+        console.error('User ID is not valid');
+        return;
     }
-}
+
+    try {
+        const response = await axios.get(`http://localhost:8080/api/user/sale/${userId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authStore.token}`
+            }
+        });
+        console.log('API Response:', response.data); // 응답 데이터 확인
+        saleItems.value = response.data;
+    } catch (error) {
+        console.error('Failed to fetch sale items:', error);
+        saleItems.value = [];
+    }
+};
+
+
+onMounted(() => {
+    if (isValidUserId(userId.value)) {
+        fetchSale(userId.value);
+    } else {
+        console.error('User ID is not defined or invalid');
+        alert('Unable to retrieve user data. Please try again later.');
+        
+        // 디버깅을 위한 임시 데이터
+        saleItems.value = [
+            {
+                saleId: 1,
+                market: {
+                    marketName: 'Sample Product 1',
+                    marketImgs: ['https://via.placeholder.com/150']
+                }
+            },
+            {
+                saleId: 2,
+                market: {
+                    marketName: 'Sample Product 2',
+                    marketImgs: ['https://via.placeholder.com/150']
+                }
+            }
+        ];
+    }
+});
+
+
 </script>
+
 
 <style scoped>
 .flux_mypage_activity {

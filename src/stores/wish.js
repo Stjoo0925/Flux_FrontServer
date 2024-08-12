@@ -1,3 +1,4 @@
+// stores/wish.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { useAuthStore } from './auth';
@@ -15,10 +16,10 @@ export const useWishStore = defineStore('wish', {
             'Authorization': `Bearer ${authStore.token}`,
           },
         });
-        if (Array.isArray(response.data)) {
+        if (response.status === 200 && Array.isArray(response.data)) {
           this.wishedMarkets = new Set(response.data.map(item => item.marketId));
         } else {
-          console.error('Fetched data is not an array:', response.data);
+          console.error('Unexpected response format:', response.data);
         }
       } catch (error) {
         console.error('Error fetching wished markets:', error);
@@ -28,10 +29,10 @@ export const useWishStore = defineStore('wish', {
       return this.wishedMarkets.has(marketId);
     },
     addWish(marketId) {
-      this.wishedMarkets.add(marketId);  // Wish 리스트에 추가
+      this.wishedMarkets.add(marketId);
     },
     removeWish(marketId) {
-      this.wishedMarkets.delete(marketId);  // Wish 리스트에서 제거
+      this.wishedMarkets.delete(marketId);
     },
     async toggleWish(marketId) {
       const authStore = useAuthStore();
@@ -52,7 +53,7 @@ export const useWishStore = defineStore('wish', {
               userId: authStore.userId,
             }
           });
-          this.removeWish(marketId);  // Wish 제거 메소드 호출
+          this.removeWish(marketId);
         } else {
           await axios.post('http://localhost:8080/api/v1/wish', {
             marketId: marketId,
@@ -62,8 +63,10 @@ export const useWishStore = defineStore('wish', {
               'Authorization': `Bearer ${token}`,
             }
           });
-          this.addWish(marketId);  // Wish 추가 메소드 호출
+          this.addWish(marketId);
         }
+        // Refetch wished markets to update state
+        await this.fetchWishedMarkets();
       } catch (error) {
         console.error('Error toggling wish status:', error);
       }
