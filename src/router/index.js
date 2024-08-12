@@ -49,6 +49,9 @@ const UseManagerNotice = () => import('../views/manager_notice.vue');
 const ManagerNoticeList = () => import('../components/manager/flux_manager_notice_list.vue');
 const ManagerNoticePost = () => import('../components/manager/flux_manager_notice_post.vue');
 const ManagerNoticeModify = () => import('../components/manager/flux_manager_notice_modify.vue');
+const Comments = () => import("../components/comment/comment.vue");
+const Bid = () => import("../components/bid/bid.vue");
+
 
 const routes = [
   {

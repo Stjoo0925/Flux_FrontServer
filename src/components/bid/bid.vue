@@ -1,28 +1,27 @@
 <template>
-    <div class="bidding">
-      <div class="current-bid">
-        <!-- 현재 최고 입찰 가격 표시 -->
-        <span v-if="currentHighestBid !== null">{{ currentHighestBid.toLocaleString() }}</span>
-        <span v-else>입찰 전입니다.</span>
-      </div>
-      <div class="input-and-button">
-        <input 
-          v-model.number="bidAmount" 
-          type="number" 
-          placeholder="입찰 금액" 
-          class="bid-input" 
-          :disabled="!isMarketAvailable" 
-          step="1000" 
-          min="0" 
-        />
-        <button @click="placeBid" class="bid-button" :disabled="!isMarketAvailable">입찰</button>
-        <button @click="buyNow" class="buy-now-button" :disabled="!isMarketAvailable">즉시구매</button>
-      </div>
+  <div class="bidding">
+    <div class="current-bid">
+      <span v-if="currentHighestBid !== null">{{ currentHighestBid.toLocaleString() }}</span>
+      <span v-else>입찰 전입니다.</span>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, onMounted } from 'vue';
+    <div class="input-and-button">
+      <input 
+        v-model.number="bidAmount" 
+        type="number" 
+        placeholder="입찰 금액" 
+        class="bid-input" 
+        :disabled="!isMarketAvailable" 
+        step="1000" 
+        min="0" 
+      />
+      <button @click="placeBid" class="bid-button" :disabled="!isMarketAvailable">입찰</button>
+      <button @click="buyNow" class="buy-now-button" :disabled="!isMarketAvailable">즉시구매</button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
@@ -34,18 +33,18 @@ const authStore = useAuthStore();
 const userId = ref(authStore.userId);
 
 const bidAmount = ref(1000);
-const isMarketAvailable = ref(true); // 입찰 및 즉시구매 가능 여부
-const currentHighestBid = ref(null); // 현재 최고 입찰 가격을 저장할 변수
+const isMarketAvailable = ref(true);
+const currentHighestBid = ref(null);
 
 onMounted(async () => {
   try {
     // 마켓 상태 가져오기
-    const statusResponse = await axios.get(`http://localhost:8080/api/v1/market/detail/${marketId}/status`);
-    isMarketAvailable.value = statusResponse.data.marketOrderableStatus; // marketOrderableStatus 값에 따라 설정
+    const statusResponse = await axios.get(`http://localhost:8080/api/v1/market/${marketId}/status`);
+    isMarketAvailable.value = statusResponse.data.marketOrderableStatus;
 
     // 현재 최고 입찰 가격 가져오기
-    const bidResponse = await axios.get(`http://localhost:8080/api/v1/market/detail/${marketId}/current-bid`);
-    currentHighestBid.value = bidResponse.data.currentHighestBid || null; // 입찰 가격이 없으면 null로 설정
+    const bidResponse = await axios.get(`http://localhost:8080/api/v1/market/${marketId}/current-bid`);
+    currentHighestBid.value = bidResponse.data || null;
   } catch (error) {
     console.error('Market 데이터 가져오기 실패:', error);
   }
@@ -67,7 +66,7 @@ const placeBid = async () => {
       bidTime: bidTime
     });
     console.log('입찰 성공:', response.data);
-    currentHighestBid.value = bidAmount.value; // 입찰 성공 시, 현재 최고 입찰 가격 업데이트
+    currentHighestBid.value = bidAmount.value;
     alert('입찰 되었습니다.');
   } catch (error) {
     console.error('입찰 실패:', error.response ? error.response.data : error.message);
@@ -93,7 +92,8 @@ const buyNow = async () => {
     alert('즉시구매가 실패하였습니다.');
   }
 };
-  </script>
+</script>
+
   
   <style scoped>
   .bidding {
