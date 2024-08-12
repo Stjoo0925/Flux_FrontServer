@@ -35,6 +35,7 @@ onMounted(async () => {
           userId: response.data.userId,
           email: response.data.email,
           name: response.data.name,
+          role: response.data.role, // role 정보 저장
           provider: 'google'
         });
         currentUrl.searchParams.delete("code");
@@ -59,6 +60,7 @@ onMounted(async () => {
           userId: response.data.userId,
           email: response.data.email,
           name: response.data.name,
+          role: response.data.role, // role 정보 저장
           provider: 'naver'
         });
         currentUrl.searchParams.delete("code");

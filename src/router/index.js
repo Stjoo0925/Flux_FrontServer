@@ -169,21 +169,26 @@ function resetStores() {
 }
 
 router.beforeEach((to, from, next) => {
-  const currentUrl = new URL(window.location.href);
-  const googleCode = currentUrl.searchParams.get('code');
-  const state = currentUrl.searchParams.get('state');
+  const authStore = useAuthStore();
+  const isAuthenticated = authStore.isAuthenticated;
+  const userRole = authStore.user?.role; // 사용자 역할을 가져옵니다.
 
-  if (
-    (googleCode && to.path === '/login/oauth2/code/google') ||
-    (state && to.path === '/login/oauth2/code/naver')
-  ) {
-    next();
-  } else {
-    if (to.path === '/login' || to.path === '/') {
-      resetStores();
+  if (to.path.startsWith('/manager')) {
+    if (isAuthenticated && userRole === 'ADMIN') {
+      next(); // 권한이 있으면 접근 허용
+    } else {
+      next('/'); // 권한이 없으면 메인 페이지로 리디렉션
     }
-    next();
+  } else if (to.path.startsWith('/sales') || to.path.startsWith('/mypage')) {
+    if (isAuthenticated && ['ADMIN', 'USER'].includes(userRole)) {
+      next(); // 권한이 있으면 접근 허용
+    } else {
+      next('/login'); // 권한이 없으면 메인 페이지로 리디렉션
+    }
+  } else {
+    next(); // 다른 경로는 그냥 통과
   }
 });
+
 
 export default router;
