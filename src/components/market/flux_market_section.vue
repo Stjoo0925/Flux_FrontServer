@@ -6,6 +6,7 @@ import MarketMain from "@/components/market/flux_market_main.vue";
 import MarketDetail from "@/components/market/flux_market_detail.vue";
 import MarketPaymentBefore from "@/components/market/flux_market_payment_before.vue";
 import MarketPaymentAfter from "@/components/market/flux_market_payment_after.vue";
+import Sidebar from "@/components/sidebar/flux_component_side_market.vue";
 
 // Pinia 스토어 사용
 const store = useMarketStore();
@@ -30,21 +31,36 @@ watch(() => route.params.marketId, (newId) => {
 </script>
 
 <template>
-  <div>
-    <div v-if="root === 'main'">
-      <MarketMain />
-    </div>
-    <div v-else-if="root.startsWith('detail')">
-      <MarketDetail />
-    </div>
-    <div v-else-if="root === 'paymentbefore'">
-      <MarketPaymentBefore />
-    </div>
-    <div v-else-if="root === 'paymentafter'">
-      <MarketPaymentAfter />
+  <div class="section-align">
+    <Sidebar v-if="root === 'main'" />
+    <div class="section">
+      <div>
+        <div v-if="root === 'main'">
+          <MarketMain />
+        </div>
+        <div v-else-if="root.includes('detail')">
+          <MarketDetail />
+        </div>
+        <div v-else-if="root === 'paymentbefore'">
+          <MarketPaymentBefore />
+        </div>
+        <div v-else-if="root === 'paymentafter'">
+          <MarketPaymentAfter />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.section {
+  width: 100%;
+  height: 80%;
+}
+
+.section-align {
+  display: flex;
+  flex-direction: row;
+}
+</style>
 
