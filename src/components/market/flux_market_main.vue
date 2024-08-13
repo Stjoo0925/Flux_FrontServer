@@ -7,10 +7,10 @@
             <div class="position-relative">
               <router-link :to="'/market/detail/' + market.marketId">
                 <img
-                  :src="market.marketImgs[0]"
+                  :src="market.marketImgs"
                   :alt="market.marketTitle"
                   class="zoom-in img-fluid"
-                  style="height: 300px; object-fit: cover; width: 100%;"
+                  style="height: 300px; object-fit: contain; width: 100%;"
                 />
               </router-link>
               <div class="wish-icon" @click.stop="toggleWish(market.marketId)">
@@ -94,7 +94,18 @@ const fetchMarkets = async () => {
   try {
     const response = await axios.get('http://localhost:8080/api/v1/market');
     if (Array.isArray(response.data)) {
-      market.value = response.data;
+      market.value = response.data.map(marketItem => ({
+        ...marketItem,
+        marketImgs: marketItem.marketImgs.map(img => `http://localhost:8080${img}`)
+      }));
+      
+      // Log updated URLs
+      market.value.forEach(marketItem => {
+        console.log('Market ID:', marketItem.marketId);
+        console.log('Market Title:', marketItem.marketTitle);
+        console.log('Market Images:', marketItem.marketImgs);
+      });
+      
     } else {
       console.error('Fetched data is not an array:', response.data);
     }
