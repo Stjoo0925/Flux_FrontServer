@@ -5,8 +5,9 @@
         <div class="col-md-1 text-center">
           <div class="text-uppercase1">FLUX</div>
           <div class="social-icons">
-            <a href="https://github.com/Flux2024" class="text-light cursor-pointer"></a>
-            <img src="/src/assets/image/github.svg" alt="github" class="social-icon cursor-pointer" />
+            <a href="https://github.com/Flux2024" class="text-light cursor-pointer">
+              <img src="/src/assets/image/github.svg" alt="github" class="social-icon cursor-pointer" />
+            </a>
           </div>
         </div>
         <div class="col-md-2 text-center other-content">
