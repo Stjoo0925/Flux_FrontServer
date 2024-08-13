@@ -12,13 +12,21 @@
       </div>
       <div class="card-container">
         <div class="card">
-          <img
+          <div class="card-author">작성자 : {{ article.articleAuthor}}</div>
+          <div class="img-align">
+            <img
             :src="article.articleImgPath"
             class="card-img-top"
-            :alt="article.articleTitle"
-          />
+            :alt="NoImages"
+            />
+          </div>
           <div class="card-body">
-            <p class="card-text" v-html="formattedContent"></p>
+            <div class="card-text">{{ article.articleContents }}</div>
+            <div class="card-date">
+              <span v-if="article.articleUpdateAt">수정일자 : {{ formatDateTime(article.articleUpdateAt) }}</span>
+              <span v-else>작성일자 : {{ formatDateTime(article.articleCreateAt) }}</span>
+            </div>
+            <div class="card-count">조회수 : {{ article.articleView }}</div>
           </div>
         </div>
       </div>
@@ -42,13 +50,6 @@ const route = useRoute();
 // 아티클 데이터와 관련된 상태 변수 정의
 const article = ref(null);
 
-// 아티클 내용을 HTML로 포맷팅하는 계산 속성
-const formattedContent = computed(() => {
-  return article.value
-    ? article.value.articleContents.replace(/\n/g, "<br>")
-    : "";
-});
-
 // 아티클 데이터를 가져오는 함수
 const fetchArticle = async () => {
   const articleId = route.params.id;
@@ -65,14 +66,26 @@ const fetchArticle = async () => {
   }
 };
 
+const formatDateTime = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
 // 컴포넌트가 마운트될 때 아티클 데이터와 댓글을 세션에서 불러오기
 onMounted(() => {
   fetchArticle();
 });
 </script>
 
-<style>
+<style scoped>
 .article-container {
+  border: 3px solid #ffe9dd;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,6 +93,7 @@ onMounted(() => {
   max-width: 1200px; /* 전체 너비를 제한 */
   margin: 20px auto;
   padding: 20px;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
 }
 
 .article-container .top {
@@ -109,11 +123,39 @@ onMounted(() => {
   width: 100%;
   max-width: 1200px; /* 카드의 최대 너비 설정 */
   margin-bottom: 30px;
+  border: none !important;
 }
 
 .card-body {
   margin-top: 10px;
-  border: 1px solid #ddd;
+}
+
+.card-author {
+  font-family: "LINESeedKR-Bd";
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.card-text {
+  font-family: "LINESeedKR-Bd";
+  font-size: 16px;
+  color: #000;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.card-date {
+  font-family: "LINESeedKR-Bd";
+  font-size: 12px;
+  color: #999;
+}
+
+.card-count {
+  font-family: "LINESeedKR-Bd";
+  font-size: 12px;
+  color: #999;
 }
 
 /* 댓글 입력창 스타일링 */
@@ -167,4 +209,19 @@ onMounted(() => {
   font-family: "LINESeedKR-Bd";
   font-size: 21px;
 }
+
+.img-align {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-img-top {
+  width: 95%;
+  border: 1px solid #b3b3b3;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
+  padding: 3px;
+  margin-bottom: 20px;
+}
+
 </style>

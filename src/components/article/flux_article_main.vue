@@ -139,7 +139,7 @@ onMounted(() => {
 /* 아티클 박스 시작 */
 .articleContents .card {
   display: flex;
-  border: 3px solid #ffe9dd;
+  border: 3px solid #ffe9dd !important;
   flex-direction: column;
   height: 400px; /* 원하는 카드 높이 설정 */
   position: relative; /* 아이콘을 위치시키기 위해 relative로 설정 */
