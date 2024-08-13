@@ -127,8 +127,10 @@ const formatDateTime = (dateString) => {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    timeZoneName: 'short'
+    timeZone: 'Asia/Seoul', // 타임존을 설정하여 한국 시간에 맞춤
+    hour12: false, // 24시간 형식
   };
+  
   const date = new Date(dateString);
   return date.toLocaleDateString('ko-KR', options);
 };
