@@ -13,23 +13,23 @@
         step="1000"
         min="0"
       />
-      <button @click="placeBid" class="bid-button">
+      <button @click="placeBid" class="bid-button" :disabled="!canBidOrBuy">
         입찰
       </button>
-      <button @click="buyNow" class="buy-now-button">
+      <button @click="buyNow" class="buy-now-button" :disabled="!canBidOrBuy">
         즉시구매
       </button>
     </div>
     <div class="auto-sum-button">
-      <button @click="autoSum(1000)">+천원</button>
-      <button @click="autoSum(10000)">+만원</button>
-      <button @click="autoSum(50000)">+5만원</button>
+      <button @click="autoSum(1000)" :disabled="!canBidOrBuy">+천원</button>
+      <button @click="autoSum(10000)" :disabled="!canBidOrBuy">+만원</button>
+      <button @click="autoSum(50000)" :disabled="!canBidOrBuy">+5만원</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
@@ -39,6 +39,10 @@ const marketId = route.params.marketId;
 
 const authStore = useAuthStore();
 const userId = ref(authStore.userId);
+
+// 사용자의 역할 확인
+const userRole = authStore.user?.role;
+const canBidOrBuy = computed(() => ['USER', 'ADMIN'].includes(userRole));
 
 const bidAmount = ref(0);
 const currentHighestBid = ref(null);
@@ -74,6 +78,11 @@ const validateBidAmount = () => {
 };
 
 const placeBid = async () => {
+  if (!canBidOrBuy.value) {
+    alert('권한이 없습니다.');
+    return;
+  }
+
   validateBidAmount(); // 입찰 금액 검증
 
   const confirmation = confirm(`입찰 금액 : ${bidAmount.value.toLocaleString()} 원\n정말 입찰하시겠습니까?`);
@@ -98,6 +107,11 @@ const placeBid = async () => {
 };
 
 const buyNow = async () => {
+  if (!canBidOrBuy.value) {
+    alert('권한이 없습니다.');
+    return;
+  }
+
   const confirmation = confirm('정말 즉시 구매하시겠습니까?');
   if (!confirmation) return; // 사용자가 취소를 클릭하면 아무 작업도 하지 않음
 
@@ -116,6 +130,11 @@ const buyNow = async () => {
 
 // 버튼 클릭 시 입찰 금액 증가
 const autoSum = (amount) => {
+  if (!canBidOrBuy.value) {
+    alert('권한이 없습니다.');
+    return;
+  }
+
   bidAmount.value = Math.min(Number(bidAmount.value) + amount, marketMaxPrice.value);
   validateBidAmount(); // 자동 증가 시에도 검증
 };
