@@ -1,6 +1,9 @@
 <template>
-  <div>
-    로그인중 ......
+  <div class="d-flex justify-content-center align-items-center vh-100 bg">
+    <button class="btn btn-primary" type="button" disabled>
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      로그인중...
+    </button>
   </div>
 </template>
 
@@ -81,3 +84,16 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style scoped>
+.bg {
+  background-color: #FEBE89;
+}
+
+button {
+  background-color: #FD8E4C !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22) !important;
+}
+</style>
