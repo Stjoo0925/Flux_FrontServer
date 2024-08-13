@@ -12,13 +12,10 @@
       </div>
       <div class="card-container">
         <div class="card">
-          <div class="card-author">작성자 : {{ article.articleAuthor}}</div>
+          <div class="card-author">작성자 : {{ article.articleAuthor }}</div>
           <div class="img-align">
-            <img
-            :src="article.articleImgPath"
-            class="card-img-top"
-            :alt="NoImages"
-            />
+            <!-- 이미지 URL을 구성하여 출력 -->
+            <img :src="getImageUrl(article.articleImgPath)" class="card-img-top" :alt="article.articleImgDescription || '이미지를 불러올 수 없습니다.'" />
           </div>
           <div class="card-body">
             <div class="card-text">{{ article.articleContents }}</div>
@@ -38,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 
@@ -53,19 +50,16 @@ const article = ref(null);
 // 아티클 데이터를 가져오는 함수
 const fetchArticle = async () => {
   const articleId = route.params.id;
-
-  console.log("Article ID:", articleId);
-
   try {
-    const response = await axios.get(
-      `http://localhost:8080/api/v1/articles/${articleId}`
-    );
+    const response = await axios.get(`http://localhost:8080/api/v1/articles/${articleId}`);
+    console.log('API Response:', response.data); // 응답 데이터를 로그에 출력
     article.value = response.data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching data:", error); // 에러를 로그에 출력
   }
 };
 
+// 날짜 함수
 const formatDateTime = (dateString) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
@@ -76,9 +70,16 @@ const formatDateTime = (dateString) => {
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
+// 이미지 URL을 계산하는 함수
+const getImageUrl = (imagePath) => {
+  console.log(imagePath)
+  return `http://localhost:8080/img/multi/${imagePath}`;
+};
+
 // 컴포넌트가 마운트될 때 아티클 데이터와 댓글을 세션에서 불러오기
 onMounted(() => {
   fetchArticle();
+  console.log(article.value); // article의 값 확인
 });
 </script>
 
@@ -90,7 +91,8 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 1200px; /* 전체 너비를 제한 */
+  max-width: 1200px;
+  /* 전체 너비를 제한 */
   margin: 20px auto;
   padding: 20px;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
@@ -114,14 +116,16 @@ onMounted(() => {
 
 .card-container {
   display: flex;
-  justify-content: center; /* 카드 중앙 정렬 */
+  justify-content: center;
+  /* 카드 중앙 정렬 */
   margin-bottom: 20px;
   width: 100%;
 }
 
 .card {
   width: 100%;
-  max-width: 1200px; /* 카드의 최대 너비 설정 */
+  max-width: 1200px;
+  /* 카드의 최대 너비 설정 */
   margin-bottom: 30px;
   border: none !important;
 }
@@ -161,25 +165,29 @@ onMounted(() => {
 /* 댓글 입력창 스타일링 */
 .input-container {
   display: flex;
-  justify-content: center; /* 입력창 중앙 정렬 */
+  justify-content: center;
+  /* 입력창 중앙 정렬 */
   margin-top: 20px;
 }
 
 .input-container .input-group {
   width: 100%;
-  max-width: 600px; /* 카드와 동일한 최대 너비 설정 */
+  max-width: 600px;
+  /* 카드와 동일한 최대 너비 설정 */
 }
 
 /* 댓글 목록 스타일링 */
 .comment-list-container {
   display: flex;
-  justify-content: center; /* 댓글 목록 중앙 정렬 */
+  justify-content: center;
+  /* 댓글 목록 중앙 정렬 */
   margin-top: 20px;
 }
 
 .comment-list-container ul {
   width: 100%;
-  max-width: 600px; /* 카드와 동일한 최대 너비 설정 */
+  max-width: 600px;
+  /* 카드와 동일한 최대 너비 설정 */
   padding-left: 0;
 }
 
@@ -212,16 +220,23 @@ onMounted(() => {
 
 .img-align {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  width: 50%; /* 컨테이너 너비 */
+  padding-top: 50%; /* 정사각형 비율 유지 */
+  position: relative; /* 자식 요소의 위치 조정을 위한 기준 */
+  margin: 0 auto; /* 컨테이너를 중앙에 배치 */
 }
 
 .card-img-top {
-  width: 95%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지를 컨테이너에 맞게 조정 */
   border: 1px solid #b3b3b3;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
-  padding: 3px;
-  margin-bottom: 20px;
 }
 
 </style>
