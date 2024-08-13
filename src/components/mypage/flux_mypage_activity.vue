@@ -23,6 +23,7 @@
     </div>
 </template>
 
+
 <script setup>
 import axios from 'axios';
 import { ref, computed, onMounted } from 'vue';
@@ -54,7 +55,10 @@ const fetchSale = async (userId) => {
         console.log('API 응답:', response.data);
 
         if (Array.isArray(response.data)) {
-            saleItems.value = response.data;
+            saleItems.value = response.data.map(saleItem => ({
+                ...saleItem,
+                marketImgs: saleItem.marketImgs.map(img => `http://localhost:8080${img}`)
+            }));
         } else {
             console.error('예상하지 못한 데이터 형식:', response.data);
             saleItems.value = [];
@@ -99,8 +103,6 @@ onMounted(() => {
     }
 });
 </script>
-
-
 
 
 
