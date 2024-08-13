@@ -323,4 +323,16 @@ h1 {
   font-family: "LINESeedKR-Bd";
   font-size: 16px;
 }
+
+a {
+  text-decoration: none; /* 모든 링크에서 밑줄 제거 */
+}
+
+.router-link-active {
+  text-decoration: none; /* 활성화된 라우터 링크에서도 밑줄 제거 */
+}
+
+.router-link-exact-active {
+  text-decoration: none; /* 정확히 일치하는 라우터 링크에서도 밑줄 제거 */
+}
 </style>
