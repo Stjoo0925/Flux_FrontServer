@@ -14,7 +14,7 @@
               <!-- 아이콘 내용 -->
             </div>
             <img
-              :src="article.articleImgPath"
+              :src="getImageUrl(article.articleImgPath)"
               class="card-img-top"
               :alt="article.articleTitle"
             />
@@ -32,7 +32,7 @@
         </div>
       </div>
       <nav
-        aria-label="페이지 네비게이션 예시"
+        aria-label="페이지 네비게이션"
         class="d-flex justify-content-center"
       >
         <!-- 페이지 네비게이션 -->
@@ -40,6 +40,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
@@ -117,26 +118,18 @@ const formatDate = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
+// 이미지 URL을 계산하는 함수
+const getImageUrl = (imagePath) => {
+  return `http://localhost:8080/img/multi/${imagePath}`;
+};
+
 onMounted(() => {
   fetchArticles();
 });
 </script>
 
+
 <style>
-/* 정렬 순서 셀렉트박스 시작 */
-.selectbox-container {
-  display: flex;
-  justify-content: flex-end;
-  margin: 5px 10px 0 0;
-}
-
-.selectbox .form-select {
-  margin: 40px 30px 0 0;
-  width: 150px;
-}
-/* 정렬 순서 셀렉트박스 종료 */
-
-/* 아티클 박스 시작 */
 .articleContents .card {
   display: flex;
   border: 3px solid #ffe9dd !important;
@@ -146,6 +139,7 @@ onMounted(() => {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+
 .articleContents .card:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
