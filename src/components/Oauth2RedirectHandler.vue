@@ -47,13 +47,13 @@ onMounted(async () => {
         router.push('/login');
       }
     } else if (naverAccessToken) {
-      console.log("Naver login attempt with token:", naverAccessToken);
+      // console.log("Naver login attempt with token:", naverAccessToken);
       const response = await axios.post('http://localhost:8080/api/oauth/naver', {}, {
         headers: {
           'Authorization': `Bearer ${naverAccessToken}`
         }
       });
-      console.log("Naver login response:", response.data);
+      console.log("Naver login response:", '로그인 성공');
       if (response.data.status === 'success') {
         authStore.setToken(response.data.jwtToken);
         authStore.setUser({
