@@ -5,7 +5,7 @@
             <h3>판매내역</h3>
             <ul class="list-group">
                 <li v-for="sale in saleItems" :key="sale.marketId" class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="item-info d-flex align-items-center">
+                    <div class="item-info d-flex align-items-center" @click="navigateToDetail(sale.marketId)">
                         <img v-if="sale.marketImgs && sale.marketImgs.length > 0"
                             :src="sale.marketImgs[0]" alt="상품 이미지" class="product-image">
                         <div class="item-details">
@@ -15,7 +15,7 @@
                     </div>
                     <div class="action-buttons">
                         <button class="edit-button">수정</button>
-                        <button class="delete-button" @click="deleteSale(sale.marketId)">삭제</button>
+                        <button class="delete-button" @click.stop="deleteSale(sale.marketId)">삭제</button>
                     </div>
                 </li>
             </ul>
@@ -23,12 +23,13 @@
     </div>
 </template>
 
-
 <script setup>
 import axios from 'axios';
 import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
+const router = useRouter(); // Vue Router 인스턴스 가져오기
 const authStore = useAuthStore();
 const userId = computed(() => authStore.userId);
 const saleItems = ref([]);
@@ -52,7 +53,6 @@ const fetchSale = async (userId) => {
         });
         console.log('API 응답:', response.data);
 
-        // 데이터 구조를 확인하고 처리
         if (Array.isArray(response.data)) {
             saleItems.value = response.data;
         } else {
@@ -75,7 +75,6 @@ const deleteSale = async (marketId) => {
             }
         });
 
-        // 성공적으로 삭제되면 항목 제거
         saleItems.value = saleItems.value.filter(sale => sale.marketId !== marketId);
     } catch (error) {
         if (error.response && error.response.status === 403) {
@@ -86,6 +85,10 @@ const deleteSale = async (marketId) => {
     }
 };
 
+// 상세 페이지로 이동하는 메서드
+const navigateToDetail = (marketId) => {
+    router.push({ name: 'MarketDetail', params: { marketId } });
+};
 
 onMounted(() => {
     if (isValidUserId(userId.value)) {
