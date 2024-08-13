@@ -20,7 +20,7 @@ onMounted(async () => {
   let naverAccessToken;
   
   if (window.naver_id_login) {
-    const naverLogin = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "https://flux-front-server.vercel.app/login/oauth2/code/naver");
+    const naverLogin = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "http://localhost:8000/login/oauth2/code/naver");
     naverAccessToken = naverLogin.oauthParams.access_token;
   }
 

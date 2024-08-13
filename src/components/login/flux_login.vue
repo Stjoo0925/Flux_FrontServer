@@ -64,7 +64,7 @@ onMounted(() => {
   randomImage.value = getRandomImage();
   const naver_id_login = new window.naver_id_login(
     "teR1JDcGa4Dv2AAhrfpv",
-    "https://flux-front-server.vercel.app/login/oauth2/code/naver"
+    "http://localhost:8000/login/oauth2/code/naver"
   );
   const state = naver_id_login.getUniqState();
   naver_id_login.setButton("white", 2, 40); // 버튼 설정
