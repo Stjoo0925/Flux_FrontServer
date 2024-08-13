@@ -83,7 +83,7 @@
       <div class="line"></div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" v-for="(hotItem, index) in hotItems" :key="index">
+      <router-link :to="`/market/detail/${hotItem.marketId}`" class="col" v-for="(hotItem, index) in hotItems" :key="index">
         <div class="card fixed-size-card">
           <img
             :src="hotItem.market_imgs"
@@ -95,14 +95,14 @@
             <p class="card-text">{{ hotItem.marketPrice }}원</p>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
     <div class="title-con">
       <div class="main-title">| 최근 등록된 상품</div>
       <div class="line"></div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" v-for="(market, index) in recentItems" :key="index">
+      <router-link :to="`/market/detail/${market.marketId}`" class="col" v-for="(market, index) in recentItems" :key="index">
         <div class="card fixed-size-card">
           <img
             :src="market.marketImgs"
@@ -114,14 +114,14 @@
             <p class="card-text">{{ market.marketPrice }}원</p>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
     <div class="title-con">
       <div class="main-title">| 최근 아티클</div>
       <div class="line"></div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" v-for="(item, index) in recentArticles" :key="index">
+      <router-link :to="`/article/detail/${item.articleId}`" class="col" v-for="(item, index) in recentArticles" :key="index">
         <div class="card fixed-size-card">
           <img
             :src="item.articleImgPath"
@@ -133,7 +133,7 @@
             <p class="card-text">{{ item.articleAuthor }}</p>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
   </section>
   <!-- 경매 진행 중 상품들 영역 종료 -->
@@ -150,7 +150,7 @@ const articleData = ref([]);
 const hotItems = ref([]);
 // console.log(hotItems);
 const recentItems = ref([]);
-// console.log(recentItems);
+console.log(recentItems);
 const recentArticles = ref([]);
 // console.log(recentArticles);
 
