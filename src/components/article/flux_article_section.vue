@@ -4,6 +4,7 @@ import { computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import ArticleMain from "@/components/article/flux_article_main.vue";
 import ArticleDetail from "@/components/article/flux_article_detaile.vue";
+import Sidebar from "@/components/sidebar/flux_component_side_article.vue";
 
 const store = useArticleStore();
 const route = useRoute();
@@ -33,12 +34,28 @@ watch(
 </script>
 
 <template>
-  <div>
-    <div v-if="root === 'main'">
-      <ArticleMain />
-    </div>
-    <div v-if="root.includes('detail')">
-      <ArticleDetail />
+  <div class="section-align">
+    <Sidebar v-if="!root.includes('detail')" />
+    <div class="section">
+      <div>
+        <div v-if="root === 'main'">
+          <ArticleMain />
+        </div>
+        <div v-if="root.includes('detail')">
+          <ArticleDetail />
+        </div>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.section {
+  width: 100%;
+}
+.section-align {
+  display: flex;
+  flex-direction: row;
+}
+</style>
+
