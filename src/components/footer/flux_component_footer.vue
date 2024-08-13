@@ -12,8 +12,8 @@
         <div class="col-md-2 text-center other-content">
           <h5 class="text-uppercase">이용안내</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-light no-underline">아티스트센터</a></li>
-            <li><a href="#" class="text-light no-underline">리셀문의</a></li>
+            <li><a href="#" class="text-light no-underline" @click="notImplemented()">아티스트센터</a></li>
+            <li><a href="#" class="text-light no-underline" @click="notImplemented()">리셀문의</a></li>
           </ul>
         </div>
         <div class="col-md-2 text-center other-content">
@@ -21,7 +21,7 @@
           <ul class="list-unstyled">
             <li><div class="text-light no-underline cursor-pointer" @click="aboutFlux">About FLUX</div></li>
             <li><router-link to="/notice" class="text-light no-underline">공지사항</router-link></li>
-            <li><a href="#" class="text-light no-underline">자주묻는질문</a></li>
+            <li><a href="#" class="text-light no-underline" @click="notImplemented()">자주묻는질문</a></li>
           </ul>
         </div>
         <div class="col-md-2 text-left other-content">
@@ -31,7 +31,7 @@
             점심시간 평일 13:20~14:20<br />
             1:1 채팅 상담은 FLUX카카오채널에서 운영됩니다.<br />
           </p>
-          <button class="chat-button">1:1 채팅상담</button>
+          <button class="chat-button" @click="notImplemented()">1:1 채팅상담</button>
         </div>
         <div class="mt-3 w-100">
           <div class="col-12 text-center">
@@ -59,6 +59,15 @@ function aboutFlux() {
       left top
       no-repeat
     `
+  });
+}
+
+function notImplemented() {
+  Swal.fire({
+    title: '미구현 기능',
+    text: '아직 구현되지 않았습니다.',
+    icon: 'info',
+    confirmButtonText: '확인'
   });
 }
 </script>
