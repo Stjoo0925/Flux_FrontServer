@@ -169,26 +169,20 @@ function resetStores() {
 }
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
-  const isAuthenticated = authStore.isAuthenticated;
-  const userRole = authStore.user?.role; // 사용자 역할을 가져옵니다.
+  const currentUrl = new URL(window.location.href);
+  const googleCode = currentUrl.searchParams.get('code');
+  const state = currentUrl.searchParams.get('state');
 
-  if (to.path.startsWith('/manager')) {
-    if (isAuthenticated && userRole === 'ADMIN') {
-      next(); // 권한이 있으면 접근 허용
-    } else {
-      alert('접근권한이 없습니다'); // 알림창 표시
-      next('/'); // 권한이 없으면 메인 페이지로 리디렉션
-    }
-  } else if (to.path.startsWith('/sales') || to.path.startsWith('/mypage')) {
-    if (isAuthenticated && ['ADMIN', 'USER'].includes(userRole)) {
-      next(); // 권한이 있으면 접근 허용
-    } else {
-      alert('로그인이 필요합니다'); // 알림창 표시
-      next('/login'); // 권한이 없으면 로그인 페이지로 리디렉션
-    }
+  if (
+    (googleCode && to.path === '/login/oauth2/code/google') ||
+    (state && to.path === '/login/oauth2/code/naver')
+  ) {
+    next();
   } else {
-    next(); // 다른 경로는 그냥 통과
+    if (to.path === '/login' || to.path === '/') {
+      resetStores();
+    }
+    next();
   }
 });
 
