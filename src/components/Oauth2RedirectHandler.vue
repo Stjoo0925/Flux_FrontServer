@@ -23,14 +23,14 @@ onMounted(async () => {
   let naverAccessToken;
   
   if (window.naver_id_login) {
-    const naverLogin = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "http://localhost:8000/login/oauth2/code/naver");
+    const naverLogin = new window.naver_id_login("teR1JDcGa4Dv2AAhrfpv", "https://flux-front-server.vercel.app/login/oauth2/code/naver");
     naverAccessToken = naverLogin.oauthParams.access_token;
   }
 
   try {
     if (googleCode) {
       console.log("Google login attempt with code:", googleCode);
-      const response = await axios.post('http://localhost:8080/api/oauth/google', { code: googleCode });
+      const response = await axios.post('http://1.214.19.22:8015/api/oauth/google', { code: googleCode });
       console.log("Google login response:", response.data);
       if (response.data.jwtToken) {
         authStore.setToken(response.data.jwtToken);
@@ -51,7 +51,7 @@ onMounted(async () => {
       }
     } else if (naverAccessToken) {
       // console.log("Naver login attempt with token:", naverAccessToken);
-      const response = await axios.post('http://localhost:8080/api/oauth/naver', {}, {
+      const response = await axios.post('http://1.214.19.22:8015/api/oauth/naver', {}, {
         headers: {
           'Authorization': `Bearer ${naverAccessToken}`
         }

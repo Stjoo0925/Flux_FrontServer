@@ -46,7 +46,7 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       try {
         console.log("Attempting to logout...");
-        await axios.post('http://localhost:8080/api/logout', {}, {
+        await axios.post('http://1.214.19.22:8015/api/logout', {}, {
           headers: {
             'Authorization': `Bearer ${this.token}`,
             'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ export const useAuthStore = defineStore('auth', {
     },
     async requestGoogleToken(googleCode) {
       try {
-        const response = await axios.post('http://localhost:8080/auth/google', { code: googleCode });
+        const response = await axios.post('http://1.214.19.22:8015/auth/google', { code: googleCode });
         if (response.data.idToken) {
           this.setToken(response.data.idToken);
           this.setUser({
