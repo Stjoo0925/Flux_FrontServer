@@ -26,7 +26,7 @@ export const useArticleStore = defineStore("useArticleStore", {
 
 export const useSalesStore = defineStore("useSalesStore", {
   state: () => ({
-    root: "registry", // 초기값 설정
+    root: "registryinfo", // 초기값 설정
   }),
   actions: {
     setRoot(option) {

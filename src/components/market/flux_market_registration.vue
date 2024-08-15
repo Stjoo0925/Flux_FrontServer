@@ -1,32 +1,30 @@
 <template>
   <div class="registration">
     <div class="selling_options">
-      <h1><p>어떤 작품을</p> <p>판매하고 싶으신가요?</p></h1>
+      <h1>
+        <p>어떤 작품을</p>
+        <p>판매하고 싶으신가요?</p>
+      </h1>
       <div class="options">
-        <div 
-          class="register" 
-          :class="{ selected: selectedOption === 'register' }" 
+        <div
+          class="register"
+          :class="{ selected: selectedOption === 'register' }"
           @click="selectOption('register')"
         >
           <div class="option-header">
             <h3>내 작품 등록</h3>
-            <span v-if="selectedOption === 'register'" class="check-icon">✔</span>
+            <span v-if="selectedOption === 'register'" class="check-icon"
+              >✔</span
+            >
           </div>
           <p></p>
           <h6>아티스트라면 FLUX에서 직접 작품을 판매해보세요.</h6>
         </div>
-        <div 
-          class="resell" 
-          :class="{ selected: selectedOption === 'resell' }" 
+        <div
+          class="resell"
+          :class="{ selected: selectedOption === 'resell' }"
           @click="selectOption('resell')"
-        >
-          <div class="option-header">
-            <h3>리셀 판매</h3>
-            <span v-if="selectedOption === 'resell'" class="check-icon">✔</span>
-          </div>
-          <p></p>
-          <h6>FLUX에서 구매한 작품을 다시 경매에 올려보세요.</h6>
-        </div>
+        ></div>
       </div>
       <div class="next-step">
         <button @click="goToNextStep">다음</button>
@@ -45,19 +43,18 @@ const setRoot = store.setRoot; // 상태 값 변경 함수
 const selectedOption = ref(null); // 선택된 옵션을 관리하기 위한 반응형 참조 추가
 
 function selectOption(option) {
-    selectedOption.value = option; // 반응형 참조에 값을 할당
+  selectedOption.value = option; // 반응형 참조에 값을 할당
 }
 
 function goToNextStep() {
-    if (!selectedOption.value) {
-        alert('옵션을 선택하세요.');
-        return;
-    }
-    alert(`선택된 옵션: ${selectedOption.value}`);
-    setRoot('registryinfo');
+  if (!selectedOption.value) {
+    alert("옵션을 선택하세요.");
+    return;
+  }
+  alert(`선택된 옵션: ${selectedOption.value}`);
+  setRoot("registryinfo");
 }
 </script>
-
 
 <style scoped>
 .registration {
@@ -84,7 +81,8 @@ function goToNextStep() {
   gap: 20px;
 }
 
-.register, .resell {
+.register,
+.resell {
   width: 100%; /* 전체 너비로 설정 */
   max-width: 400px; /* 최대 너비 설정 */
   border: 1px solid #ccc;
@@ -95,12 +93,14 @@ function goToNextStep() {
   transition: background-color 0.3s, border-color 0.3s;
 }
 
-.register:hover, .resell:hover {
+.register:hover,
+.resell:hover {
   background-color: #f0f0f0;
 }
 
-.register.selected, .resell.selected {
-  border-color: #FEBE98;
+.register.selected,
+.resell.selected {
+  border-color: #febe98;
   background-color: #e0eaff;
 }
 
@@ -111,7 +111,7 @@ function goToNextStep() {
 }
 
 .check-icon {
-  color: #FEBE98;
+  color: #febe98;
   font-size: 1.5em; /* 크기 조정 */
 }
 
@@ -122,7 +122,7 @@ function goToNextStep() {
 
 button {
   padding: 10px 20px;
-  background-color: #FEBE98;
+  background-color: #febe98;
   color: white;
   border: none;
   border-radius: 5px;
@@ -130,6 +130,6 @@ button {
 }
 
 button:hover {
-  background-color: #FEBE98;
+  background-color: #febe98;
 }
 </style>
